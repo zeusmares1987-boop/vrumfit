@@ -15,6 +15,7 @@ const ROUTES = [
   "/avisos", "/arquivos", "/personais", "/config",
   "/avaliacoes", "/biblioteca", "/chat", "/suporte", "/elite",
 ];
+const PROTECTED_ROUTES = ROUTES.filter((path) => path !== "/auth");
 
 async function restoreSession(page: Page) {
   const key = process.env.LOVABLE_BROWSER_SUPABASE_STORAGE_KEY ?? process.env.SUPABASE_STORAGE_KEY;
@@ -41,8 +42,13 @@ test.describe("Smoke: cada rota carrega sem erro de console", () => {
       await page.goto(path, { waitUntil: "domcontentloaded" });
       await page.waitForTimeout(400);
 
-      if (path !== "/auth" && hasSession) {
+      if (hasSession && path !== "/auth") {
         await expect(page).not.toHaveURL(/\/auth$/);
+        await expect(page.locator('button[title="Sair"]')).toBeVisible();
+      }
+
+      if (!hasSession && PROTECTED_ROUTES.includes(path)) {
+        await expect(page).toHaveURL(/\/auth$/);
       }
 
       // Filtra ruído conhecido (favicon, dev HMR, extensões)
