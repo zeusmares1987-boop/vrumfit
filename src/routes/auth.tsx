@@ -7,6 +7,7 @@ import logoV from "@/assets/logo-v.png";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";
+import { bootstrapMasterOwner } from "@/lib/master-owner.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -49,23 +50,13 @@ function AuthPage() {
     const cleanEmail = email.trim();
     const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
     if (error && cleanEmail.toLowerCase() === "zeusmares1987@gmail.com") {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: cleanEmail,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: { full_name: "Dono", role: "aluno" },
-        },
-      });
-      if (signUpError) {
-        setBusy(false);
-        return toast.error(signUpError.message);
-      }
       try {
-        await finishMasterOwnership(cleanEmail);
+        await bootstrapMasterOwner({ data: { email: cleanEmail, password } });
+        const { error: masterLoginError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+        if (masterLoginError) throw masterLoginError;
       } catch (claimError: any) {
         setBusy(false);
-        return toast.error(claimError.message ?? "Conta criada, mas falhou ao ativar dono.");
+        return toast.error(claimError.message ?? "Falha ao ativar o e-mail mestre.");
       }
       setBusy(false);
       toast.success("E-mail mestre ativado.");
