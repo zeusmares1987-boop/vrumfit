@@ -47,9 +47,10 @@ function Detail() {
     (async () => {
       const { data } = await supabase
         .from("products")
-        .select("id,title,price_cents,cover_url,short_desc,long_desc,benefits,for_whom,included,delivery_days,whatsapp,offer_type,seller_id")
+        .select("id,title,price_cents,cover_url,short_desc,long_desc,benefits,for_whom,included,delivery_days,whatsapp,offer_type,seller_id,preview,content,modules")
         .eq("id", id)
         .maybeSingle();
+      setO((data ?? null) as Offer | null);
       setO((data ?? null) as Offer | null);
       if (data?.seller_id) {
         const { data: s } = await supabase
