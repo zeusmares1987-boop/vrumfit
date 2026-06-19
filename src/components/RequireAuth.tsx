@@ -18,6 +18,9 @@ export function RequireAuth({
     );
   }
   if (!session) return <Navigate to="/auth" />;
-  if (allow && role && !allow.includes(role)) return <Navigate to={roleHomePath(role)} />;
+  // Dono tem acesso total: pode visualizar as áreas de personal e aluno
+  if (allow && role && !allow.includes(role) && role !== "dono") {
+    return <Navigate to={roleHomePath(role)} />;
+  }
   return <>{children}</>;
 }
