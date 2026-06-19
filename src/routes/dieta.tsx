@@ -165,3 +165,28 @@ function exportTxt(plan: ReturnType<typeof generate>) {
   a.href = url; a.download = "dieta-vrumfit.txt"; a.click();
   URL.revokeObjectURL(url);
 }
+
+async function exportPdf(plan: ReturnType<typeof generate>, goal: string) {
+  const data: DietPDFData = {
+    studentName: "Aluno VrumFit",
+    dayLabel: "Dia 1",
+    water: "2 a 3 litros",
+    goldenTip: `Objetivo: ${goal}. Mastigue bem, prefira alimentos naturais e siga o cronograma de horários.`,
+    meals: plan.meals.map((m, i) => ({
+      number: i + 1,
+      title: m.name,
+      timeRange: m.time,
+      foods: m.items.join(" + "),
+      amount: `Aproximadamente ${m.kcal} kcal`,
+      substitutions: "Pode trocar proteínas e carboidratos por equivalentes do mesmo grupo.",
+      observation: "Hidrate-se ao longo da refeição.",
+    })),
+  };
+  const blob = await pdf(<DietPDF data={data} />).toBlob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "dieta-vrumfit.pdf";
+  a.click();
+  URL.revokeObjectURL(url);
+}
