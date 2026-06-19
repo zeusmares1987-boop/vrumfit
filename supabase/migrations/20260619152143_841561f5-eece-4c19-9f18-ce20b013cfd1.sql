@@ -1,0 +1,4 @@
+ALTER TABLE public.products
+  ADD COLUMN IF NOT EXISTS content TEXT,
+  ADD COLUMN IF NOT EXISTS modules JSONB DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS preview TEXT;

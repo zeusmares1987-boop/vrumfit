@@ -564,6 +564,7 @@ export type Database = {
         Row: {
           benefits: string[] | null
           category: string | null
+          content: string | null
           cover_url: string | null
           created_at: string
           delivery_days: number | null
@@ -573,7 +574,9 @@ export type Database = {
           id: string
           included: string | null
           long_desc: string | null
+          modules: Json | null
           offer_type: string
+          preview: string | null
           price_cents: number
           seller_id: string | null
           short_desc: string | null
@@ -586,6 +589,7 @@ export type Database = {
         Insert: {
           benefits?: string[] | null
           category?: string | null
+          content?: string | null
           cover_url?: string | null
           created_at?: string
           delivery_days?: number | null
@@ -595,7 +599,9 @@ export type Database = {
           id?: string
           included?: string | null
           long_desc?: string | null
+          modules?: Json | null
           offer_type?: string
+          preview?: string | null
           price_cents?: number
           seller_id?: string | null
           short_desc?: string | null
@@ -608,6 +614,7 @@ export type Database = {
         Update: {
           benefits?: string[] | null
           category?: string | null
+          content?: string | null
           cover_url?: string | null
           created_at?: string
           delivery_days?: number | null
@@ -617,7 +624,9 @@ export type Database = {
           id?: string
           included?: string | null
           long_desc?: string | null
+          modules?: Json | null
           offer_type?: string
+          preview?: string | null
           price_cents?: number
           seller_id?: string | null
           short_desc?: string | null
