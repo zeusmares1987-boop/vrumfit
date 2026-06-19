@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -16,7 +17,11 @@ type Ticket = { id: string; subject: string; message: string; status: string; cr
 
 export const Route = createFileRoute("/suporte")({
   head: () => ({ meta: [{ title: "Suporte — VRUMFIT" }] }),
-  component: Sup,
+  component: () => (
+    <RequireAuth>
+      <Sup />
+    </RequireAuth>
+  ),
 });
 
 function Sup() {

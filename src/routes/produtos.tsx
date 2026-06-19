@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Plus, Trash2, Package as Box } from "lucide-react";
@@ -10,7 +11,11 @@ type P = { id: string; title: string; short_desc: string | null; price_cents: nu
 
 export const Route = createFileRoute("/produtos")({
   head: () => ({ meta: [{ title: "Produtos — VRUMFIT" }] }),
-  component: Prod,
+  component: () => (
+    <RequireAuth>
+      <Prod />
+    </RequireAuth>
+  ),
 });
 
 function Prod() {

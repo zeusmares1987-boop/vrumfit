@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Download, BookOpen, FileDown, Dumbbell, Zap, Clock, Flame, ChevronDown, ChevronUp } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { WorkoutPDF, type WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
@@ -11,7 +12,11 @@ import {
 
 export const Route = createFileRoute("/treinos")({
   head: () => ({ meta: [{ title: "Gerador de Treinos Elite — VRUMFIT" }] }),
-  component: TreinosPage,
+  component: () => (
+    <RequireAuth>
+      <TreinosPage />
+    </RequireAuth>
+  ),
 });
 
 function TreinosPage() {
