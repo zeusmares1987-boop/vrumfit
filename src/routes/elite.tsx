@@ -316,6 +316,14 @@ function ElitePage() {
             <button onClick={exportCombined} disabled={busy} className="mt-3 w-full bg-primary text-primary-foreground rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-50">
               <FileDown className="size-4" /> {busy ? "Montando PDF..." : "PDF combinado (treino + dieta)"}
             </button>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <button onClick={savePlan} className="glass rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5">
+                <Save className="size-3.5" /> Salvar plano
+              </button>
+              <button onClick={() => setShowSaved((v) => !v)} className="glass rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5">
+                <FolderOpen className="size-3.5" /> Meus planos ({saved.length})
+              </button>
+            </div>
           </Card>
 
           <Card>
