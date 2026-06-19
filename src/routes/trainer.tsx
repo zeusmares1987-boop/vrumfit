@@ -46,6 +46,7 @@ const smallTiles: Tile[] = [
   { icon: MessageCircle, label: "Chat", hint: "Mensagens dos alunos", to: "/chat", bg: tileChat },
   { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos", bg: tileAvisos },
   { icon: Wallet, label: "Financeiro", hint: "Suas receitas", to: "/financeiro", bg: tileFinanceiro },
+  { icon: Store, label: "Minhas Ofertas", hint: "Vitrine na loja", to: "/loja-pro", bg: tileFinanceiro },
 ];
 const wideTiles: Tile[] = [
   { icon: FolderOpen, label: "Arquivos", hint: "PDFs e documentos", to: "/arquivos", bg: tileArquivos },
