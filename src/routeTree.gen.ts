@@ -32,6 +32,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArquivosRouteImport } from './routes/arquivos'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LojaIdRouteImport } from './routes/loja.$id'
 import { Route as BibliotecaIdRouteImport } from './routes/biblioteca.$id'
 
 const TreinosRoute = TreinosRouteImport.update({
@@ -149,6 +150,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LojaIdRoute = LojaIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LojaRoute,
+} as any)
 const BibliotecaIdRoute = BibliotecaIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -170,7 +176,7 @@ export interface FileRoutesByFullPath {
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
-  '/loja': typeof LojaRoute
+  '/loja': typeof LojaRouteWithChildren
   '/owner': typeof OwnerRoute
   '/personais': typeof PersonaisRoute
   '/planos': typeof PlanosRoute
@@ -180,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/trainer': typeof TrainerRoute
   '/treinos': typeof TreinosRoute
   '/biblioteca/$id': typeof BibliotecaIdRoute
+  '/loja/$id': typeof LojaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -196,7 +203,7 @@ export interface FileRoutesByTo {
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
-  '/loja': typeof LojaRoute
+  '/loja': typeof LojaRouteWithChildren
   '/owner': typeof OwnerRoute
   '/personais': typeof PersonaisRoute
   '/planos': typeof PlanosRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/trainer': typeof TrainerRoute
   '/treinos': typeof TreinosRoute
   '/biblioteca/$id': typeof BibliotecaIdRoute
+  '/loja/$id': typeof LojaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -223,7 +231,7 @@ export interface FileRoutesById {
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
-  '/loja': typeof LojaRoute
+  '/loja': typeof LojaRouteWithChildren
   '/owner': typeof OwnerRoute
   '/personais': typeof PersonaisRoute
   '/planos': typeof PlanosRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/trainer': typeof TrainerRoute
   '/treinos': typeof TreinosRoute
   '/biblioteca/$id': typeof BibliotecaIdRoute
+  '/loja/$id': typeof LojaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -261,6 +270,7 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/treinos'
     | '/biblioteca/$id'
+    | '/loja/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/treinos'
     | '/biblioteca/$id'
+    | '/loja/$id'
   id:
     | '__root__'
     | '/'
@@ -313,6 +324,7 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/treinos'
     | '/biblioteca/$id'
+    | '/loja/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -330,7 +342,7 @@ export interface RootRouteChildren {
   EvolucaoRoute: typeof EvolucaoRoute
   FinanceiroRoute: typeof FinanceiroRoute
   LoginRoute: typeof LoginRoute
-  LojaRoute: typeof LojaRoute
+  LojaRoute: typeof LojaRouteWithChildren
   OwnerRoute: typeof OwnerRoute
   PersonaisRoute: typeof PersonaisRoute
   PlanosRoute: typeof PlanosRoute
@@ -504,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/loja/$id': {
+      id: '/loja/$id'
+      path: '/$id'
+      fullPath: '/loja/$id'
+      preLoaderRoute: typeof LojaIdRouteImport
+      parentRoute: typeof LojaRoute
+    }
     '/biblioteca/$id': {
       id: '/biblioteca/$id'
       path: '/$id'
@@ -526,6 +545,16 @@ const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(
   BibliotecaRouteChildren,
 )
 
+interface LojaRouteChildren {
+  LojaIdRoute: typeof LojaIdRoute
+}
+
+const LojaRouteChildren: LojaRouteChildren = {
+  LojaIdRoute: LojaIdRoute,
+}
+
+const LojaRouteWithChildren = LojaRoute._addFileChildren(LojaRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlunosRoute: AlunosRoute,
@@ -541,7 +570,7 @@ const rootRouteChildren: RootRouteChildren = {
   EvolucaoRoute: EvolucaoRoute,
   FinanceiroRoute: FinanceiroRoute,
   LoginRoute: LoginRoute,
-  LojaRoute: LojaRoute,
+  LojaRoute: LojaRouteWithChildren,
   OwnerRoute: OwnerRoute,
   PersonaisRoute: PersonaisRoute,
   PlanosRoute: PlanosRoute,
