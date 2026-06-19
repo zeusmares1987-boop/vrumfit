@@ -293,22 +293,35 @@ function Metric({
 }
 
 function TileCard({ icon: Icon, label, hint, to, wide }: Tile) {
+  if (wide) {
+    return (
+      <Link
+        to={to}
+        className="group col-span-3 relative rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md px-4 py-3.5 flex items-center gap-3 hover:border-primary/50 hover:bg-black/55 transition"
+      >
+        <div className="size-10 shrink-0 rounded-xl border border-primary/40 grid place-items-center text-primary">
+          <Icon className="size-[18px]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[14px] font-bold leading-tight">{label}</p>
+          <p className="text-[11px] text-white/55 leading-tight mt-0.5">{hint}</p>
+        </div>
+        <ChevronRight className="size-4 text-primary/70 group-hover:text-primary shrink-0" />
+      </Link>
+    );
+  }
   return (
     <Link
       to={to}
-      className={`group relative rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md p-3.5 flex items-center gap-3 hover:border-primary/50 hover:bg-black/55 transition ${
-        wide ? "col-span-3 sm:col-span-3" : ""
-      }`}
-      style={{ minHeight: 86 }}
+      className="group relative rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md p-3 flex flex-col gap-2 hover:border-primary/50 hover:bg-black/55 transition min-h-[104px]"
     >
-      <div className="size-10 shrink-0 rounded-xl border border-primary/40 grid place-items-center text-primary">
-        <Icon className="size-[18px]" />
+      <div className="size-9 shrink-0 rounded-xl border border-primary/40 grid place-items-center text-primary">
+        <Icon className="size-[16px]" />
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[14px] font-bold leading-tight truncate">{label}</p>
-        <p className="text-[11px] text-white/55 leading-tight mt-0.5 truncate">{hint}</p>
+      <div className="mt-auto">
+        <p className="text-[13px] font-bold leading-tight truncate">{label}</p>
+        <p className="text-[10px] text-white/55 leading-tight mt-0.5 truncate">{hint}</p>
       </div>
-      <ChevronRight className="size-4 text-primary/70 group-hover:text-primary shrink-0" />
     </Link>
   );
 }
