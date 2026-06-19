@@ -27,6 +27,9 @@ function TreinosPage() {
 
   return (
     <AppShell title="Gerador de Treinos" subtitle="Periodização inteligente">
+      <Link to="/biblioteca" className="mb-3 flex items-center gap-2 h-11 px-4 rounded-2xl border border-primary/40 bg-primary/10 text-primary text-[13px] font-semibold hover:bg-primary/15 transition">
+        <BookOpen className="size-4" /> Abrir biblioteca VrumFit
+      </Link>
       <Card>
         <form onSubmit={submit} className="space-y-4">
           <Field label="Frequência semanal">
