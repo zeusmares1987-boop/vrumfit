@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { useLocalState } from "@/hooks/use-local-state";
 import { Trash2 } from "lucide-react";
 
@@ -8,7 +9,11 @@ type Point = { date: string; weight: number; bf: number };
 
 export const Route = createFileRoute("/evolucao")({
   head: () => ({ meta: [{ title: "Evolução — VRUMFIT" }] }),
-  component: EvoPage,
+  component: () => (
+    <RequireAuth>
+      <EvoPage />
+    </RequireAuth>
+  ),
 });
 
 function EvoPage() {

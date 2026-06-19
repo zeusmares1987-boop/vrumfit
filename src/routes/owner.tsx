@@ -70,6 +70,9 @@ function OwnerPage() {
   const { user } = useAuth();
   const [period, setPeriod] = useState("geral");
   const [query, setQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [group, setGroup] = useState<"todos" | "gestao" | "vendas" | "operacao">("todos");
+  const [sortAz, setSortAz] = useState(false);
 
   const { data: counts } = useQuery({
     queryKey: ["owner-counts"],
@@ -104,8 +107,21 @@ function OwnerPage() {
   });
 
   const q = query.toLowerCase();
-  const filteredSmall = smallTiles.filter((t) => (t.label + " " + t.hint).toLowerCase().includes(q));
-  const filteredWide = wideTiles.filter((t) => (t.label + " " + t.hint).toLowerCase().includes(q));
+  const tileGroup = (label: string) => {
+    if (["Loja", "Produtos", "Planos", "Financeiro"].includes(label)) return "vendas";
+    if (["Área Professor", "Área Aluno", "Execução", "Arquivos"].includes(label)) return "operacao";
+    return "gestao";
+  };
+  const filterTiles = (tiles: Tile[]) => {
+    const filtered = tiles.filter((t) => {
+      const matchesText = (t.label + " " + t.hint).toLowerCase().includes(q);
+      const matchesGroup = group === "todos" || tileGroup(t.label) === group;
+      return matchesText && matchesGroup;
+    });
+    return sortAz ? filtered.sort((a, b) => a.label.localeCompare(b.label, "pt-BR")) : filtered;
+  };
+  const filteredSmall = filterTiles(smallTiles);
+  const filteredWide = filterTiles(wideTiles);
 
   return (
     <AppShell>
@@ -135,10 +151,25 @@ function OwnerPage() {
             className="w-full h-12 rounded-2xl bg-black/60 border border-white/10 pl-12 pr-4 text-[13px] outline-none placeholder:text-white/45 focus:border-primary/60 transition"
           />
         </div>
-        <button className="h-12 px-4 rounded-2xl border border-primary/40 text-primary font-semibold text-[12px] flex items-center gap-2 hover:bg-primary/10">
+        <button onClick={() => setShowFilters((v) => !v)} className="h-12 px-4 rounded-2xl border border-primary/40 text-primary font-semibold text-[12px] flex items-center gap-2 hover:bg-primary/10">
           <SlidersHorizontal className="size-[16px]" /> Filtros
         </button>
       </div>
+
+      {showFilters && (
+        <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
+          {([
+            ["todos", "Todos"],
+            ["gestao", "Gestão"],
+            ["vendas", "Vendas"],
+            ["operacao", "Operação"],
+          ] as const).map(([id, label]) => (
+            <button key={id} onClick={() => setGroup(id)} className={`shrink-0 h-8 px-3 rounded-full text-[11px] font-semibold border transition ${group === id ? "border-primary bg-primary/15 text-primary" : "border-white/12 text-white/70"}`}>
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Period chips */}
       <div className="mt-4 flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
@@ -172,7 +203,7 @@ function OwnerPage() {
         <h2 className="text-[20px] font-extrabold tracking-tight flex items-center gap-2">
           <span className="inline-block w-[3px] h-5 bg-primary rounded-full" /> Módulos
         </h2>
-        <button className="h-8 px-3 rounded-full border border-primary/40 text-primary text-[11px] font-semibold flex items-center gap-1.5 hover:bg-primary/10">
+        <button onClick={() => setSortAz((v) => !v)} className="h-8 px-3 rounded-full border border-primary/40 text-primary text-[11px] font-semibold flex items-center gap-1.5 hover:bg-primary/10">
           <SlidersHorizontal className="size-3.5" /> Ordenar <ChevronDown className="size-3.5" />
         </button>
       </div>

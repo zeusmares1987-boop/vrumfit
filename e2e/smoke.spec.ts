@@ -15,10 +15,11 @@ const ROUTES = [
   "/avisos", "/arquivos", "/personais", "/config",
   "/avaliacoes", "/biblioteca", "/chat", "/suporte", "/elite",
 ];
+const PROTECTED_ROUTES = ROUTES.filter((path) => path !== "/auth");
 
 async function restoreSession(page: Page) {
-  const key = process.env.SUPABASE_STORAGE_KEY;
-  const json = process.env.SUPABASE_SESSION_JSON;
+  const key = process.env.LOVABLE_BROWSER_SUPABASE_STORAGE_KEY ?? process.env.SUPABASE_STORAGE_KEY;
+  const json = process.env.LOVABLE_BROWSER_SUPABASE_SESSION_JSON ?? process.env.SUPABASE_SESSION_JSON;
   if (!key || !json) return false;
   await page.goto("/");
   await page.evaluate(
@@ -37,9 +38,18 @@ test.describe("Smoke: cada rota carrega sem erro de console", () => {
         if (m.type() === "error") errors.push(`console.error: ${m.text()}`);
       });
 
-      await restoreSession(page);
+      const hasSession = await restoreSession(page);
       await page.goto(path, { waitUntil: "domcontentloaded" });
       await page.waitForTimeout(400);
+
+      if (hasSession && path !== "/auth") {
+        await expect(page).not.toHaveURL(/\/auth$/);
+        await expect(page.locator('button[title="Sair"]')).toBeVisible();
+      }
+
+      if (!hasSession && PROTECTED_ROUTES.includes(path)) {
+        await expect(page).toHaveURL(/\/auth$/);
+      }
 
       // Filtra ruído conhecido (favicon, dev HMR, extensões)
       const real = errors.filter(

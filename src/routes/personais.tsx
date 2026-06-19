@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -8,7 +9,11 @@ type P = { id: string; full_name: string | null; email: string | null; phone: st
 
 export const Route = createFileRoute("/personais")({
   head: () => ({ meta: [{ title: "Personais — VRUMFIT" }] }),
-  component: Personais,
+  component: () => (
+    <RequireAuth allow={["dono"]}>
+      <Personais />
+    </RequireAuth>
+  ),
 });
 
 function Personais() {

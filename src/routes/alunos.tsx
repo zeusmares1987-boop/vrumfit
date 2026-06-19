@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Search, Trash2 } from "lucide-react";
@@ -16,7 +17,11 @@ type Row = {
 
 export const Route = createFileRoute("/alunos")({
   head: () => ({ meta: [{ title: "Alunos — VRUMFIT" }] }),
-  component: AlunosPage,
+  component: () => (
+    <RequireAuth>
+      <AlunosPage />
+    </RequireAuth>
+  ),
 });
 
 function AlunosPage() {
@@ -29,13 +34,26 @@ function AlunosPage() {
     setLoading(true);
     let query = supabase
       .from("students")
-      .select("user_id, objective, status, personal_id, profiles!students_user_id_fkey(full_name,email,phone)")
+      .select("user_id, objective, status, personal_id")
       .order("created_at", { ascending: false });
     if (role === "personal" && user) query = query.eq("personal_id", user.id);
-    const { data, error } = await query;
-    if (error) toast.error(error.message);
-    else setList((data as unknown as Row[]) ?? []);
-    setLoading(false);
+    try {
+      const { data, error } = await query;
+      if (error) throw error;
+      const rows = (data ?? []) as Omit<Row, "profiles">[];
+      const ids = rows.map((r) => r.user_id);
+      const { data: profiles, error: profileError } = ids.length
+        ? await supabase.from("profiles").select("id,full_name,email,phone").in("id", ids)
+        : { data: [], error: null };
+      if (profileError) throw profileError;
+      const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
+      setList(rows.map((r) => ({ ...r, profiles: byId.get(r.user_id) ?? null })) as Row[]);
+    } catch (error: any) {
+      toast.error(error.message ?? "Falha ao carregar alunos.");
+      setList([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, [role, user?.id]);

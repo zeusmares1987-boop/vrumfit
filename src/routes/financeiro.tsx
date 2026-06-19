@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Plus, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
@@ -19,10 +20,15 @@ type Invoice = {
 };
 type Student = { user_id: string; profiles: { full_name: string | null } | null };
 type Plan = { id: string; name: string; price_cents: number };
+type ProfileName = { id: string; full_name: string | null };
 
 export const Route = createFileRoute("/financeiro")({
   head: () => ({ meta: [{ title: "Financeiro — VRUMFIT" }] }),
-  component: Fin,
+  component: () => (
+    <RequireAuth>
+      <Fin />
+    </RequireAuth>
+  ),
 });
 
 function Fin() {
@@ -34,16 +40,41 @@ function Fin() {
   const [show, setShow] = useState(false);
 
   const load = async () => {
-    const [{ data: inv }, { data: st }, { data: pl }] = await Promise.all([
-      supabase.from("invoices")
-        .select("*, profiles!invoices_student_id_fkey(full_name), plans(name)")
-        .order("due_date", { ascending: false }),
-      supabase.from("students").select("user_id, profiles!students_user_id_fkey(full_name)"),
-      supabase.from("plans").select("id,name,price_cents").eq("status", "ativo"),
-    ]);
-    setList((inv ?? []) as unknown as Invoice[]);
-    setStudents((st ?? []) as unknown as Student[]);
-    setPlans((pl ?? []) as Plan[]);
+    try {
+      const [invRes, stRes, plRes] = await Promise.all([
+        supabase.from("invoices").select("*").order("due_date", { ascending: false }),
+        supabase.from("students").select("user_id"),
+        supabase.from("plans").select("id,name,price_cents").eq("status", "ativo"),
+      ]);
+      if (invRes.error) throw invRes.error;
+      if (stRes.error) throw stRes.error;
+      if (plRes.error) throw plRes.error;
+
+      const invoices = (invRes.data ?? []) as Omit<Invoice, "profiles" | "plans">[];
+      const studentRows = (stRes.data ?? []) as { user_id: string }[];
+      const plansRows = (plRes.data ?? []) as Plan[];
+      const profileIds = Array.from(new Set([...studentRows.map((s) => s.user_id), ...invoices.map((i) => i.student_id)]));
+      const { data: profs, error: profError } = profileIds.length
+        ? await supabase.from("profiles").select("id,full_name").in("id", profileIds)
+        : { data: [], error: null };
+      if (profError) throw profError;
+
+      const profileRows = (profs ?? []) as ProfileName[];
+      const profilesById = new Map(profileRows.map((p) => [p.id, p]));
+      const plansById = new Map(plansRows.map((p) => [p.id, p]));
+      setList(invoices.map((i) => ({
+        ...i,
+        profiles: profilesById.get(i.student_id) ?? null,
+        plans: i.plan_id ? { name: plansById.get(i.plan_id)?.name ?? "" } : null,
+      })) as Invoice[]);
+      setStudents(studentRows.map((s) => ({ user_id: s.user_id, profiles: profilesById.get(s.user_id) ?? null })));
+      setPlans(plansRows);
+    } catch (error: any) {
+      toast.error(error.message ?? "Falha ao carregar financeiro.");
+      setList([]);
+      setStudents([]);
+      setPlans([]);
+    }
   };
   useEffect(() => { load(); }, []);
 

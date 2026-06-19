@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Check, Plus, Trash2 } from "lucide-react";
@@ -10,7 +11,11 @@ type Plan = { id: string; name: string; price_cents: number; period: string; ben
 
 export const Route = createFileRoute("/planos")({
   head: () => ({ meta: [{ title: "Planos — VRUMFIT" }] }),
-  component: Planos,
+  component: () => (
+    <RequireAuth>
+      <Planos />
+    </RequireAuth>
+  ),
 });
 
 function Planos() {

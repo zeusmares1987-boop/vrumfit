@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { PDFDocument } from "pdf-lib";
@@ -11,7 +12,11 @@ import type { GoalDiet, DietRestriction, Budget } from "@/lib/diet-engine";
 
 export const Route = createFileRoute("/elite")({
   head: () => ({ meta: [{ title: "Plano Elite Integrado — VRUMFIT" }] }),
-  component: ElitePage,
+  component: () => (
+    <RequireAuth>
+      <ElitePage />
+    </RequireAuth>
+  ),
 });
 
 function ElitePage() {

@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 
 export const Route = createFileRoute("/avaliacoes")({
   head: () => ({ meta: [{ title: "Avaliação Física — VRUMFIT" }] }),
-  component: AvaliacaoPage,
+  component: () => (
+    <RequireAuth>
+      <AvaliacaoPage />
+    </RequireAuth>
+  ),
 });
 
 function AvaliacaoPage() {

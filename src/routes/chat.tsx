@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell, inputCls } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Send } from "lucide-react";
@@ -11,7 +12,11 @@ type Contact = { id: string; full_name: string | null; email: string | null };
 
 export const Route = createFileRoute("/chat")({
   head: () => ({ meta: [{ title: "Chat — VRUMFIT" }] }),
-  component: ChatPage,
+  component: () => (
+    <RequireAuth>
+      <ChatPage />
+    </RequireAuth>
+  ),
 });
 
 function ChatPage() {

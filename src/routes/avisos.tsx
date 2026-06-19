@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Megaphone, Plus, Trash2 } from "lucide-react";
@@ -10,7 +11,11 @@ type N = { id: string; title: string; message: string; audience: string; created
 
 export const Route = createFileRoute("/avisos")({
   head: () => ({ meta: [{ title: "Avisos — VRUMFIT" }] }),
-  component: Avisos,
+  component: () => (
+    <RequireAuth>
+      <Avisos />
+    </RequireAuth>
+  ),
 });
 
 function Avisos() {

@@ -1,13 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/config")({
   head: () => ({ meta: [{ title: "Configurações — VRUMFIT" }] }),
-  component: Cfg,
+  component: () => (
+    <RequireAuth>
+      <Cfg />
+    </RequireAuth>
+  ),
 });
 
 function Cfg() {
