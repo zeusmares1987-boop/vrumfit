@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Users, Dumbbell, Apple, ClipboardCheck, TrendingUp, FolderOpen, Bell, Wallet,
-  BookOpen, ChevronRight, MessageCircle, LayoutGrid,
+  BookOpen, ChevronRight, MessageCircle, LayoutGrid, Store,
 } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
