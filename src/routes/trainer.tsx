@@ -57,7 +57,7 @@ function TrainerPage() {
     { icon: Apple, label: "Dietas", hint: "Prescrever / Modelos", to: "/dieta" },
     { icon: ClipboardCheck, label: "Avaliações", hint: "Medidas e fotos", to: "/avaliacoes" },
     { icon: TrendingUp, label: "Progresso", hint: "Evolução dos alunos", to: "/evolucao" },
-    { icon: BookOpen, label: "Biblioteca", hint: "Exercícios VrumFit", to: "/treinos" },
+    { icon: BookOpen, label: "Biblioteca", hint: "Exercícios VrumFit", to: "/biblioteca" },
     { icon: FolderOpen, label: "Arquivos", hint: "PDFs e documentos", to: "/arquivos" },
     { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos" },
     { icon: Wallet, label: "Financeiro", hint: "Suas receitas", to: "/financeiro" },
