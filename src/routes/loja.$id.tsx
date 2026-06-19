@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { AppShell, Card, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { MessageCircle, ArrowLeft } from "lucide-react";
+import { MessageCircle, ArrowLeft, BookOpen, Dumbbell } from "lucide-react";
 import { toast } from "sonner";
 
+type Module = { t: string; d?: string };
 type Offer = {
   id: string;
   title: string;
@@ -20,6 +21,9 @@ type Offer = {
   whatsapp: string | null;
   offer_type: string;
   seller_id: string | null;
+  preview: string | null;
+  content: string | null;
+  modules: Module[] | null;
 };
 
 type Seller = { display_name: string | null; logo_url: string | null; specialty: string | null };
@@ -43,9 +47,10 @@ function Detail() {
     (async () => {
       const { data } = await supabase
         .from("products")
-        .select("id,title,price_cents,cover_url,short_desc,long_desc,benefits,for_whom,included,delivery_days,whatsapp,offer_type,seller_id")
+        .select("id,title,price_cents,cover_url,short_desc,long_desc,benefits,for_whom,included,delivery_days,whatsapp,offer_type,seller_id,preview,content,modules")
         .eq("id", id)
         .maybeSingle();
+      setO((data ?? null) as Offer | null);
       setO((data ?? null) as Offer | null);
       if (data?.seller_id) {
         const { data: s } = await supabase
@@ -84,8 +89,11 @@ function Detail() {
         {o.cover_url ? (
           <img src={o.cover_url} alt={o.title} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-black" />
+          <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(ellipse_at_top,theme(colors.primary/30),black)]">
+            <Dumbbell className="size-12 text-primary/70" />
+          </div>
         )}
+        <div className="absolute top-2 left-2 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-[9px] font-bold uppercase tracking-wider">{o.offer_type}</div>
       </div>
 
       <Card className="p-4 space-y-1">
@@ -150,9 +158,42 @@ function Detail() {
         </Card>
       )}
 
-      <p className="text-[10px] text-center text-white/40 px-4">
-        VRUMFIT é apenas vitrine. Pagamento e entrega são tratados diretamente com o vendedor.
+      {o.modules && o.modules.length > 0 && (
+        <Card className="p-4">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-2 flex items-center gap-1"><BookOpen className="size-3" /> Módulos</p>
+          <ol className="space-y-1.5">
+            {o.modules.map((m, i) => (
+              <li key={i} className="flex gap-3 text-sm">
+                <span className="size-6 shrink-0 rounded-full bg-primary/15 border border-primary/30 grid place-items-center text-[10px] font-bold text-primary">{i + 1}</span>
+                <div className="min-w-0">
+                  <p className="font-semibold leading-tight">{m.t}</p>
+                  {m.d && <p className="text-[11px] text-muted-foreground">{m.d}</p>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </Card>
+      )}
+
+      {o.preview && (
+        <Card className="p-4 border-primary/30">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-primary mb-1">Prévia gratuita</p>
+          <p className="text-sm whitespace-pre-wrap">{o.preview}</p>
+        </Card>
+      )}
+
+      {o.content && (
+        <Card className="p-4">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-2">Conteúdo completo</p>
+          <article className="text-sm whitespace-pre-wrap leading-relaxed prose-invert">{o.content}</article>
+        </Card>
+      )}
+
+      <p className="text-[10px] text-center text-white/40 px-4 pb-2">
+        VRUMFIT é vitrine. Pagamento e entrega são tratados diretamente com o vendedor.
       </p>
+
+      <div className="h-16" />
 
       <div className="fixed bottom-20 left-0 right-0 px-4 z-30">
         <div className="max-w-md mx-auto">

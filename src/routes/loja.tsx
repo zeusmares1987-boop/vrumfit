@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Store, Tag } from "lucide-react";
+import { Store, Tag, Dumbbell } from "lucide-react";
 
 type Offer = {
   id: string;
@@ -74,7 +74,9 @@ function Loja() {
             {p.cover_url ? (
               <img src={p.cover_url} alt={p.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-black" />
+              <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(ellipse_at_top,theme(colors.primary/30),black)]">
+                <Dumbbell className="size-10 text-primary/70" />
+              </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10" />
             <div className="relative h-full p-3 flex flex-col justify-end">
