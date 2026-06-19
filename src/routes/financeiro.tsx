@@ -59,7 +59,8 @@ function Fin() {
         : { data: [], error: null };
       if (profError) throw profError;
 
-      const profilesById = new Map((profs as ProfileName[] | null ?? []).map((p) => [p.id, p]));
+      const profileRows = (profs ?? []) as ProfileName[];
+      const profilesById = new Map(profileRows.map((p) => [p.id, p]));
       const plansById = new Map(plansRows.map((p) => [p.id, p]));
       setList(invoices.map((i) => ({
         ...i,
