@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { FileText, Upload, Trash2, Download, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -10,7 +11,11 @@ type F = { name: string; size: number; updated_at: string; id: string };
 
 export const Route = createFileRoute("/arquivos")({
   head: () => ({ meta: [{ title: "Arquivos — VRUMFIT" }] }),
-  component: Files,
+  component: () => (
+    <RequireAuth>
+      <Files />
+    </RequireAuth>
+  ),
 });
 
 const BUCKET = "vrumfit-files";

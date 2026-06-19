@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Search, Trash2 } from "lucide-react";
@@ -16,7 +17,11 @@ type Row = {
 
 export const Route = createFileRoute("/alunos")({
   head: () => ({ meta: [{ title: "Alunos — VRUMFIT" }] }),
-  component: AlunosPage,
+  component: () => (
+    <RequireAuth>
+      <AlunosPage />
+    </RequireAuth>
+  ),
 });
 
 function AlunosPage() {

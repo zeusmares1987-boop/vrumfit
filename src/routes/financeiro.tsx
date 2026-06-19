@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Plus, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
@@ -22,7 +23,11 @@ type Plan = { id: string; name: string; price_cents: number };
 
 export const Route = createFileRoute("/financeiro")({
   head: () => ({ meta: [{ title: "Financeiro — VRUMFIT" }] }),
-  component: Fin,
+  component: () => (
+    <RequireAuth>
+      <Fin />
+    </RequireAuth>
+  ),
 });
 
 function Fin() {
