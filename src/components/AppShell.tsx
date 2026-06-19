@@ -1,65 +1,145 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import type { ReactNode } from "react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut } from "lucide-react";
+import { useAuth, roleHomePath } from "@/lib/auth";
+import type { ReactNode, InputHTMLAttributes } from "react";
+import logoV from "@/assets/logo-v.png";
 
 export function AppShell({
   title,
   subtitle,
   children,
-  back = "/owner",
+  hideBottomNav,
+  rightAction,
   action,
 }: {
-  title: string;
+  title?: string;
   subtitle?: string;
   children: ReactNode;
-  back?: string;
+  hideBottomNav?: boolean;
+  rightAction?: ReactNode;
+  /** alias compatível com versões antigas das rotas */
   action?: ReactNode;
 }) {
+  const { role, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const onSignOut = async () => {
+    await signOut();
+    navigate({ to: "/auth" });
+  };
+
+  const home = roleHomePath(role);
+
   return (
-    <div className="min-h-[100dvh] pb-[max(env(safe-area-inset-bottom),2rem)] font-display">
-      <header className="px-5 pt-[max(env(safe-area-inset-top),2.5rem)] pb-4 flex items-center justify-between gap-3">
-        <Link
-          to={back}
-          className="size-10 rounded-full glass grid place-items-center shrink-0"
-          aria-label="Voltar"
-        >
-          <ArrowLeft className="size-4" />
-        </Link>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-base font-bold truncate">{title}</h1>
-          {subtitle && (
-            <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground truncate">
-              {subtitle}
-            </p>
-          )}
+    <div className="min-h-[100dvh] bg-background font-display text-foreground pb-24">
+      <header className="sticky top-0 z-40 bg-gradient-to-b from-black/90 to-black/60 backdrop-blur-md border-b border-white/5">
+        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+          <Link to={home} className="flex items-center gap-2 shrink-0">
+            <img src={logoV} alt="" className="size-8" />
+            <div className="leading-tight">
+              <div className="text-[15px] font-extrabold tracking-tight">
+                <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
+              </div>
+              <div className="text-[9px] font-semibold tracking-[0.3em] text-primary/80">PERSONAL</div>
+            </div>
+          </Link>
+          <div className="flex-1 min-w-0">
+            {title && <h1 className="text-sm font-semibold truncate">{title}</h1>}
+            {subtitle && <p className="text-[11px] text-white/55 truncate">{subtitle}</p>}
+          </div>
+          {rightAction ?? action}
+          <button onClick={onSignOut} title="Sair" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition">
+            <LogOut className="size-4" />
+          </button>
         </div>
-        {action}
       </header>
-      <main className="px-5 space-y-5">{children}</main>
+
+      <main className="max-w-md mx-auto px-4 pt-4">{children}</main>
+
+      {!hideBottomNav && <BottomNav role={role} />}
     </div>
   );
 }
 
+function BottomNav({ role }: { role: "dono" | "personal" | "aluno" | null }) {
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const items = role === "aluno"
+    ? [
+        { to: "/student", label: "Início", icon: Home },
+        { to: "/treinos", label: "Treino", icon: Dumbbell },
+        { to: "/dieta", label: "Dieta", icon: Apple },
+        { to: "/evolucao", label: "Progresso", icon: TrendingUp },
+        { to: "/config", label: "Mais", icon: MoreHorizontal },
+      ]
+    : role === "personal"
+    ? [
+        { to: "/trainer", label: "Início", icon: Home },
+        { to: "/alunos", label: "Alunos", icon: Dumbbell },
+        { to: "/treinos", label: "Treinos", icon: Apple },
+        { to: "/avaliacoes", label: "Avaliações", icon: TrendingUp },
+        { to: "/config", label: "Mais", icon: MoreHorizontal },
+      ]
+    : [
+        { to: "/owner", label: "Início", icon: Home },
+        { to: "/alunos", label: "Alunos", icon: Dumbbell },
+        { to: "/loja", label: "Loja", icon: Apple },
+        { to: "/financeiro", label: "Financeiro", icon: TrendingUp },
+        { to: "/config", label: "Mais", icon: MoreHorizontal },
+      ];
+
+  return (
+    <nav className="fixed bottom-0 inset-x-0 z-40 pointer-events-none">
+      <div className="pointer-events-auto max-w-md mx-auto px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
+        <div className="rounded-2xl bg-black/85 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex items-center justify-around px-1 py-1.5">
+          {items.map((it) => {
+            const active = path === it.to;
+            return (
+              <Link key={it.to} to={it.to} className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl transition ${active ? "text-primary" : "text-white/55 hover:text-white"}`}>
+                <it.icon className={`size-[18px] ${active ? "drop-shadow-[0_0_6px_rgba(255,140,40,0.7)]" : ""}`} />
+                <span className="text-[10px] font-semibold tracking-wide">{it.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+/* ============ Helpers de UI compartilhados pelas rotas ============ */
+
+export const inputCls =
+  "w-full h-11 rounded-xl bg-black/40 border border-white/10 px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-primary/60 focus:bg-black/55 transition";
+
+export const btnPrimary =
+  "h-11 px-4 rounded-xl text-sm font-semibold text-white transition active:scale-[0.99] bg-gradient-to-b from-[#ffb060] via-[#ff7a18] to-[#c0470a] shadow-[0_10px_28px_-10px_rgba(255,120,30,0.6),inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-2px_0_rgba(0,0,0,0.25)] disabled:opacity-60";
+
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`glass rounded-2xl p-4 ${className}`}>{children}</section>;
+  return (
+    <div className={`rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 export function Field({
-  label, children,
-}: { label: string; children: ReactNode }) {
+  label,
+  children,
+  hint,
+}: {
+  label: string;
+  children: ReactNode;
+  hint?: string;
+}) {
   return (
     <label className="block">
-      <span className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">{label}</span>
-      <div className="mt-1.5">{children}</div>
+      <div className="text-[11px] font-semibold tracking-wide text-white/70 uppercase mb-1.5">{label}</div>
+      {children}
+      {hint && <div className="text-[11px] text-white/45 mt-1">{hint}</div>}
     </label>
   );
 }
 
-export const inputCls =
-  "w-full glass rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground/60";
-
-export const btnPrimary =
-  "w-full rounded-xl bg-primary text-primary-foreground font-bold py-3 text-sm glow-brand hover:brightness-110 transition active:scale-[0.99]";
-
-export const btnGhost =
-  "w-full rounded-xl glass font-semibold py-3 text-sm hover:border-primary/40 transition";
+export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
+  return <input {...props} className={`${inputCls} ${props.className ?? ""}`} />;
+}
