@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
