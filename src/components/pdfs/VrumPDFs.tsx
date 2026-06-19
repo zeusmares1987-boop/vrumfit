@@ -1,12 +1,12 @@
 import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
 
-// Cores VrumFit
+// Cores VrumFit — tema claro para impressão (PDF legível em papel)
 const COLORS = {
-  bg: "#0A0A0B",
-  card: "#141416",
-  border: "#2A2A2D",
-  text: "#FFFFFF",
-  muted: "#A8A8AD",
+  bg: "#FFFFFF",
+  card: "#FAFAFB",
+  border: "#E5E5E7",
+  text: "#1A1A1D",
+  muted: "#4A4A4D",
   primary: "#FF7A18",
   primaryDim: "#C0470A",
 };
