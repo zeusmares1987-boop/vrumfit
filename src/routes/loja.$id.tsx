@@ -89,8 +89,11 @@ function Detail() {
         {o.cover_url ? (
           <img src={o.cover_url} alt={o.title} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-black" />
+          <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(ellipse_at_top,theme(colors.primary/30),black)]">
+            <Dumbbell className="size-12 text-primary/70" />
+          </div>
         )}
+        <div className="absolute top-2 left-2 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-[9px] font-bold uppercase tracking-wider">{o.offer_type}</div>
       </div>
 
       <Card className="p-4 space-y-1">
