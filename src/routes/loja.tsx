@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Store, Tag } from "lucide-react";
+import { Store, Tag, Dumbbell } from "lucide-react";
 
 type Offer = {
   id: string;
