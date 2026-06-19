@@ -24,11 +24,14 @@ import { Route as EvolucaoRouteImport } from './routes/evolucao'
 import { Route as DietaRouteImport } from './routes/dieta'
 import { Route as ConfigRouteImport } from './routes/config'
 import { Route as ChatRouteImport } from './routes/chat'
+import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as AvisosRouteImport } from './routes/avisos'
 import { Route as AvaliacoesRouteImport } from './routes/avaliacoes'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArquivosRouteImport } from './routes/arquivos'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BibliotecaIdRouteImport } from './routes/biblioteca.$id'
 
 const TreinosRoute = TreinosRouteImport.update({
   id: '/treinos',
@@ -105,6 +108,11 @@ const ChatRoute = ChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BibliotecaRoute = BibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AvisosRoute = AvisosRouteImport.update({
   id: '/avisos',
   path: '/avisos',
@@ -113,6 +121,11 @@ const AvisosRoute = AvisosRouteImport.update({
 const AvaliacoesRoute = AvaliacoesRouteImport.update({
   id: '/avaliacoes',
   path: '/avaliacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArquivosRoute = ArquivosRouteImport.update({
@@ -130,13 +143,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BibliotecaIdRoute = BibliotecaIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => BibliotecaRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/arquivos': typeof ArquivosRoute
+  '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
   '/avisos': typeof AvisosRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
   '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
@@ -152,13 +172,16 @@ export interface FileRoutesByFullPath {
   '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
   '/treinos': typeof TreinosRoute
+  '/biblioteca/$id': typeof BibliotecaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/arquivos': typeof ArquivosRoute
+  '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
   '/avisos': typeof AvisosRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
   '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
@@ -174,14 +197,17 @@ export interface FileRoutesByTo {
   '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
   '/treinos': typeof TreinosRoute
+  '/biblioteca/$id': typeof BibliotecaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/arquivos': typeof ArquivosRoute
+  '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
   '/avisos': typeof AvisosRoute
+  '/biblioteca': typeof BibliotecaRouteWithChildren
   '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
@@ -197,6 +223,7 @@ export interface FileRoutesById {
   '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
   '/treinos': typeof TreinosRoute
+  '/biblioteca/$id': typeof BibliotecaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -204,8 +231,10 @@ export interface FileRouteTypes {
     | '/'
     | '/alunos'
     | '/arquivos'
+    | '/auth'
     | '/avaliacoes'
     | '/avisos'
+    | '/biblioteca'
     | '/chat'
     | '/config'
     | '/dieta'
@@ -221,13 +250,16 @@ export interface FileRouteTypes {
     | '/suporte'
     | '/trainer'
     | '/treinos'
+    | '/biblioteca/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/alunos'
     | '/arquivos'
+    | '/auth'
     | '/avaliacoes'
     | '/avisos'
+    | '/biblioteca'
     | '/chat'
     | '/config'
     | '/dieta'
@@ -243,13 +275,16 @@ export interface FileRouteTypes {
     | '/suporte'
     | '/trainer'
     | '/treinos'
+    | '/biblioteca/$id'
   id:
     | '__root__'
     | '/'
     | '/alunos'
     | '/arquivos'
+    | '/auth'
     | '/avaliacoes'
     | '/avisos'
+    | '/biblioteca'
     | '/chat'
     | '/config'
     | '/dieta'
@@ -265,14 +300,17 @@ export interface FileRouteTypes {
     | '/suporte'
     | '/trainer'
     | '/treinos'
+    | '/biblioteca/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlunosRoute: typeof AlunosRoute
   ArquivosRoute: typeof ArquivosRoute
+  AuthRoute: typeof AuthRoute
   AvaliacoesRoute: typeof AvaliacoesRoute
   AvisosRoute: typeof AvisosRoute
+  BibliotecaRoute: typeof BibliotecaRouteWithChildren
   ChatRoute: typeof ChatRoute
   ConfigRoute: typeof ConfigRoute
   DietaRoute: typeof DietaRoute
@@ -397,6 +435,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/biblioteca': {
+      id: '/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/biblioteca'
+      preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/avisos': {
       id: '/avisos'
       path: '/avisos'
@@ -409,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/avaliacoes'
       fullPath: '/avaliacoes'
       preLoaderRoute: typeof AvaliacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/arquivos': {
@@ -432,15 +484,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/biblioteca/$id': {
+      id: '/biblioteca/$id'
+      path: '/$id'
+      fullPath: '/biblioteca/$id'
+      preLoaderRoute: typeof BibliotecaIdRouteImport
+      parentRoute: typeof BibliotecaRoute
+    }
   }
 }
+
+interface BibliotecaRouteChildren {
+  BibliotecaIdRoute: typeof BibliotecaIdRoute
+}
+
+const BibliotecaRouteChildren: BibliotecaRouteChildren = {
+  BibliotecaIdRoute: BibliotecaIdRoute,
+}
+
+const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(
+  BibliotecaRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlunosRoute: AlunosRoute,
   ArquivosRoute: ArquivosRoute,
+  AuthRoute: AuthRoute,
   AvaliacoesRoute: AvaliacoesRoute,
   AvisosRoute: AvisosRoute,
+  BibliotecaRoute: BibliotecaRouteWithChildren,
   ChatRoute: ChatRoute,
   ConfigRoute: ConfigRoute,
   DietaRoute: DietaRoute,

@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
-import { Flame, Beef, Wheat, Droplet, Download } from "lucide-react";
+import { Flame, Beef, Wheat, Droplet, Download, FileDown } from "lucide-react";
+import { pdf } from "@react-pdf/renderer";
+import { DietPDF, type DietPDFData } from "@/components/pdfs/VrumPDFs";
 
 export const Route = createFileRoute("/dieta")({
   head: () => ({ meta: [{ title: "Gerador de Dieta — VRUMFIT" }] }),
@@ -88,11 +90,16 @@ function DietaPage() {
           </Card>
 
           <Card>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
               <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Cardápio sugerido (6 refeições)</h3>
-              <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2 py-1 text-[10px] flex items-center gap-1">
-                <Download className="size-3" /> TXT
-              </button>
+              <div className="flex gap-2">
+                <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
+                  <Download className="size-3" /> TXT
+                </button>
+                <button onClick={() => exportPdf(plan, goal)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
+                  <FileDown className="size-3" /> PDF VrumFit
+                </button>
+              </div>
             </div>
             <ol className="space-y-3">
               {plan.meals.map((m, i) => (
@@ -156,5 +163,30 @@ function exportTxt(plan: ReturnType<typeof generate>) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url; a.download = "dieta-vrumfit.txt"; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function exportPdf(plan: ReturnType<typeof generate>, goal: string) {
+  const data: DietPDFData = {
+    studentName: "Aluno VrumFit",
+    dayLabel: "Dia 1",
+    water: "2 a 3 litros",
+    goldenTip: `Objetivo: ${goal}. Mastigue bem, prefira alimentos naturais e siga o cronograma de horários.`,
+    meals: plan.meals.map((m, i) => ({
+      number: i + 1,
+      title: m.name,
+      timeRange: m.time,
+      foods: m.items.join(" + "),
+      amount: `Aproximadamente ${m.kcal} kcal`,
+      substitutions: "Pode trocar proteínas e carboidratos por equivalentes do mesmo grupo.",
+      observation: "Hidrate-se ao longo da refeição.",
+    })),
+  };
+  const blob = await pdf(<DietPDF data={data} />).toBlob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "dieta-vrumfit.pdf";
+  a.click();
   URL.revokeObjectURL(url);
 }

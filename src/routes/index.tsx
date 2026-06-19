@@ -1,20 +1,19 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { useAuth, roleHomePath } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   component: IndexRedirect,
 });
 
 function IndexRedirect() {
-  if (typeof window !== "undefined") {
-    try {
-      const raw = window.localStorage.getItem("vrumfit:session");
-      if (raw) {
-        const { role } = JSON.parse(raw) as { role?: string };
-        if (role === "personal") return <Navigate to="/trainer" />;
-        if (role === "aluno") return <Navigate to="/student" />;
-        return <Navigate to="/owner" />;
-      }
-    } catch {}
+  const { session, role, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-[100dvh] grid place-items-center bg-background">
+        <div className="size-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
   }
-  return <Navigate to="/login" />;
+  if (!session) return <Navigate to="/auth" />;
+  return <Navigate to={roleHomePath(role)} />;
 }

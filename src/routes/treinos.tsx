@@ -1,7 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
-import { Download } from "lucide-react";
+import { Download, BookOpen, FileDown } from "lucide-react";
+import { pdf } from "@react-pdf/renderer";
+import { WorkoutPDF, type WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
 
 type Split = "fullbody" | "ab" | "abc" | "abcd" | "abcde";
 type Goal = "hipertrofia" | "forca" | "resistencia";
@@ -25,6 +27,9 @@ function TreinosPage() {
 
   return (
     <AppShell title="Gerador de Treinos" subtitle="Periodização inteligente">
+      <Link to="/biblioteca" className="mb-3 flex items-center gap-2 h-11 px-4 rounded-2xl border border-primary/40 bg-primary/10 text-primary text-[13px] font-semibold hover:bg-primary/15 transition">
+        <BookOpen className="size-4" /> Abrir biblioteca VrumFit
+      </Link>
       <Card>
         <form onSubmit={submit} className="space-y-4">
           <Field label="Frequência semanal">
@@ -72,13 +77,18 @@ function TreinosPage() {
 
       {plan && (
         <Card>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
             <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
               Plano {plan.length} dias · {goal}
             </h3>
-            <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2 py-1 text-[10px] flex items-center gap-1">
-              <Download className="size-3" /> TXT
-            </button>
+            <div className="flex gap-2">
+              <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
+                <Download className="size-3" /> TXT
+              </button>
+              <button onClick={() => exportPdf(plan, goal)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
+                <FileDown className="size-3" /> PDF VrumFit
+              </button>
+            </div>
           </div>
           <div className="space-y-4">
             {plan.map((d, i) => (
@@ -166,4 +176,36 @@ function exportTxt(plan: { name: string; exercises: { name: string; sets: number
   const a = document.createElement("a");
   a.href = url; a.download = "treino-vrumfit.txt"; a.click();
   URL.revokeObjectURL(url);
+}
+
+async function exportPdf(
+  plan: { name: string; exercises: { name: string; sets: number; reps: string; rest: string }[] }[],
+  goal: string,
+) {
+  for (let i = 0; i < plan.length; i++) {
+    const d = plan[i];
+    const data: WorkoutPDFData = {
+      studentName: "Aluno VrumFit",
+      dayLabel: `DIA ${i + 1}`,
+      tip: `Objetivo: ${goal}. Mantenha alimentação balanceada, hidratação adequada e sono regulado.`,
+      exercises: d.exercises.map((ex) => ({
+        name: ex.name,
+        sets: String(ex.sets),
+        reps: ex.reps,
+        rest: ex.rest,
+        tips: [
+          "Mantenha controle total na fase excêntrica (descida).",
+          "Contraia o músculo alvo no topo do movimento.",
+          "Respire de forma controlada: solte na fase de esforço.",
+        ],
+      })),
+    };
+    const blob = await pdf(<WorkoutPDF data={data} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `treino-${d.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 }
