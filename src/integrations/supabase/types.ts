@@ -581,30 +581,54 @@ export type Database = {
       plans: {
         Row: {
           benefits: string[] | null
+          can_generate_diet: boolean
+          can_generate_workout: boolean
           created_at: string
+          description: string | null
           id: string
+          max_offers: number | null
+          max_students: number | null
           name: string
           period: string
           price_cents: number
+          role_target: string
+          slug: string | null
           status: Database["public"]["Enums"]["publish_status"]
+          trial_days: number
         }
         Insert: {
           benefits?: string[] | null
+          can_generate_diet?: boolean
+          can_generate_workout?: boolean
           created_at?: string
+          description?: string | null
           id?: string
+          max_offers?: number | null
+          max_students?: number | null
           name: string
           period?: string
           price_cents?: number
+          role_target?: string
+          slug?: string | null
           status?: Database["public"]["Enums"]["publish_status"]
+          trial_days?: number
         }
         Update: {
           benefits?: string[] | null
+          can_generate_diet?: boolean
+          can_generate_workout?: boolean
           created_at?: string
+          description?: string | null
           id?: string
+          max_offers?: number | null
+          max_students?: number | null
           name?: string
           period?: string
           price_cents?: number
+          role_target?: string
+          slug?: string | null
           status?: Database["public"]["Enums"]["publish_status"]
+          trial_days?: number
         }
         Relationships: []
       }
@@ -754,6 +778,50 @@ export type Database = {
           weight_kg?: number | null
         }
         Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          mp_payment_id: string | null
+          plan_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          mp_payment_id?: string | null
+          plan_id: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          mp_payment_id?: string | null
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       support_tickets: {
         Row: {
@@ -948,7 +1016,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_add_student: { Args: { _personal_id: string }; Returns: boolean }
       claim_ownership: { Args: never; Returns: boolean }
+      current_plan: {
+        Args: { _uid: string }
+        Returns: {
+          benefits: string[] | null
+          can_generate_diet: boolean
+          can_generate_workout: boolean
+          created_at: string
+          description: string | null
+          id: string
+          max_offers: number | null
+          max_students: number | null
+          name: string
+          period: string
+          price_cents: number
+          role_target: string
+          slug: string | null
+          status: Database["public"]["Enums"]["publish_status"]
+          trial_days: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "plans"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_role_label: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
@@ -985,6 +1080,7 @@ export type Database = {
         | "jantar"
         | "ceia"
       publish_status: "ativo" | "inativo" | "rascunho"
+      subscription_status: "trial" | "ativo" | "vencido" | "cancelado"
       user_status: "ativo" | "bloqueado" | "inativo"
       workout_level: "iniciante" | "intermediario" | "avancado"
       workout_objective:
@@ -1148,6 +1244,7 @@ export const Constants = {
         "ceia",
       ],
       publish_status: ["ativo", "inativo", "rascunho"],
+      subscription_status: ["trial", "ativo", "vencido", "cancelado"],
       user_status: ["ativo", "bloqueado", "inativo"],
       workout_level: ["iniciante", "intermediario", "avancado"],
       workout_objective: [
