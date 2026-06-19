@@ -9,12 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TreinosRouteImport } from './routes/treinos'
 import { Route as TrainerRouteImport } from './routes/trainer'
 import { Route as StudentRouteImport } from './routes/student'
 import { Route as OwnerRouteImport } from './routes/owner'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as EvolucaoRouteImport } from './routes/evolucao'
+import { Route as DietaRouteImport } from './routes/dieta'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as AvaliacoesRouteImport } from './routes/avaliacoes'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TreinosRoute = TreinosRouteImport.update({
+  id: '/treinos',
+  path: '/treinos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TrainerRoute = TrainerRouteImport.update({
   id: '/trainer',
   path: '/trainer',
@@ -35,6 +45,26 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EvolucaoRoute = EvolucaoRouteImport.update({
+  id: '/evolucao',
+  path: '/evolucao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DietaRoute = DietaRouteImport.update({
+  id: '/dieta',
+  path: '/dieta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvaliacoesRoute = AvaliacoesRouteImport.update({
+  id: '/avaliacoes',
+  path: '/avaliacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,44 +73,102 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/avaliacoes': typeof AvaliacoesRoute
+  '/chat': typeof ChatRoute
+  '/dieta': typeof DietaRoute
+  '/evolucao': typeof EvolucaoRoute
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRoute
   '/student': typeof StudentRoute
   '/trainer': typeof TrainerRoute
+  '/treinos': typeof TreinosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/avaliacoes': typeof AvaliacoesRoute
+  '/chat': typeof ChatRoute
+  '/dieta': typeof DietaRoute
+  '/evolucao': typeof EvolucaoRoute
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRoute
   '/student': typeof StudentRoute
   '/trainer': typeof TrainerRoute
+  '/treinos': typeof TreinosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/avaliacoes': typeof AvaliacoesRoute
+  '/chat': typeof ChatRoute
+  '/dieta': typeof DietaRoute
+  '/evolucao': typeof EvolucaoRoute
   '/login': typeof LoginRoute
   '/owner': typeof OwnerRoute
   '/student': typeof StudentRoute
   '/trainer': typeof TrainerRoute
+  '/treinos': typeof TreinosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/owner' | '/student' | '/trainer'
+  fullPaths:
+    | '/'
+    | '/avaliacoes'
+    | '/chat'
+    | '/dieta'
+    | '/evolucao'
+    | '/login'
+    | '/owner'
+    | '/student'
+    | '/trainer'
+    | '/treinos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/owner' | '/student' | '/trainer'
-  id: '__root__' | '/' | '/login' | '/owner' | '/student' | '/trainer'
+  to:
+    | '/'
+    | '/avaliacoes'
+    | '/chat'
+    | '/dieta'
+    | '/evolucao'
+    | '/login'
+    | '/owner'
+    | '/student'
+    | '/trainer'
+    | '/treinos'
+  id:
+    | '__root__'
+    | '/'
+    | '/avaliacoes'
+    | '/chat'
+    | '/dieta'
+    | '/evolucao'
+    | '/login'
+    | '/owner'
+    | '/student'
+    | '/trainer'
+    | '/treinos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AvaliacoesRoute: typeof AvaliacoesRoute
+  ChatRoute: typeof ChatRoute
+  DietaRoute: typeof DietaRoute
+  EvolucaoRoute: typeof EvolucaoRoute
   LoginRoute: typeof LoginRoute
   OwnerRoute: typeof OwnerRoute
   StudentRoute: typeof StudentRoute
   TrainerRoute: typeof TrainerRoute
+  TreinosRoute: typeof TreinosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/treinos': {
+      id: '/treinos'
+      path: '/treinos'
+      fullPath: '/treinos'
+      preLoaderRoute: typeof TreinosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trainer': {
       id: '/trainer'
       path: '/trainer'
@@ -109,6 +197,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/evolucao': {
+      id: '/evolucao'
+      path: '/evolucao'
+      fullPath: '/evolucao'
+      preLoaderRoute: typeof EvolucaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dieta': {
+      id: '/dieta'
+      path: '/dieta'
+      fullPath: '/dieta'
+      preLoaderRoute: typeof DietaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/avaliacoes': {
+      id: '/avaliacoes'
+      path: '/avaliacoes'
+      fullPath: '/avaliacoes'
+      preLoaderRoute: typeof AvaliacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,10 +237,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AvaliacoesRoute: AvaliacoesRoute,
+  ChatRoute: ChatRoute,
+  DietaRoute: DietaRoute,
+  EvolucaoRoute: EvolucaoRoute,
   LoginRoute: LoginRoute,
   OwnerRoute: OwnerRoute,
   StudentRoute: StudentRoute,
   TrainerRoute: TrainerRoute,
+  TreinosRoute: TreinosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
