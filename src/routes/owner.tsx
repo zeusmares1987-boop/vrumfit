@@ -45,8 +45,8 @@ type Tile = {
 
 const smallTiles: Tile[] = [
   { icon: Users, label: "Usuários", hint: "Gerencie acessos e permissões", to: "/personais", bg: tileUsuarios },
-  { icon: Dumbbell, label: "Professores", hint: "Equipe e gestão", to: "/personais", bg: tileProfessores },
-  { icon: User, label: "Alunos", hint: "Alunos e matrículas", to: "/alunos", bg: tileAlunos },
+  { icon: Dumbbell, label: "Área Professor", hint: "Ver como professor", to: "/trainer", bg: tileProfessores },
+  { icon: User, label: "Área Aluno", hint: "Ver como aluno", to: "/student", bg: tileAlunos },
   { icon: ShoppingBag, label: "Loja", hint: "Sua loja integrada", to: "/loja", bg: tileLoja },
   { icon: Package, label: "Produtos", hint: "Catálogo e estoque", to: "/produtos", bg: tileProdutos },
   { icon: CreditCard, label: "Planos", hint: "Planos e assinaturas", to: "/planos", bg: tilePlanos },
