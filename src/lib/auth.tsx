@@ -29,6 +29,15 @@ async function fetchRole(uid: string): Promise<AppRole | null> {
   return "aluno";
 }
 
+async function loadRole(uid: string, mounted: () => boolean, setRole: (role: AppRole | null) => void, setLoading: (loading: boolean) => void) {
+  try {
+    const r = await fetchRole(uid);
+    if (mounted()) setRole(r);
+  } finally {
+    if (mounted()) setLoading(false);
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
@@ -36,14 +45,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let mounted = true;
+    const isMounted = () => mounted;
 
     const init = async () => {
       const { data } = await supabase.auth.getSession();
       if (!mounted) return;
       setSession(data.session);
       if (data.session?.user) {
-        const r = await fetchRole(data.session.user.id);
-        if (mounted) setRole(r);
+        await loadRole(data.session.user.id, isMounted, setRole, setLoading);
+        return;
       }
       setLoading(false);
     };
@@ -53,13 +63,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
       setSession(s);
       if (s?.user) {
+        setLoading(true);
         // defer to avoid deadlocks
         setTimeout(async () => {
-          const r = await fetchRole(s.user.id);
-          setRole(r);
+          await loadRole(s.user.id, isMounted, setRole, setLoading);
         }, 0);
       } else {
         setRole(null);
+        setLoading(false);
       }
     });
 
