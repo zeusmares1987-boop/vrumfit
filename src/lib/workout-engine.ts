@@ -53,7 +53,7 @@ export const LIBRARY: ExerciseDef[] = [
   // PERNA — QUADRÍCEPS
   { name: "Agachamento livre",        primary: "quadriceps", secondary: ["gluteo", "posterior", "core"], pattern: "agachar", tier: "composto_pesado", equip: ["completo"], contraindications: ["joelho", "lombar"], substitutes: ["Agachamento hack", "Leg press 45°", "Agachamento goblet"] },
   { name: "Leg press 45°",            primary: "quadriceps", secondary: ["gluteo"], pattern: "agachar", tier: "composto_pesado", equip: ["completo"], substitutes: ["Agachamento livre", "Hack squat"] },
-  { name: "Agachamento goblet",       primary: "quadriceps", secondary: ["gluteo", "core"], pattern: "agachar", tier: "composto_aux", equip: ["halteres", "casa"], substitutes: ["Agachamento livre", "Búlgaro halter"] },
+  { name: "Agachamento goblet",       primary: "quadriceps", secondary: ["gluteo", "core"], pattern: "agachar", tier: "composto_aux", equip: ["halteres", "peso_corporal"], substitutes: ["Agachamento livre", "Búlgaro halter"] },
   { name: "Búlgaro halter",           primary: "quadriceps", secondary: ["gluteo"], pattern: "agachar", tier: "composto_aux", equip: ["halteres", "completo"], substitutes: ["Afundo passada", "Afundo smith"] },
   { name: "Cadeira extensora",        primary: "quadriceps", pattern: "isolador", tier: "isolador", equip: ["completo"], substitutes: ["Sissy squat"] },
 
