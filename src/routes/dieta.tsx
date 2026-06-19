@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
-import { Flame, Beef, Wheat, Droplet, Download } from "lucide-react";
+import { Flame, Beef, Wheat, Droplet, Download, FileDown } from "lucide-react";
+import { pdf } from "@react-pdf/renderer";
+import { DietPDF, type DietPDFData } from "@/components/pdfs/VrumPDFs";
 
 export const Route = createFileRoute("/dieta")({
   head: () => ({ meta: [{ title: "Gerador de Dieta — VRUMFIT" }] }),
