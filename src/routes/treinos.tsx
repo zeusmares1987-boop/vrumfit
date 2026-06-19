@@ -1,7 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
-import { Download } from "lucide-react";
+import { Download, BookOpen, FileDown } from "lucide-react";
+import { pdf } from "@react-pdf/renderer";
+import { WorkoutPDF, type WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
 
 type Split = "fullbody" | "ab" | "abc" | "abcd" | "abcde";
 type Goal = "hipertrofia" | "forca" | "resistencia";
