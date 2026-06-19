@@ -25,7 +25,7 @@ type ProfileName = { id: string; full_name: string | null };
 export const Route = createFileRoute("/financeiro")({
   head: () => ({ meta: [{ title: "Financeiro — VRUMFIT" }] }),
   component: () => (
-    <RequireAuth>
+    <RequireAuth allow={["dono", "personal"]}>
       <Fin />
     </RequireAuth>
   ),
