@@ -326,6 +326,29 @@ function ElitePage() {
             </div>
           </Card>
 
+          {showSaved && (
+            <Card>
+              <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Planos salvos</p>
+              {saved.length === 0 ? (
+                <p className="text-[12px] text-muted-foreground">Nenhum plano salvo ainda.</p>
+              ) : (
+                <ul className="space-y-1.5">
+                  {saved.map((row) => (
+                    <li key={row.id} className="glass rounded-lg px-3 py-2 flex items-center justify-between gap-2">
+                      <button onClick={() => restorePlan(row)} className="flex-1 text-left min-w-0">
+                        <p className="text-[12px] font-bold truncate">{row.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{new Date(row.created_at).toLocaleString("pt-BR")}</p>
+                      </button>
+                      <button onClick={() => deletePlan(row.id)} className="text-red-400 p-1.5 hover:bg-red-500/10 rounded-lg">
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Card>
+          )}
+
           <Card>
             <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Dia DE treino</p>
             <MacrosRow t={plan.targetTraining} />
