@@ -1,14 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Download, BookOpen, FileDown, Dumbbell, Zap, Clock, Flame, ChevronDown, ChevronUp } from "lucide-react";
+import { Download, BookOpen, FileDown, Dumbbell, Zap, Clock, Flame, ChevronDown, ChevronUp, Play } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { WorkoutPDF, type WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
 import {
   generateWorkoutPlan,
   type Goal, type Level, type Equip, type Sex, type WeekPlan, type WorkoutPlanInput,
 } from "@/lib/workout-engine";
+
+function normalize(s: string) {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+}
+
 
 export const Route = createFileRoute("/treinos")({
   head: () => ({ meta: [{ title: "Gerador de Treinos Elite — VRUMFIT" }] }),
@@ -20,7 +27,27 @@ export const Route = createFileRoute("/treinos")({
 });
 
 function TreinosPage() {
+  const { data: exLib } = useQuery({
+    queryKey: ["exercise-library"],
+    queryFn: async () => {
+      const { data } = await supabase.from("exercises").select("id,name,image_start");
+      return data ?? [];
+    },
+  });
+  const exMap = useMemo(() => {
+    const m = new Map<string, { id: string; image_start: string | null }>();
+    (exLib ?? []).forEach((e) => m.set(normalize(e.name), { id: e.id, image_start: e.image_start }));
+    return m;
+  }, [exLib]);
+  const lookup = (name: string) => {
+    const key = normalize(name);
+    if (exMap.has(key)) return exMap.get(key);
+    for (const [k, v] of exMap) if (k.includes(key) || key.includes(k)) return v;
+    return undefined;
+  };
+
   const [sex, setSex] = useState<Sex>("M");
+
   const [age, setAge] = useState(30);
   const [weight, setWeight] = useState(80);
   const [height, setHeight] = useState(175);
@@ -214,31 +241,56 @@ function TreinosPage() {
                       </div>
 
                       <ul className="space-y-2">
-                        {d.exercises.map((ex, j) => (
-                          <li key={j} className="glass rounded-xl p-3">
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <Dumbbell className="size-3.5 text-primary shrink-0" />
-                                <p className="text-[13px] font-bold truncate">{ex.name}</p>
+                        {d.exercises.map((ex, j) => {
+                          const hit = lookup(ex.name);
+                          const content = (
+                            <>
+                              <div className="relative size-16 shrink-0 rounded-lg overflow-hidden border border-primary/30 bg-black">
+                                {hit?.image_start ? (
+                                  <img src={hit.image_start} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                                ) : (
+                                  <Dumbbell className="absolute inset-0 m-auto size-5 text-primary/60" />
+                                )}
+                                {hit && (
+                                  <div className="absolute inset-0 bg-black/30 grid place-items-center opacity-0 group-hover:opacity-100 transition">
+                                    <Play className="size-5 text-primary" />
+                                  </div>
+                                )}
                               </div>
-                              <span className="text-[10px] font-mono text-muted-foreground shrink-0">
-                                {ex.sets}×{ex.reps}
-                              </span>
-                            </div>
-                            <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
-                              <span>descanso <span className="text-foreground font-mono">{ex.rest}</span></span>
-                              <span>RIR <span className="text-foreground font-mono">{ex.rir}</span></span>
-                              <span className="capitalize">{ex.tier.replace("_", " ")}</span>
-                              {ex.loadHint && <span>carga <span className="text-primary font-mono">{ex.loadHint}</span></span>}
-                            </div>
-                            {ex.substitutes.length > 0 && (
-                              <p className="mt-1.5 text-[10px] text-muted-foreground">
-                                <span className="text-primary font-semibold">Substituir por:</span> {ex.substitutes.slice(0, 3).join(" · ")}
-                              </p>
-                            )}
-                          </li>
-                        ))}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="text-[13px] font-bold truncate">{ex.name}</p>
+                                  <span className="text-[10px] font-mono text-muted-foreground shrink-0">{ex.sets}×{ex.reps}</span>
+                                </div>
+                                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
+                                  <span>descanso <span className="text-foreground font-mono">{ex.rest}</span></span>
+                                  <span>RIR <span className="text-foreground font-mono">{ex.rir}</span></span>
+                                  {ex.loadHint && <span>carga <span className="text-primary font-mono">{ex.loadHint}</span></span>}
+                                </div>
+                                {hit ? (
+                                  <p className="mt-1 text-[10px] text-primary font-semibold">Toque para ver execução →</p>
+                                ) : ex.substitutes.length > 0 && (
+                                  <p className="mt-1 text-[10px] text-muted-foreground">
+                                    <span className="text-primary font-semibold">Subst.:</span> {ex.substitutes.slice(0, 2).join(" · ")}
+                                  </p>
+                                )}
+                              </div>
+                            </>
+                          );
+                          return (
+                            <li key={j}>
+                              {hit ? (
+                                <Link to="/biblioteca/$id" params={{ id: hit.id }} className="group glass rounded-xl p-3 flex items-start gap-3 hover:border-primary/50 transition">
+                                  {content}
+                                </Link>
+                              ) : (
+                                <div className="glass rounded-xl p-3 flex items-start gap-3">{content}</div>
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
+
 
                       {d.cardio && (
                         <div className="glass rounded-xl p-3 border border-primary/30">
