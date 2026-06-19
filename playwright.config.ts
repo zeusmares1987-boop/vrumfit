@@ -11,5 +11,11 @@ export default defineConfig({
     screenshot: "only-on-failure",
     viewport: { width: 1280, height: 1800 },
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [{
+    name: "chromium",
+    use: {
+      ...devices["Desktop Chrome"],
+      launchOptions: { executablePath: "/chromium-1194/chrome-linux/chrome" },
+    },
+  }],
 });
