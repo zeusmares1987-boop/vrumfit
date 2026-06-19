@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { User, Lock, Eye, EyeOff, ChevronRight, Mail, Phone, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -7,6 +8,7 @@ import logoV from "@/assets/logo-v.png";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";
+import { bootstrapMasterOwner } from "@/lib/master-owner.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -22,6 +24,7 @@ type Mode = "login" | "signup" | "forgot";
 
 function AuthPage() {
   const navigate = useNavigate();
+  const bootstrapMasterOwnerFn = useServerFn(bootstrapMasterOwner);
   const { session, role, loading } = useAuth();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -36,13 +39,39 @@ function AuthPage() {
     if (!loading && session) navigate({ to: roleHomePath(role) });
   }, [session, role, loading, navigate]);
 
+  const finishMasterOwnership = async (signedEmail: string) => {
+    if (signedEmail.trim().toLowerCase() !== "zeusmares1987@gmail.com") return;
+    const { data, error } = await supabase.rpc("claim_ownership");
+    if (error || data !== true) throw error ?? new Error("Não foi possível ativar o e-mail mestre.");
+  };
+
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return toast.error("Preencha e-mail e senha.");
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    const cleanEmail = email.trim();
+    const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+    if (error && cleanEmail.toLowerCase() === "zeusmares1987@gmail.com") {
+      try {
+        await bootstrapMasterOwnerFn({ data: { email: cleanEmail, password } });
+        const { error: masterLoginError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+        if (masterLoginError) throw masterLoginError;
+      } catch (claimError: any) {
+        setBusy(false);
+        return toast.error(claimError.message ?? "Falha ao ativar o e-mail mestre.");
+      }
+      setBusy(false);
+      toast.success("E-mail mestre ativado.");
+      navigate({ to: "/owner" });
+      return;
+    }
     setBusy(false);
     if (error) return toast.error(error.message);
+    try {
+      await finishMasterOwnership(cleanEmail);
+    } catch (claimError: any) {
+      return toast.error(claimError.message ?? "Falha ao ativar dono.");
+    }
     toast.success("Bem-vindo!");
   };
 
