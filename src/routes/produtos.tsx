@@ -12,7 +12,7 @@ type P = { id: string; title: string; short_desc: string | null; price_cents: nu
 export const Route = createFileRoute("/produtos")({
   head: () => ({ meta: [{ title: "Produtos — VRUMFIT" }] }),
   component: () => (
-    <RequireAuth>
+    <RequireAuth allow={["dono"]}>
       <Prod />
     </RequireAuth>
   ),

@@ -6,7 +6,7 @@ import { RequireAuth } from "@/components/RequireAuth";
 export const Route = createFileRoute("/avaliacoes")({
   head: () => ({ meta: [{ title: "Avaliação Física — VRUMFIT" }] }),
   component: () => (
-    <RequireAuth>
+    <RequireAuth allow={["personal","dono"]}>
       <AvaliacaoPage />
     </RequireAuth>
   ),
