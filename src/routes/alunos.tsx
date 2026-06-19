@@ -18,7 +18,7 @@ type Row = {
 export const Route = createFileRoute("/alunos")({
   head: () => ({ meta: [{ title: "Alunos — VRUMFIT" }] }),
   component: () => (
-    <RequireAuth>
+    <RequireAuth allow={["personal","dono"]}>
       <AlunosPage />
     </RequireAuth>
   ),
