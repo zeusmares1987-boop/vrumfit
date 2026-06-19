@@ -52,8 +52,48 @@ function StudentPage() {
     enabled: !!user,
   });
 
+  const { data: hasOwner, refetch: refetchHasOwner } = useQuery({
+    queryKey: ["has-owner"],
+    queryFn: async () => {
+      const { count } = await supabase.from("user_roles").select("user_id", { count: "exact", head: true }).eq("role", "dono");
+      return (count ?? 0) > 0;
+    },
+  });
+
+  const claim = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc("claim_ownership");
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: async (ok) => {
+      if (ok) {
+        toast.success("Você agora é o Dono! Recarregando...");
+        await refetchHasOwner();
+        setTimeout(() => window.location.assign("/owner"), 700);
+      } else {
+        toast.error("Já existe um dono cadastrado.");
+      }
+    },
+    onError: (e: any) => toast.error(e.message ?? "Falha ao reivindicar."),
+  });
+
   return (
     <AppShell>
+      {hasOwner === false && (
+        <button onClick={() => claim.mutate()} disabled={claim.isPending}
+          className="w-full mb-3 rounded-2xl border border-primary/50 bg-primary/10 hover:bg-primary/20 p-3 flex items-center gap-3 text-left transition disabled:opacity-60">
+          <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
+            <Crown className="size-5" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-bold text-primary">Sou o Dono deste app</p>
+            <p className="text-[11px] text-white/70">Toque para virar Proprietário (só funciona uma vez).</p>
+          </div>
+          <ChevronRight className="size-4 text-primary" />
+        </button>
+      )}
+
       <section>
         <div className="relative rounded-[18px] overflow-hidden">
           <img src={headerGym} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
