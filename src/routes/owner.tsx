@@ -156,15 +156,15 @@ function OwnerPage() {
 
       {/* Metric cards */}
       <section className="mt-4 grid grid-cols-3 gap-2.5">
-        <Metric icon={Users} label="Professores" value={(counts?.professores ?? 0).toString()} sub="Ativos" />
-        <Metric icon={User} label="Alunos" value={(counts?.alunos ?? 0).toString()} sub="Ativos" />
-        <Metric icon={ShoppingBag} label="Produtos" value={(counts?.produtos ?? 0).toString()} sub="Cadastrados" />
+        <Metric icon={Users} label="Professores" value={counts?.professores ?? 0} sub="Ativos" />
+        <Metric icon={User} label="Alunos" value={counts?.alunos ?? 0} sub="Ativos" />
+        <Metric icon={ShoppingBag} label="Produtos" value={counts?.produtos ?? 0} sub="Cadastrados" />
       </section>
 
       {/* Receita */}
       <section className="mt-3 grid grid-cols-2 gap-2.5">
-        <Metric icon={Wallet} label="Receita" value={brl(counts?.receita ?? 0)} sub="Total pago" />
-        <Metric icon={CreditCard} label="Pendentes" value={(counts?.pendentes ?? 0).toString()} sub="Faturas" />
+        <Metric icon={Wallet} label="Receita" value={counts?.receita ? brl(counts.receita) : "—"} sub="Total pago" />
+        <Metric icon={CreditCard} label="Pendentes" value={counts?.pendentes ?? 0} sub="Faturas" />
       </section>
 
       {/* Modules header */}
