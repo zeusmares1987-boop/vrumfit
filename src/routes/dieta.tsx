@@ -90,11 +90,16 @@ function DietaPage() {
           </Card>
 
           <Card>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
               <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Cardápio sugerido (6 refeições)</h3>
-              <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2 py-1 text-[10px] flex items-center gap-1">
-                <Download className="size-3" /> TXT
-              </button>
+              <div className="flex gap-2">
+                <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
+                  <Download className="size-3" /> TXT
+                </button>
+                <button onClick={() => exportPdf(plan, goal)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
+                  <FileDown className="size-3" /> PDF VrumFit
+                </button>
+              </div>
             </div>
             <ol className="space-y-3">
               {plan.meals.map((m, i) => (
