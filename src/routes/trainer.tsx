@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Users, Dumbbell, Apple, ClipboardCheck, TrendingUp, FolderOpen, Bell, Wallet,
-  BookOpen, ChevronRight, MessageCircle, LayoutGrid,
+  BookOpen, ChevronRight, MessageCircle, LayoutGrid, Store,
 } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
@@ -46,6 +46,7 @@ const smallTiles: Tile[] = [
   { icon: MessageCircle, label: "Chat", hint: "Mensagens dos alunos", to: "/chat", bg: tileChat },
   { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos", bg: tileAvisos },
   { icon: Wallet, label: "Financeiro", hint: "Suas receitas", to: "/financeiro", bg: tileFinanceiro },
+  { icon: Store, label: "Minhas Ofertas", hint: "Vitrine na loja", to: "/loja-pro", bg: tileFinanceiro },
 ];
 const wideTiles: Tile[] = [
   { icon: FolderOpen, label: "Arquivos", hint: "PDFs e documentos", to: "/arquivos", bg: tileArquivos },

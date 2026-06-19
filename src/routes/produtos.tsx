@@ -34,9 +34,14 @@ function Prod() {
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.price) return;
+    const { data: u } = await supabase.auth.getUser();
     const { error } = await supabase.from("products").insert({
-      title: form.title, short_desc: form.short_desc || null,
-      price_cents: Math.round(parseFloat(form.price) * 100), status: "ativo" as any,
+      title: form.title,
+      short_desc: form.short_desc || null,
+      price_cents: Math.round(parseFloat(form.price) * 100),
+      status: "ativo" as any,
+      offer_type: "digital",
+      seller_id: u.user?.id ?? null,
     });
     if (error) return toast.error(error.message);
     setForm({ title: "", short_desc: "", price: "" });

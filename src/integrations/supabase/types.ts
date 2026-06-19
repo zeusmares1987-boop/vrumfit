@@ -506,78 +506,6 @@ export type Database = {
         }
         Relationships: []
       }
-      order_items: {
-        Row: {
-          id: string
-          order_id: string
-          price_cents: number
-          product_id: string
-          qty: number
-        }
-        Insert: {
-          id?: string
-          order_id: string
-          price_cents: number
-          product_id: string
-          qty?: number
-        }
-        Update: {
-          id?: string
-          order_id?: string
-          price_cents?: number
-          product_id?: string
-          qty?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "order_items_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "order_items_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orders: {
-        Row: {
-          buyer_id: string
-          created_at: string
-          id: string
-          mp_payment_id: string | null
-          payment_method: string | null
-          status: Database["public"]["Enums"]["invoice_status"]
-          total_cents: number
-          updated_at: string
-        }
-        Insert: {
-          buyer_id: string
-          created_at?: string
-          id?: string
-          mp_payment_id?: string | null
-          payment_method?: string | null
-          status?: Database["public"]["Enums"]["invoice_status"]
-          total_cents?: number
-          updated_at?: string
-        }
-        Update: {
-          buyer_id?: string
-          created_at?: string
-          id?: string
-          mp_payment_id?: string | null
-          payment_method?: string | null
-          status?: Database["public"]["Enums"]["invoice_status"]
-          total_cents?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
       plans: {
         Row: {
           benefits: string[] | null
@@ -638,42 +566,66 @@ export type Database = {
           category: string | null
           cover_url: string | null
           created_at: string
+          delivery_days: number | null
           description: string | null
           file_url: string | null
+          for_whom: string | null
           id: string
+          included: string | null
+          long_desc: string | null
+          offer_type: string
           price_cents: number
+          seller_id: string | null
           short_desc: string | null
           status: Database["public"]["Enums"]["publish_status"]
           title: string
           updated_at: string
+          wa_clicks: number
+          whatsapp: string | null
         }
         Insert: {
           benefits?: string[] | null
           category?: string | null
           cover_url?: string | null
           created_at?: string
+          delivery_days?: number | null
           description?: string | null
           file_url?: string | null
+          for_whom?: string | null
           id?: string
+          included?: string | null
+          long_desc?: string | null
+          offer_type?: string
           price_cents?: number
+          seller_id?: string | null
           short_desc?: string | null
           status?: Database["public"]["Enums"]["publish_status"]
           title: string
           updated_at?: string
+          wa_clicks?: number
+          whatsapp?: string | null
         }
         Update: {
           benefits?: string[] | null
           category?: string | null
           cover_url?: string | null
           created_at?: string
+          delivery_days?: number | null
           description?: string | null
           file_url?: string | null
+          for_whom?: string | null
           id?: string
+          included?: string | null
+          long_desc?: string | null
+          offer_type?: string
           price_cents?: number
+          seller_id?: string | null
           short_desc?: string | null
           status?: Database["public"]["Enums"]["publish_status"]
           title?: string
           updated_at?: string
+          wa_clicks?: number
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -737,6 +689,48 @@ export type Database = {
           note?: string | null
           student_id?: string
           weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      store_settings: {
+        Row: {
+          active: boolean
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          logo_url: string | null
+          slug: string | null
+          specialty: string | null
+          updated_at: string
+          user_id: string
+          whatsapp: string | null
+        }
+        Insert: {
+          active?: boolean
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          logo_url?: string | null
+          slug?: string | null
+          specialty?: string | null
+          updated_at?: string
+          user_id: string
+          whatsapp?: string | null
+        }
+        Update: {
+          active?: boolean
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          logo_url?: string | null
+          slug?: string | null
+          specialty?: string | null
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -1016,7 +1010,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bump_wa_click: { Args: { _product: string }; Returns: undefined }
       can_add_student: { Args: { _personal_id: string }; Returns: boolean }
+      can_publish_offer: { Args: { _seller: string }; Returns: boolean }
       claim_ownership: { Args: never; Returns: boolean }
       current_plan: {
         Args: { _uid: string }
