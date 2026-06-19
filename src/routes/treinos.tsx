@@ -177,3 +177,35 @@ function exportTxt(plan: { name: string; exercises: { name: string; sets: number
   a.href = url; a.download = "treino-vrumfit.txt"; a.click();
   URL.revokeObjectURL(url);
 }
+
+async function exportPdf(
+  plan: { name: string; exercises: { name: string; sets: number; reps: string; rest: string }[] }[],
+  goal: string,
+) {
+  for (let i = 0; i < plan.length; i++) {
+    const d = plan[i];
+    const data: WorkoutPDFData = {
+      studentName: "Aluno VrumFit",
+      dayLabel: `DIA ${i + 1}`,
+      tip: `Objetivo: ${goal}. Mantenha alimentação balanceada, hidratação adequada e sono regulado.`,
+      exercises: d.exercises.map((ex) => ({
+        name: ex.name,
+        sets: String(ex.sets),
+        reps: ex.reps,
+        rest: ex.rest,
+        tips: [
+          "Mantenha controle total na fase excêntrica (descida).",
+          "Contraia o músculo alvo no topo do movimento.",
+          "Respire de forma controlada: solte na fase de esforço.",
+        ],
+      })),
+    };
+    const blob = await pdf(<WorkoutPDF data={data} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `treino-${d.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+}
