@@ -25,8 +25,7 @@ export function AppShell({
 
   // Auto-protect: anyone using AppShell must be signed in
   if (!loading && !session) {
-    navigate({ to: "/auth" });
-    return null;
+    return <Navigate to="/auth" />;
   }
   if (loading) {
     return (
