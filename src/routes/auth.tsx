@@ -36,13 +36,49 @@ function AuthPage() {
     if (!loading && session) navigate({ to: roleHomePath(role) });
   }, [session, role, loading, navigate]);
 
+  const finishMasterOwnership = async (signedEmail: string) => {
+    if (signedEmail.trim().toLowerCase() !== "zeusmares1987@gmail.com") return;
+    const { data, error } = await supabase.rpc("claim_ownership");
+    if (error || data !== true) throw error ?? new Error("Não foi possível ativar o e-mail mestre.");
+  };
+
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return toast.error("Preencha e-mail e senha.");
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    const cleanEmail = email.trim();
+    const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+    if (error && cleanEmail.toLowerCase() === "zeusmares1987@gmail.com") {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: cleanEmail,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: { full_name: "Dono", role: "aluno" },
+        },
+      });
+      if (signUpError) {
+        setBusy(false);
+        return toast.error(signUpError.message);
+      }
+      try {
+        await finishMasterOwnership(cleanEmail);
+      } catch (claimError: any) {
+        setBusy(false);
+        return toast.error(claimError.message ?? "Conta criada, mas falhou ao ativar dono.");
+      }
+      setBusy(false);
+      toast.success("E-mail mestre ativado.");
+      navigate({ to: "/owner" });
+      return;
+    }
     setBusy(false);
     if (error) return toast.error(error.message);
+    try {
+      await finishMasterOwnership(cleanEmail);
+    } catch (claimError: any) {
+      return toast.error(claimError.message ?? "Falha ao ativar dono.");
+    }
     toast.success("Bem-vindo!");
   };
 
