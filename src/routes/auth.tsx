@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { User, Lock, Eye, EyeOff, ChevronRight, Mail, Phone, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -23,6 +24,7 @@ type Mode = "login" | "signup" | "forgot";
 
 function AuthPage() {
   const navigate = useNavigate();
+  const bootstrapMasterOwnerFn = useServerFn(bootstrapMasterOwner);
   const { session, role, loading } = useAuth();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -51,7 +53,7 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
     if (error && cleanEmail.toLowerCase() === "zeusmares1987@gmail.com") {
       try {
-        await bootstrapMasterOwner({ data: { email: cleanEmail, password } });
+        await bootstrapMasterOwnerFn({ data: { email: cleanEmail, password } });
         const { error: masterLoginError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
         if (masterLoginError) throw masterLoginError;
       } catch (claimError: any) {
