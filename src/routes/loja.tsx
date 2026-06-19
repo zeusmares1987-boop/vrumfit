@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-type P = { id: string; title: string; price_cents: number };
+type P = { id: string; title: string; price_cents: number; cover_url: string | null; short_desc: string | null; category: string | null };
 
 export const Route = createFileRoute("/loja")({
   head: () => ({ meta: [{ title: "Loja — VRUMFIT" }] }),
@@ -26,7 +26,7 @@ function Loja() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("products").select("id,title,price_cents").eq("status", "ativo");
+      const { data } = await supabase.from("products").select("id,title,price_cents,cover_url,short_desc,category").eq("status", "ativo");
       setProds((data ?? []) as P[]);
     })();
   }, []);
@@ -93,10 +93,19 @@ function Loja() {
 
       <div className="grid grid-cols-2 gap-3">
         {prods.map((p) => (
-          <button key={p.id} onClick={() => add(p.id)} className="glass rounded-2xl p-3 text-left hover:border-primary/40">
-            <p className="text-sm font-semibold leading-tight">{p.title}</p>
-            <p className="text-base font-extrabold text-primary mt-2">R$ {(p.price_cents / 100).toFixed(2)}</p>
-            <p className="text-[10px] uppercase text-muted-foreground mt-1">Toque para adicionar</p>
+          <button key={p.id} onClick={() => add(p.id)} className="group relative rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition text-left aspect-[3/4]">
+            {p.cover_url ? (
+              <img src={p.cover_url} alt={p.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-black" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10" />
+            <div className="relative h-full p-3 flex flex-col justify-end">
+              {p.category && <p className="text-[9px] uppercase tracking-[0.2em] text-primary/90 font-bold mb-1">{p.category}</p>}
+              <p className="text-[13px] font-extrabold leading-tight">{p.title}</p>
+              {p.short_desc && <p className="text-[10px] text-white/65 line-clamp-2 mt-0.5">{p.short_desc}</p>}
+              <p className="text-base font-extrabold text-primary mt-1.5">R$ {(p.price_cents / 100).toFixed(2)}</p>
+            </div>
           </button>
         ))}
         {prods.length === 0 && <p className="col-span-2 text-center text-xs text-white/50 py-6">Sem produtos disponíveis.</p>}

@@ -1,0 +1,7 @@
+INSERT INTO public.products (title, short_desc, description, price_cents, cover_url, category, status) VALUES
+('Mentoria VRUM 90 dias', 'Acompanhamento individual em PDF + lives', 'Mentoria completa de 90 dias com plano personalizado, suporte semanal e materiais em PDF.', 49700, '/__l5e/assets-v1/cc24e19b-9ee0-4f3d-b1e6-e1295aee85e1/prod-mentoria.jpg', 'mentoria', 'ativo'),
+('Plano de Treino PDF', 'Treino 4x semana hipertrofia', 'Plano completo de hipertrofia para 12 semanas em PDF, com vídeos de execução.', 9700, '/__l5e/assets-v1/40fd34e4-5485-4ed3-b6c1-d64e04ac0fbc/prod-treino.jpg', 'treino', 'ativo'),
+('Dieta Flexível PDF', 'Cardápio com substituições', 'Cardápio personalizável com lista de substituições e cálculo de macros.', 6700, '/__l5e/assets-v1/213943d7-cde5-40f2-b1f5-5093311ca3ac/prod-dieta.jpg', 'dieta', 'ativo'),
+('Camiseta VRUMFIT', 'Dry-fit preta com logo dourado', 'Camiseta esportiva premium em tecido dry-fit.', 12900, '/__l5e/assets-v1/ee943a87-409a-4cf0-a6a5-c319b9608021/prod-camiseta.jpg', 'vestuario', 'ativo'),
+('Whey Protein 900g', 'Suplemento — sabor chocolate', 'Whey concentrado 80% proteína, 30 doses.', 17900, '/__l5e/assets-v1/3b24b06d-7879-4d4e-9ff7-92c018c707e5/prod-whey.jpg', 'suplemento', 'ativo'),
+('Consultoria Online 1h', 'Videochamada com personal', 'Sessão individual de 1h por videochamada para ajuste de plano.', 19700, '/__l5e/assets-v1/c64e75dc-7fa0-442b-a20f-bbb7b0815286/prod-consultoria.jpg', 'consultoria', 'ativo');
