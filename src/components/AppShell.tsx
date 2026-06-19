@@ -42,11 +42,22 @@ export function AppShell({
   };
 
   const home = roleHomePath(role);
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const showBack = path !== home && path !== "/";
+  const onBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
+    else navigate({ to: home });
+  };
 
   return (
     <div className="min-h-[100dvh] bg-background font-display text-foreground pb-24">
       <header className="sticky top-0 z-40 bg-gradient-to-b from-black/90 to-black/60 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+          {showBack && (
+            <button onClick={onBack} aria-label="Voltar" title="Voltar" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white transition shrink-0">
+              <ChevronLeft className="size-5" />
+            </button>
+          )}
           <Link to={home} className="flex items-center gap-2 shrink-0">
             <img src={logoV} alt="" className="size-8" />
             <div className="leading-tight">
