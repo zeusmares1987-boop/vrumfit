@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
@@ -39,6 +39,53 @@ function ElitePage() {
 
   const toggleR = (r: DietRestriction) =>
     setRestrictions((arr) => (arr.includes(r) ? arr.filter((x) => x !== r) : [...arr, r]));
+
+  // ===== Persistência local (zero custo, sem banco) =====
+  const STORAGE_KEY = "vrumfit:elite:v1";
+  const hydrated = useRef(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s.sex) setSex(s.sex);
+        if (typeof s.age === "number") setAge(s.age);
+        if (typeof s.weight === "number") setWeight(s.weight);
+        if (typeof s.height === "number") setHeight(s.height);
+        if (s.goal) setGoal(s.goal);
+        if (s.level) setLevel(s.level);
+        if (typeof s.frequency === "number") setFrequency(s.frequency);
+        if (typeof s.sessionMin === "number") setSessionMin(s.sessionMin);
+        if (s.equip) setEquip(s.equip);
+        if (typeof s.weeks === "number") setWeeks(s.weeks);
+        if (s.dietGoal) setDietGoal(s.dietGoal);
+        if (s.bf === "" || typeof s.bf === "number") setBf(s.bf);
+        if (typeof s.activity === "number") setActivity(s.activity);
+        if (typeof s.meals === "number") setMeals(s.meals);
+        if (s.budget) setBudget(s.budget);
+        if (Array.isArray(s.restrictions)) setRestrictions(s.restrictions);
+        if (s.plan) setPlan(s.plan);
+      }
+    } catch {}
+    hydrated.current = true;
+  }, []);
+  useEffect(() => {
+    if (!hydrated.current) return;
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          sex, age, weight, height, goal, level, frequency, sessionMin, equip, weeks,
+          dietGoal, bf, activity, meals, budget, restrictions, plan,
+        }),
+      );
+    } catch {}
+  }, [sex, age, weight, height, goal, level, frequency, sessionMin, equip, weeks, dietGoal, bf, activity, meals, budget, restrictions, plan]);
+
+  const resetPlan = () => {
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    setPlan(null);
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -258,6 +305,9 @@ function ElitePage() {
             </div>
             <button onClick={exportCombined} disabled={busy} className="mt-3 w-full bg-primary text-primary-foreground rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-50">
               <FileDown className="size-4" /> {busy ? "Montando PDF..." : "PDF combinado (treino + dieta)"}
+            </button>
+            <button onClick={resetPlan} className="mt-2 w-full glass rounded-xl py-2 text-[11px] font-semibold text-muted-foreground">
+              Limpar plano salvo
             </button>
           </Card>
 
