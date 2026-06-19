@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, Navigate, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut, ChevronLeft } from "lucide-react";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import type { ReactNode, InputHTMLAttributes } from "react";
@@ -25,8 +25,7 @@ export function AppShell({
 
   // Auto-protect: anyone using AppShell must be signed in
   if (!loading && !session) {
-    navigate({ to: "/auth" });
-    return null;
+    return <Navigate to="/auth" />;
   }
   if (loading) {
     return (
