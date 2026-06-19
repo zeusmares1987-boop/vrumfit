@@ -1,22 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
-import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap, Save, FolderOpen, Trash2 } from "lucide-react";
+import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { PDFDocument } from "pdf-lib";
 import { WorkoutPDF, DietPDF, type WorkoutPDFData, type DietPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateElitePlan, type ElitePlan } from "@/lib/integration-engine";
 import type { Goal, Level, Equip, Sex } from "@/lib/workout-engine";
 import type { GoalDiet, DietRestriction, Budget } from "@/lib/diet-engine";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-
-type SavedRow = { id: string; name: string; created_at: string; payload: { plan: ElitePlan; form: FormSnapshot } };
-type FormSnapshot = {
-  sex: Sex; age: number; weight: number; height: number;
-  goal: Goal; level: Level; frequency: number; sessionMin: number; equip: Equip; weeks: number;
-  dietGoal: GoalDiet; bf: number | ""; activity: number; meals: number; budget: Budget; restrictions: DietRestriction[];
-};
 
 export const Route = createFileRoute("/elite")({
   head: () => ({ meta: [{ title: "Plano Elite Integrado — VRUMFIT" }] }),
@@ -65,54 +56,6 @@ function ElitePage() {
       },
     });
     setPlan(p);
-  };
-
-  // ===== Persistência =====
-  const [saved, setSaved] = useState<SavedRow[]>([]);
-  const [showSaved, setShowSaved] = useState(false);
-
-  const loadSaved = async () => {
-    const { data, error } = await supabase
-      .from("saved_plans")
-      .select("id,name,created_at,payload")
-      .eq("kind", "elite")
-      .order("created_at", { ascending: false });
-    if (error) { toast.error("Erro ao carregar planos"); return; }
-    setSaved((data ?? []) as unknown as SavedRow[]);
-  };
-  useEffect(() => { loadSaved(); }, []);
-
-  const savePlan = async () => {
-    if (!plan) return;
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user) { toast.error("Faça login para salvar"); return; }
-    const name = window.prompt("Nome do plano:", `Elite ${new Date().toLocaleDateString("pt-BR")}`);
-    if (!name) return;
-    const form: FormSnapshot = { sex, age, weight, height, goal, level, frequency, sessionMin, equip, weeks, dietGoal, bf, activity, meals, budget, restrictions };
-    const { error } = await supabase.from("saved_plans").insert({
-      user_id: u.user.id, kind: "elite", name, payload: { plan, form } as never,
-    });
-    if (error) { toast.error("Erro ao salvar"); return; }
-    toast.success("Plano salvo!");
-    loadSaved();
-  };
-
-  const restorePlan = (row: SavedRow) => {
-    const f = row.payload.form;
-    setSex(f.sex); setAge(f.age); setWeight(f.weight); setHeight(f.height);
-    setGoal(f.goal); setLevel(f.level); setFrequency(f.frequency); setSessionMin(f.sessionMin); setEquip(f.equip); setWeeks(f.weeks);
-    setDietGoal(f.dietGoal); setBf(f.bf); setActivity(f.activity); setMeals(f.meals); setBudget(f.budget); setRestrictions(f.restrictions);
-    setPlan(row.payload.plan);
-    setShowSaved(false);
-    toast.success(`"${row.name}" carregado`);
-  };
-
-  const deletePlan = async (id: string) => {
-    if (!confirm("Apagar este plano?")) return;
-    const { error } = await supabase.from("saved_plans").delete().eq("id", id);
-    if (error) { toast.error("Erro ao apagar"); return; }
-    toast.success("Apagado");
-    loadSaved();
   };
 
   const exportCombined = async () => {
@@ -316,38 +259,7 @@ function ElitePage() {
             <button onClick={exportCombined} disabled={busy} className="mt-3 w-full bg-primary text-primary-foreground rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-50">
               <FileDown className="size-4" /> {busy ? "Montando PDF..." : "PDF combinado (treino + dieta)"}
             </button>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              <button onClick={savePlan} className="glass rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5">
-                <Save className="size-3.5" /> Salvar plano
-              </button>
-              <button onClick={() => setShowSaved((v) => !v)} className="glass rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5">
-                <FolderOpen className="size-3.5" /> Meus planos ({saved.length})
-              </button>
-            </div>
           </Card>
-
-          {showSaved && (
-            <Card>
-              <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Planos salvos</p>
-              {saved.length === 0 ? (
-                <p className="text-[12px] text-muted-foreground">Nenhum plano salvo ainda.</p>
-              ) : (
-                <ul className="space-y-1.5">
-                  {saved.map((row) => (
-                    <li key={row.id} className="glass rounded-lg px-3 py-2 flex items-center justify-between gap-2">
-                      <button onClick={() => restorePlan(row)} className="flex-1 text-left min-w-0">
-                        <p className="text-[12px] font-bold truncate">{row.name}</p>
-                        <p className="text-[10px] text-muted-foreground">{new Date(row.created_at).toLocaleString("pt-BR")}</p>
-                      </button>
-                      <button onClick={() => deletePlan(row.id)} className="text-red-400 p-1.5 hover:bg-red-500/10 rounded-lg">
-                        <Trash2 className="size-3.5" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Card>
-          )}
 
           <Card>
             <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Dia DE treino</p>
