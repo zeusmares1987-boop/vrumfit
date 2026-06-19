@@ -156,15 +156,15 @@ function OwnerPage() {
 
       {/* Metric cards */}
       <section className="mt-4 grid grid-cols-3 gap-2.5">
-        <Metric icon={Users} label="Professores" value={(counts?.professores ?? 0).toString()} sub="Ativos" />
-        <Metric icon={User} label="Alunos" value={(counts?.alunos ?? 0).toString()} sub="Ativos" />
-        <Metric icon={ShoppingBag} label="Produtos" value={(counts?.produtos ?? 0).toString()} sub="Cadastrados" />
+        <Metric icon={Users} label="Professores" value={counts?.professores ?? 0} sub="Ativos" />
+        <Metric icon={User} label="Alunos" value={counts?.alunos ?? 0} sub="Ativos" />
+        <Metric icon={ShoppingBag} label="Produtos" value={counts?.produtos ?? 0} sub="Cadastrados" />
       </section>
 
       {/* Receita */}
       <section className="mt-3 grid grid-cols-2 gap-2.5">
-        <Metric icon={Wallet} label="Receita" value={brl(counts?.receita ?? 0)} sub="Total pago" />
-        <Metric icon={CreditCard} label="Pendentes" value={(counts?.pendentes ?? 0).toString()} sub="Faturas" />
+        <Metric icon={Wallet} label="Receita" value={counts?.receita ? brl(counts.receita) : "—"} sub="Total pago" />
+        <Metric icon={CreditCard} label="Pendentes" value={counts?.pendentes ?? 0} sub="Faturas" />
       </section>
 
       {/* Modules header */}
@@ -193,24 +193,10 @@ function brl(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-function Sparkline() {
-  return (
-    <svg viewBox="0 0 100 28" className="w-full h-6 text-primary" fill="none" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="spark" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d="M0 22 L10 14 L20 18 L30 10 L40 16 L50 8 L60 14 L70 6 L80 12 L90 4 L100 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M0 22 L10 14 L20 18 L30 10 L40 16 L50 8 L60 14 L70 6 L80 12 L90 4 L100 10 L100 28 L0 28 Z" fill="url(#spark)" />
-    </svg>
-  );
-}
-
 function Metric({
   icon: Icon, label, value, sub,
-}: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; sub: string }) {
+}: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string }) {
+  const display = typeof value === "number" ? (value === 0 ? "—" : value.toString()) : value;
   return (
     <div className="rounded-2xl border border-white/10 bg-black/50 p-3 flex flex-col gap-1.5 backdrop-blur-md">
       <div className="flex items-center gap-1.5">
@@ -219,9 +205,8 @@ function Metric({
         </div>
         <p className="text-[11px] font-semibold text-white/85 truncate">{label}</p>
       </div>
-      <p className="text-[22px] leading-none font-extrabold mt-1">{value}</p>
-      <p className="text-[10px] text-primary -mt-0.5">{sub}</p>
-      <Sparkline />
+      <p className="text-[22px] leading-none font-extrabold mt-1">{display}</p>
+      <p className="text-[10px] text-white/50 -mt-0.5">{sub}</p>
     </div>
   );
 }
