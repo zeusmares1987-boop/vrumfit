@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Flame, Beef, Wheat, Droplet, Download, FileDown, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { DietPDF, type DietPDFData } from "@/components/pdfs/VrumPDFs";
@@ -11,7 +12,11 @@ import {
 
 export const Route = createFileRoute("/dieta")({
   head: () => ({ meta: [{ title: "Gerador de Dieta Elite — VRUMFIT" }] }),
-  component: DietaPage,
+  component: () => (
+    <RequireAuth>
+      <DietaPage />
+    </RequireAuth>
+  ),
 });
 
 function DietaPage() {
