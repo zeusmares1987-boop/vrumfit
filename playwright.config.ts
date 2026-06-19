@@ -18,3 +18,4 @@ export default defineConfig({
       launchOptions: { executablePath: "/chromium-1194/chrome-linux/chrome" },
     },
   }],
+});
