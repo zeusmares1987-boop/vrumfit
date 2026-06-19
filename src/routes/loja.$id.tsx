@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { AppShell, Card, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { MessageCircle, ArrowLeft } from "lucide-react";
+import { MessageCircle, ArrowLeft, BookOpen, Dumbbell } from "lucide-react";
 import { toast } from "sonner";
 
+type Module = { t: string; d?: string };
 type Offer = {
   id: string;
   title: string;
@@ -20,6 +21,9 @@ type Offer = {
   whatsapp: string | null;
   offer_type: string;
   seller_id: string | null;
+  preview: string | null;
+  content: string | null;
+  modules: Module[] | null;
 };
 
 type Seller = { display_name: string | null; logo_url: string | null; specialty: string | null };
