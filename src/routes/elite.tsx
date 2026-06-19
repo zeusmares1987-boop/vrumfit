@@ -306,6 +306,9 @@ function ElitePage() {
             <button onClick={exportCombined} disabled={busy} className="mt-3 w-full bg-primary text-primary-foreground rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-50">
               <FileDown className="size-4" /> {busy ? "Montando PDF..." : "PDF combinado (treino + dieta)"}
             </button>
+            <button onClick={resetPlan} className="mt-2 w-full glass rounded-xl py-2 text-[11px] font-semibold text-muted-foreground">
+              Limpar plano salvo
+            </button>
           </Card>
 
           <Card>
