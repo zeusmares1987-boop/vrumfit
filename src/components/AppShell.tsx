@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut } from "lucide-react";
+import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut, ChevronLeft } from "lucide-react";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import type { ReactNode, InputHTMLAttributes } from "react";
 import logoV from "@/assets/logo-v.png";
