@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { Plus, Trash2, Package as Box } from "lucide-react";
 import { toast } from "sonner";
 
-type P = { id: string; title: string; short_desc: string | null; price_cents: number; status: string };
+type P = { id: string; title: string; short_desc: string | null; price_cents: number; status: string; cover_url: string | null };
 
 export const Route = createFileRoute("/produtos")({
   head: () => ({ meta: [{ title: "Produtos — VRUMFIT" }] }),
@@ -26,7 +26,7 @@ function Prod() {
 
   const load = async () => {
     const { data, error } = await supabase
-      .from("products").select("id,title,short_desc,price_cents,status").order("created_at", { ascending: false });
+      .from("products").select("id,title,short_desc,price_cents,status,cover_url").order("created_at", { ascending: false });
     if (error) toast.error(error.message); else setList((data ?? []) as P[]);
   };
   useEffect(() => { load(); }, []);
@@ -72,9 +72,15 @@ function Prod() {
       <div className="grid grid-cols-2 gap-3">
         {list.map((p) => (
           <div key={p.id} className="glass rounded-2xl p-3 relative">
-            <div className="size-10 rounded-xl bg-primary/15 border border-primary/25 grid place-items-center mb-2">
-              <Box className="size-4 text-primary" />
-            </div>
+            {p.cover_url ? (
+              <div className="relative w-full aspect-square rounded-xl overflow-hidden mb-2 border border-white/10">
+                <img src={p.cover_url} alt={p.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="size-10 rounded-xl bg-primary/15 border border-primary/25 grid place-items-center mb-2">
+                <Box className="size-4 text-primary" />
+              </div>
+            )}
             <p className="text-sm font-semibold leading-tight">{p.title}</p>
             <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{p.short_desc ?? "—"}</p>
             <p className="text-base font-extrabold text-primary mt-1.5">R$ {(p.price_cents / 100).toFixed(2)}</p>
