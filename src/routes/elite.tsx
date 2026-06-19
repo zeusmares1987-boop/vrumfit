@@ -67,6 +67,54 @@ function ElitePage() {
     setPlan(p);
   };
 
+  // ===== Persistência =====
+  const [saved, setSaved] = useState<SavedRow[]>([]);
+  const [showSaved, setShowSaved] = useState(false);
+
+  const loadSaved = async () => {
+    const { data, error } = await supabase
+      .from("saved_plans")
+      .select("id,name,created_at,payload")
+      .eq("kind", "elite")
+      .order("created_at", { ascending: false });
+    if (error) { toast.error("Erro ao carregar planos"); return; }
+    setSaved((data ?? []) as unknown as SavedRow[]);
+  };
+  useEffect(() => { loadSaved(); }, []);
+
+  const savePlan = async () => {
+    if (!plan) return;
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) { toast.error("Faça login para salvar"); return; }
+    const name = window.prompt("Nome do plano:", `Elite ${new Date().toLocaleDateString("pt-BR")}`);
+    if (!name) return;
+    const form: FormSnapshot = { sex, age, weight, height, goal, level, frequency, sessionMin, equip, weeks, dietGoal, bf, activity, meals, budget, restrictions };
+    const { error } = await supabase.from("saved_plans").insert({
+      user_id: u.user.id, kind: "elite", name, payload: { plan, form } as never,
+    });
+    if (error) { toast.error("Erro ao salvar"); return; }
+    toast.success("Plano salvo!");
+    loadSaved();
+  };
+
+  const restorePlan = (row: SavedRow) => {
+    const f = row.payload.form;
+    setSex(f.sex); setAge(f.age); setWeight(f.weight); setHeight(f.height);
+    setGoal(f.goal); setLevel(f.level); setFrequency(f.frequency); setSessionMin(f.sessionMin); setEquip(f.equip); setWeeks(f.weeks);
+    setDietGoal(f.dietGoal); setBf(f.bf); setActivity(f.activity); setMeals(f.meals); setBudget(f.budget); setRestrictions(f.restrictions);
+    setPlan(row.payload.plan);
+    setShowSaved(false);
+    toast.success(`"${row.name}" carregado`);
+  };
+
+  const deletePlan = async (id: string) => {
+    if (!confirm("Apagar este plano?")) return;
+    const { error } = await supabase.from("saved_plans").delete().eq("id", id);
+    if (error) { toast.error("Erro ao apagar"); return; }
+    toast.success("Apagado");
+    loadSaved();
+  };
+
   const exportCombined = async () => {
     if (!plan) return;
     setBusy(true);
