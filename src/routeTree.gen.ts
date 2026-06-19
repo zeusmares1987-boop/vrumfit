@@ -21,6 +21,7 @@ import { Route as LojaRouteImport } from './routes/loja'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FinanceiroRouteImport } from './routes/financeiro'
 import { Route as EvolucaoRouteImport } from './routes/evolucao'
+import { Route as EliteRouteImport } from './routes/elite'
 import { Route as DietaRouteImport } from './routes/dieta'
 import { Route as ConfigRouteImport } from './routes/config'
 import { Route as ChatRouteImport } from './routes/chat'
@@ -93,6 +94,11 @@ const EvolucaoRoute = EvolucaoRouteImport.update({
   path: '/evolucao',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EliteRoute = EliteRouteImport.update({
+  id: '/elite',
+  path: '/elite',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DietaRoute = DietaRouteImport.update({
   id: '/dieta',
   path: '/dieta',
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
+  '/elite': typeof EliteRoute
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
+  '/elite': typeof EliteRoute
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
+  '/elite': typeof EliteRoute
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/config'
     | '/dieta'
+    | '/elite'
     | '/evolucao'
     | '/financeiro'
     | '/login'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/config'
     | '/dieta'
+    | '/elite'
     | '/evolucao'
     | '/financeiro'
     | '/login'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/config'
     | '/dieta'
+    | '/elite'
     | '/evolucao'
     | '/financeiro'
     | '/login'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   ConfigRoute: typeof ConfigRoute
   DietaRoute: typeof DietaRoute
+  EliteRoute: typeof EliteRoute
   EvolucaoRoute: typeof EvolucaoRoute
   FinanceiroRoute: typeof FinanceiroRoute
   LoginRoute: typeof LoginRoute
@@ -412,6 +425,13 @@ declare module '@tanstack/react-router' {
       path: '/evolucao'
       fullPath: '/evolucao'
       preLoaderRoute: typeof EvolucaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/elite': {
+      id: '/elite'
+      path: '/elite'
+      fullPath: '/elite'
+      preLoaderRoute: typeof EliteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dieta': {
@@ -517,6 +537,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   ConfigRoute: ConfigRoute,
   DietaRoute: DietaRoute,
+  EliteRoute: EliteRoute,
   EvolucaoRoute: EvolucaoRoute,
   FinanceiroRoute: FinanceiroRoute,
   LoginRoute: LoginRoute,
