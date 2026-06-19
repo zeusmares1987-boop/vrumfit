@@ -9,15 +9,40 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TreinosRouteImport } from './routes/treinos'
 import { Route as TrainerRouteImport } from './routes/trainer'
+import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as StudentRouteImport } from './routes/student'
+import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as PlanosRouteImport } from './routes/planos'
+import { Route as PersonaisRouteImport } from './routes/personais'
 import { Route as OwnerRouteImport } from './routes/owner'
+import { Route as LojaRouteImport } from './routes/loja'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FinanceiroRouteImport } from './routes/financeiro'
+import { Route as EvolucaoRouteImport } from './routes/evolucao'
+import { Route as DietaRouteImport } from './routes/dieta'
+import { Route as ConfigRouteImport } from './routes/config'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as AvisosRouteImport } from './routes/avisos'
+import { Route as AvaliacoesRouteImport } from './routes/avaliacoes'
+import { Route as ArquivosRouteImport } from './routes/arquivos'
+import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TreinosRoute = TreinosRouteImport.update({
+  id: '/treinos',
+  path: '/treinos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TrainerRoute = TrainerRouteImport.update({
   id: '/trainer',
   path: '/trainer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuporteRoute = SuporteRouteImport.update({
+  id: '/suporte',
+  path: '/suporte',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudentRoute = StudentRouteImport.update({
@@ -25,14 +50,79 @@ const StudentRoute = StudentRouteImport.update({
   path: '/student',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProdutosRoute = ProdutosRouteImport.update({
+  id: '/produtos',
+  path: '/produtos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanosRoute = PlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonaisRoute = PersonaisRouteImport.update({
+  id: '/personais',
+  path: '/personais',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OwnerRoute = OwnerRouteImport.update({
   id: '/owner',
   path: '/owner',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LojaRoute = LojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceiroRoute = FinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvolucaoRoute = EvolucaoRouteImport.update({
+  id: '/evolucao',
+  path: '/evolucao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DietaRoute = DietaRouteImport.update({
+  id: '/dieta',
+  path: '/dieta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfigRoute = ConfigRouteImport.update({
+  id: '/config',
+  path: '/config',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvisosRoute = AvisosRouteImport.update({
+  id: '/avisos',
+  path: '/avisos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvaliacoesRoute = AvaliacoesRouteImport.update({
+  id: '/avaliacoes',
+  path: '/avaliacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArquivosRoute = ArquivosRouteImport.update({
+  id: '/arquivos',
+  path: '/arquivos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlunosRoute = AlunosRouteImport.update({
+  id: '/alunos',
+  path: '/alunos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,49 +133,184 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/alunos': typeof AlunosRoute
+  '/arquivos': typeof ArquivosRoute
+  '/avaliacoes': typeof AvaliacoesRoute
+  '/avisos': typeof AvisosRoute
+  '/chat': typeof ChatRoute
+  '/config': typeof ConfigRoute
+  '/dieta': typeof DietaRoute
+  '/evolucao': typeof EvolucaoRoute
+  '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
+  '/loja': typeof LojaRoute
   '/owner': typeof OwnerRoute
+  '/personais': typeof PersonaisRoute
+  '/planos': typeof PlanosRoute
+  '/produtos': typeof ProdutosRoute
   '/student': typeof StudentRoute
+  '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
+  '/treinos': typeof TreinosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/alunos': typeof AlunosRoute
+  '/arquivos': typeof ArquivosRoute
+  '/avaliacoes': typeof AvaliacoesRoute
+  '/avisos': typeof AvisosRoute
+  '/chat': typeof ChatRoute
+  '/config': typeof ConfigRoute
+  '/dieta': typeof DietaRoute
+  '/evolucao': typeof EvolucaoRoute
+  '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
+  '/loja': typeof LojaRoute
   '/owner': typeof OwnerRoute
+  '/personais': typeof PersonaisRoute
+  '/planos': typeof PlanosRoute
+  '/produtos': typeof ProdutosRoute
   '/student': typeof StudentRoute
+  '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
+  '/treinos': typeof TreinosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/alunos': typeof AlunosRoute
+  '/arquivos': typeof ArquivosRoute
+  '/avaliacoes': typeof AvaliacoesRoute
+  '/avisos': typeof AvisosRoute
+  '/chat': typeof ChatRoute
+  '/config': typeof ConfigRoute
+  '/dieta': typeof DietaRoute
+  '/evolucao': typeof EvolucaoRoute
+  '/financeiro': typeof FinanceiroRoute
   '/login': typeof LoginRoute
+  '/loja': typeof LojaRoute
   '/owner': typeof OwnerRoute
+  '/personais': typeof PersonaisRoute
+  '/planos': typeof PlanosRoute
+  '/produtos': typeof ProdutosRoute
   '/student': typeof StudentRoute
+  '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
+  '/treinos': typeof TreinosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/owner' | '/student' | '/trainer'
+  fullPaths:
+    | '/'
+    | '/alunos'
+    | '/arquivos'
+    | '/avaliacoes'
+    | '/avisos'
+    | '/chat'
+    | '/config'
+    | '/dieta'
+    | '/evolucao'
+    | '/financeiro'
+    | '/login'
+    | '/loja'
+    | '/owner'
+    | '/personais'
+    | '/planos'
+    | '/produtos'
+    | '/student'
+    | '/suporte'
+    | '/trainer'
+    | '/treinos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/owner' | '/student' | '/trainer'
-  id: '__root__' | '/' | '/login' | '/owner' | '/student' | '/trainer'
+  to:
+    | '/'
+    | '/alunos'
+    | '/arquivos'
+    | '/avaliacoes'
+    | '/avisos'
+    | '/chat'
+    | '/config'
+    | '/dieta'
+    | '/evolucao'
+    | '/financeiro'
+    | '/login'
+    | '/loja'
+    | '/owner'
+    | '/personais'
+    | '/planos'
+    | '/produtos'
+    | '/student'
+    | '/suporte'
+    | '/trainer'
+    | '/treinos'
+  id:
+    | '__root__'
+    | '/'
+    | '/alunos'
+    | '/arquivos'
+    | '/avaliacoes'
+    | '/avisos'
+    | '/chat'
+    | '/config'
+    | '/dieta'
+    | '/evolucao'
+    | '/financeiro'
+    | '/login'
+    | '/loja'
+    | '/owner'
+    | '/personais'
+    | '/planos'
+    | '/produtos'
+    | '/student'
+    | '/suporte'
+    | '/trainer'
+    | '/treinos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AlunosRoute: typeof AlunosRoute
+  ArquivosRoute: typeof ArquivosRoute
+  AvaliacoesRoute: typeof AvaliacoesRoute
+  AvisosRoute: typeof AvisosRoute
+  ChatRoute: typeof ChatRoute
+  ConfigRoute: typeof ConfigRoute
+  DietaRoute: typeof DietaRoute
+  EvolucaoRoute: typeof EvolucaoRoute
+  FinanceiroRoute: typeof FinanceiroRoute
   LoginRoute: typeof LoginRoute
+  LojaRoute: typeof LojaRoute
   OwnerRoute: typeof OwnerRoute
+  PersonaisRoute: typeof PersonaisRoute
+  PlanosRoute: typeof PlanosRoute
+  ProdutosRoute: typeof ProdutosRoute
   StudentRoute: typeof StudentRoute
+  SuporteRoute: typeof SuporteRoute
   TrainerRoute: typeof TrainerRoute
+  TreinosRoute: typeof TreinosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/treinos': {
+      id: '/treinos'
+      path: '/treinos'
+      fullPath: '/treinos'
+      preLoaderRoute: typeof TreinosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trainer': {
       id: '/trainer'
       path: '/trainer'
       fullPath: '/trainer'
       preLoaderRoute: typeof TrainerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suporte': {
+      id: '/suporte'
+      path: '/suporte'
+      fullPath: '/suporte'
+      preLoaderRoute: typeof SuporteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/student': {
@@ -95,6 +320,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/produtos': {
+      id: '/produtos'
+      path: '/produtos'
+      fullPath: '/produtos'
+      preLoaderRoute: typeof ProdutosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planos': {
+      id: '/planos'
+      path: '/planos'
+      fullPath: '/planos'
+      preLoaderRoute: typeof PlanosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personais': {
+      id: '/personais'
+      path: '/personais'
+      fullPath: '/personais'
+      preLoaderRoute: typeof PersonaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/owner': {
       id: '/owner'
       path: '/owner'
@@ -102,11 +348,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/loja': {
+      id: '/loja'
+      path: '/loja'
+      fullPath: '/loja'
+      preLoaderRoute: typeof LojaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/financeiro': {
+      id: '/financeiro'
+      path: '/financeiro'
+      fullPath: '/financeiro'
+      preLoaderRoute: typeof FinanceiroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evolucao': {
+      id: '/evolucao'
+      path: '/evolucao'
+      fullPath: '/evolucao'
+      preLoaderRoute: typeof EvolucaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dieta': {
+      id: '/dieta'
+      path: '/dieta'
+      fullPath: '/dieta'
+      preLoaderRoute: typeof DietaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/config': {
+      id: '/config'
+      path: '/config'
+      fullPath: '/config'
+      preLoaderRoute: typeof ConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/avisos': {
+      id: '/avisos'
+      path: '/avisos'
+      fullPath: '/avisos'
+      preLoaderRoute: typeof AvisosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/avaliacoes': {
+      id: '/avaliacoes'
+      path: '/avaliacoes'
+      fullPath: '/avaliacoes'
+      preLoaderRoute: typeof AvaliacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arquivos': {
+      id: '/arquivos'
+      path: '/arquivos'
+      fullPath: '/arquivos'
+      preLoaderRoute: typeof ArquivosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alunos': {
+      id: '/alunos'
+      path: '/alunos'
+      fullPath: '/alunos'
+      preLoaderRoute: typeof AlunosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -121,10 +437,25 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AlunosRoute: AlunosRoute,
+  ArquivosRoute: ArquivosRoute,
+  AvaliacoesRoute: AvaliacoesRoute,
+  AvisosRoute: AvisosRoute,
+  ChatRoute: ChatRoute,
+  ConfigRoute: ConfigRoute,
+  DietaRoute: DietaRoute,
+  EvolucaoRoute: EvolucaoRoute,
+  FinanceiroRoute: FinanceiroRoute,
   LoginRoute: LoginRoute,
+  LojaRoute: LojaRoute,
   OwnerRoute: OwnerRoute,
+  PersonaisRoute: PersonaisRoute,
+  PlanosRoute: PlanosRoute,
+  ProdutosRoute: ProdutosRoute,
   StudentRoute: StudentRoute,
+  SuporteRoute: SuporteRoute,
   TrainerRoute: TrainerRoute,
+  TreinosRoute: TreinosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

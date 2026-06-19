@@ -10,31 +10,31 @@ export const Route = createFileRoute("/owner")({
   head: () => ({
     meta: [
       { title: "Painel do Dono — VRUMFIT PERSONAL" },
-      { name: "description", content: "Gestão completa da sua academia: alunos, personais, receita e módulos." },
+      { name: "description", content: "Gestão completa: alunos, personais, receita e módulos." },
     ],
   }),
   component: OwnerDashboard,
 });
 
 const tiles = [
-  { icon: Dumbbell, label: "Treinos", hint: "Planilhas e prescrições" },
-  { icon: Apple, label: "Dieta", hint: "Planos alimentares" },
-  { icon: ClipboardList, label: "Avaliações", hint: "Bioimpedância e dobras" },
-  { icon: LineChart, label: "Evolução", hint: "Gráficos e fotos" },
-  { icon: MessageSquare, label: "Chat", hint: "Conversas ao vivo" },
-  { icon: ShoppingBag, label: "Loja", hint: "Vendas e pedidos" },
-  { icon: Package, label: "Produtos", hint: "Catálogo" },
-  { icon: CreditCard, label: "Planos", hint: "Assinaturas" },
-  { icon: Wallet, label: "Financeiro", hint: "Receita e despesas" },
-  { icon: FolderOpen, label: "Arquivos", hint: "Documentos" },
-  { icon: Megaphone, label: "Avisos", hint: "Comunicados" },
-  { icon: Users, label: "Alunos", hint: "Base de alunos" },
-  { icon: UserCog, label: "Personais", hint: "Equipe técnica" },
-  { icon: Settings, label: "Config", hint: "Preferências" },
-  { icon: LifeBuoy, label: "Suporte", hint: "Ajuda" },
-];
+  { icon: Dumbbell, label: "Treinos", hint: "Gerador IA", to: "/treinos" },
+  { icon: Apple, label: "Dieta", hint: "Gerador IA", to: "/dieta" },
+  { icon: ClipboardList, label: "Avaliações", hint: "Bioimpedância", to: "/avaliacoes" },
+  { icon: LineChart, label: "Evolução", hint: "Gráficos", to: "/evolucao" },
+  { icon: MessageSquare, label: "Chat", hint: "Conversas", to: "/chat" },
+  { icon: ShoppingBag, label: "Loja", hint: "Vendas", to: "/loja" },
+  { icon: Package, label: "Produtos", hint: "Catálogo", to: "/produtos" },
+  { icon: CreditCard, label: "Planos", hint: "Assinaturas", to: "/planos" },
+  { icon: Wallet, label: "Financeiro", hint: "Receita", to: "/financeiro" },
+  { icon: FolderOpen, label: "Arquivos", hint: "Documentos", to: "/arquivos" },
+  { icon: Megaphone, label: "Avisos", hint: "Comunicados", to: "/avisos" },
+  { icon: Users, label: "Alunos", hint: "Base", to: "/alunos" },
+  { icon: UserCog, label: "Personais", hint: "Equipe", to: "/personais" },
+  { icon: Settings, label: "Config", hint: "Preferências", to: "/config" },
+  { icon: LifeBuoy, label: "Suporte", hint: "Ajuda", to: "/suporte" },
+] as const;
 
-const chips = ["Geral", "Treinos", "Alunos", "Personais", "Financeiro"];
+const chips = ["Geral", "Treinos", "Alunos", "Financeiro"];
 
 function OwnerDashboard() {
   const navigate = useNavigate();
@@ -63,7 +63,6 @@ function OwnerDashboard() {
 
   return (
     <div className="min-h-[100dvh] pb-[calc(96px+env(safe-area-inset-bottom))] font-display">
-      {/* Top bar */}
       <header className="px-5 pt-[max(env(safe-area-inset-top),2.5rem)] pb-4 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
@@ -78,30 +77,24 @@ function OwnerDashboard() {
             <Bell className="size-4" />
             <span className="absolute top-2 right-2 size-1.5 rounded-full bg-primary" />
           </button>
-          <button
-            onClick={logout}
-            className="size-10 rounded-full glass grid place-items-center"
-            aria-label="Sair"
-          >
+          <button onClick={logout} className="size-10 rounded-full glass grid place-items-center" aria-label="Sair">
             <LogOut className="size-4" />
           </button>
         </div>
       </header>
 
-      {/* Search */}
       <div className="px-5">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar módulo, aluno ou treino…"
+            placeholder="Buscar módulo…"
             className="w-full glass rounded-2xl pl-11 pr-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground/70"
           />
         </div>
       </div>
 
-      {/* Chips */}
       <div className="px-5 mt-4">
         <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
           {chips.map((c) => (
@@ -109,9 +102,7 @@ function OwnerDashboard() {
               key={c}
               onClick={() => setActiveChip(c)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition ${
-                activeChip === c
-                  ? "bg-primary text-primary-foreground"
-                  : "glass text-muted-foreground"
+                activeChip === c ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"
               }`}
             >
               {c}
@@ -120,14 +111,12 @@ function OwnerDashboard() {
         </div>
       </div>
 
-      {/* Metrics */}
       <section className="px-5 mt-6 grid grid-cols-3 gap-3">
-        <Metric label="Alunos" value="142" delta="+12%" positive />
-        <Metric label="Personais" value="08" delta="+1" positive accent />
-        <Metric label="Receita" value="R$ 28k" delta="+4%" positive />
+        <Metric label="Alunos" value="142" delta="+12%" />
+        <Metric label="Personais" value="08" delta="+1" accent />
+        <Metric label="Receita" value="R$ 28k" delta="+4%" />
       </section>
 
-      {/* Featured */}
       <section className="px-5 mt-6">
         <div className="glass rounded-3xl p-5 relative overflow-hidden">
           <div className="absolute -right-10 -bottom-10 size-40 rounded-full bg-primary/20 blur-3xl" />
@@ -137,13 +126,12 @@ function OwnerDashboard() {
           <h3 className="mt-2 text-2xl font-bold leading-tight">
             12 treinos prescritos<br />
             <span className="text-muted-foreground font-medium text-base">
-              3 avaliações agendadas · 5 mensagens
+              3 avaliações · 5 mensagens
             </span>
           </h3>
         </div>
       </section>
 
-      {/* Modules */}
       <section className="px-5 mt-7">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground font-semibold">
@@ -153,12 +141,11 @@ function OwnerDashboard() {
         </div>
         <div className="grid grid-cols-3 gap-3">
           {filtered.map((t) => (
-            <Tile key={t.label} icon={t.icon} label={t.label} hint={t.hint} />
+            <Tile key={t.label} icon={t.icon} label={t.label} hint={t.hint} to={t.to} />
           ))}
         </div>
       </section>
 
-      {/* Bottom nav */}
       <nav
         className="fixed bottom-0 inset-x-0 z-40 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-2"
         style={{ background: "linear-gradient(to top, var(--background) 60%, transparent)" }}
@@ -174,40 +161,33 @@ function OwnerDashboard() {
   );
 }
 
-function Metric({
-  label, value, delta, positive, accent,
-}: { label: string; value: string; delta: string; positive?: boolean; accent?: boolean }) {
+function Metric({ label, value, delta, accent }: { label: string; value: string; delta: string; accent?: boolean }) {
   return (
-    <div
-      className={`rounded-2xl p-3.5 ${
-        accent ? "bg-primary/10 border border-primary/30" : "glass"
-      }`}
-    >
+    <div className={`rounded-2xl p-3.5 ${accent ? "bg-primary/10 border border-primary/30" : "glass"}`}>
       <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{label}</p>
       <p className={`mt-1.5 text-xl font-extrabold ${accent ? "text-primary" : ""}`}>{value}</p>
-      <p className={`text-[10px] font-mono mt-0.5 ${positive ? "text-success" : "text-muted-foreground"}`}>
-        {delta}
-      </p>
+      <p className="text-[10px] font-mono mt-0.5 text-success">{delta}</p>
     </div>
   );
 }
 
 function Tile({
-  icon: Icon, label, hint,
-}: { icon: React.ComponentType<{ className?: string }>; label: string; hint: string }) {
+  icon: Icon, label, hint, to,
+}: { icon: React.ComponentType<{ className?: string }>; label: string; hint: string; to: string }) {
   return (
-    <button className="group relative aspect-square glass rounded-2xl p-3 flex flex-col justify-between text-left overflow-hidden hover:border-primary/40 transition">
+    <Link
+      to={to}
+      className="group relative aspect-square glass rounded-2xl p-3 flex flex-col justify-between text-left overflow-hidden hover:border-primary/40 transition"
+    >
       <div className="size-9 rounded-xl bg-primary/15 border border-primary/25 grid place-items-center">
         <Icon className="size-4 text-primary" />
       </div>
       <div>
         <p className="text-[13px] font-semibold leading-tight">{label}</p>
-        <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 line-clamp-1">
-          {hint}
-        </p>
+        <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 line-clamp-1">{hint}</p>
       </div>
       <div className="absolute -right-6 -bottom-6 size-16 rounded-full bg-primary/0 group-hover:bg-primary/10 blur-xl transition" />
-    </button>
+    </Link>
   );
 }
 
