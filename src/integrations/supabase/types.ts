@@ -921,6 +921,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_ownership: { Args: never; Returns: boolean }
       current_role_label: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
