@@ -740,36 +740,6 @@ export type Database = {
         }
         Relationships: []
       }
-      saved_plans: {
-        Row: {
-          created_at: string
-          id: string
-          kind: string
-          name: string
-          payload: Json
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          kind: string
-          name: string
-          payload: Json
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          kind?: string
-          name?: string
-          payload?: Json
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       students: {
         Row: {
           birth_date: string | null
