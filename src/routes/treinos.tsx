@@ -71,16 +71,7 @@ function TreinosPage() {
               ))}
             </div>
           </Field>
-          <Field label="Observações (lesões, preferências)">
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={inputCls} placeholder="opcional" />
-          </Field>
-          <div className="grid grid-cols-2 gap-2">
-            <button type="submit" className="h-12 rounded-2xl glass text-sm font-bold">GERAR LOCAL</button>
-            <button type="button" disabled={loadingAI} onClick={submitAI} className={`${btnPrimary} flex items-center justify-center gap-2 disabled:opacity-60`}>
-              {loadingAI ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
-              {loadingAI ? "GERANDO…" : "GERAR COM IA"}
-            </button>
-          </div>
+          <button type="submit" className={btnPrimary}>GERAR PLANILHA</button>
         </form>
       </Card>
 
