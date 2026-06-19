@@ -20,8 +20,21 @@ export function AppShell({
   /** alias compatível com versões antigas das rotas */
   action?: ReactNode;
 }) {
-  const { role, signOut } = useAuth();
+  const { role, session, loading, signOut } = useAuth();
   const navigate = useNavigate();
+
+  // Auto-protect: anyone using AppShell must be signed in
+  if (!loading && !session) {
+    navigate({ to: "/auth" });
+    return null;
+  }
+  if (loading) {
+    return (
+      <div className="min-h-[100dvh] grid place-items-center bg-background">
+        <div className="size-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   const onSignOut = async () => {
     await signOut();
