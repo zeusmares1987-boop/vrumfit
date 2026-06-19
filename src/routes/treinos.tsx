@@ -1,12 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
-import { Download, BookOpen, FileDown, Sparkles, Loader2 } from "lucide-react";
+import { Download, BookOpen, FileDown } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { WorkoutPDF, type WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
-import { generateWorkoutAI } from "@/lib/ai.functions";
-import { toast } from "sonner";
 
 type Split = "fullbody" | "ab" | "abc" | "abcd" | "abcde";
 type Goal = "hipertrofia" | "forca" | "resistencia";
@@ -21,33 +18,11 @@ function TreinosPage() {
   const [split, setSplit] = useState<Split>("abcd");
   const [goal, setGoal] = useState<Goal>("hipertrofia");
   const [level, setLevel] = useState<"iniciante" | "intermediario" | "avancado">("intermediario");
-  const [notes, setNotes] = useState("");
-  const [loadingAI, setLoadingAI] = useState(false);
-  const [plan, setPlan] = useState<{ name: string; exercises: { name: string; sets: number; reps: string; rest: string; tip?: string }[] }[] | null>(null);
-  const aiFn = useServerFn(generateWorkoutAI);
+  const [plan, setPlan] = useState<{ name: string; exercises: { name: string; sets: number; reps: string; rest: string }[] }[] | null>(null);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setPlan(generate(split, goal, level));
-  };
-
-  const submitAI = async () => {
-    setLoadingAI(true);
-    try {
-      const res = await aiFn({ data: { goal, level, days, split, notes } });
-      setPlan(
-        res.days.map((d) => ({
-          name: `${d.name} — ${d.focus}`,
-          exercises: d.exercises.map((ex) => ({ name: ex.name, sets: ex.sets, reps: ex.reps, rest: ex.rest, tip: ex.tip })),
-        })),
-      );
-      toast.success("Plano gerado com IA");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Erro ao gerar com IA";
-      toast.error(msg.includes("429") ? "Limite de IA atingido. Tente em instantes." : msg.includes("402") ? "Créditos de IA esgotados." : msg);
-    } finally {
-      setLoadingAI(false);
-    }
   };
 
   return (
@@ -96,16 +71,7 @@ function TreinosPage() {
               ))}
             </div>
           </Field>
-          <Field label="Observações (lesões, preferências)">
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={inputCls} placeholder="opcional" />
-          </Field>
-          <div className="grid grid-cols-2 gap-2">
-            <button type="submit" className="h-12 rounded-2xl glass text-sm font-bold">GERAR LOCAL</button>
-            <button type="button" disabled={loadingAI} onClick={submitAI} className={`${btnPrimary} flex items-center justify-center gap-2 disabled:opacity-60`}>
-              {loadingAI ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
-              {loadingAI ? "GERANDO…" : "GERAR COM IA"}
-            </button>
-          </div>
+          <button type="submit" className={btnPrimary}>GERAR PLANILHA</button>
         </form>
       </Card>
 
