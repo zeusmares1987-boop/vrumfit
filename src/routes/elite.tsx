@@ -1,13 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
-import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
+import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap, Save, FolderOpen, Trash2 } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { PDFDocument } from "pdf-lib";
 import { WorkoutPDF, DietPDF, type WorkoutPDFData, type DietPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateElitePlan, type ElitePlan } from "@/lib/integration-engine";
 import type { Goal, Level, Equip, Sex } from "@/lib/workout-engine";
 import type { GoalDiet, DietRestriction, Budget } from "@/lib/diet-engine";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+type SavedRow = { id: string; name: string; created_at: string; payload: { plan: ElitePlan; form: FormSnapshot } };
+type FormSnapshot = {
+  sex: Sex; age: number; weight: number; height: number;
+  goal: Goal; level: Level; frequency: number; sessionMin: number; equip: Equip; weeks: number;
+  dietGoal: GoalDiet; bf: number | ""; activity: number; meals: number; budget: Budget; restrictions: DietRestriction[];
+};
 
 export const Route = createFileRoute("/elite")({
   head: () => ({ meta: [{ title: "Plano Elite Integrado — VRUMFIT" }] }),
