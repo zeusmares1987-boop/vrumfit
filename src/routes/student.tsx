@@ -145,7 +145,7 @@ function StudentPage() {
         {[
           { icon: TrendingUp, label: "Progresso", hint: "Peso, medidas, frequência", to: "/evolucao" },
           { icon: ClipboardCheck, label: "Avaliações", hint: "Histórico de medidas", to: "/avaliacoes" },
-          { icon: BookOpen, label: "Biblioteca", hint: "Como executar exercícios", to: "/treinos" },
+          { icon: BookOpen, label: "Biblioteca", hint: "Como executar exercícios", to: "/biblioteca" },
           { icon: ShoppingBag, label: "Loja", hint: "Produtos digitais", to: "/loja" },
           { icon: FolderOpen, label: "Arquivos", hint: "PDFs e materiais", to: "/arquivos" },
           { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos" },
