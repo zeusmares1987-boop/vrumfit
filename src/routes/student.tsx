@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  Dumbbell, Apple, TrendingUp, BookOpen, ShoppingBag, FolderOpen, Bell, ClipboardCheck, ChevronRight, FileText,
+  Dumbbell, Apple, TrendingUp, BookOpen, ShoppingBag, FolderOpen, Bell, ClipboardCheck, ChevronRight, FileText, Crown,
 } from "lucide-react";
+import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
