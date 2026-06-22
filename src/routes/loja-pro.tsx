@@ -271,7 +271,9 @@ function Panel() {
             </div>
           </Card>
         ))}
-        {list.length === 0 && <p className="text-center text-xs text-white/50 py-6">Sem ofertas ainda.</p>}
+        {list.length === 0 && (
+          <EmptyState icon={Store} title="Sem ofertas ainda" hint="Clique em NOVA OFERTA para publicar a primeira." />
+        )}
       </div>
     </AppShell>
   );
