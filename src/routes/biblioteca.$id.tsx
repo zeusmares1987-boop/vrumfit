@@ -84,25 +84,9 @@ function DetailPage() {
         </div>
       </div>
 
-      <div className="px-5 pb-10 max-w-md mx-auto">
-        {/* Título */}
-        <h1 className="text-[34px] leading-[1] font-black tracking-tight uppercase">
-          {ex.name.split(" ").length > 1 ? (
-            <>
-              {ex.name.split(" ").slice(0, -1).join(" ")}{" "}
-              <span className="text-primary">{ex.name.split(" ").slice(-1)}</span>
-            </>
-          ) : (
-            <span className="text-primary">{ex.name}</span>
-          )}
-        </h1>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="h-[2px] w-5 bg-primary" />
-          <span className="text-[11px] tracking-[0.4em] text-white/80 font-semibold">EXECUÇÃO</span>
-        </div>
-
+      <div className="px-3 pb-10 max-w-[720px] mx-auto">
         {role === "dono" && (
-          <button onClick={() => setEditing((v) => !v)} className="mt-4 w-full h-11 rounded-xl border border-primary/40 bg-primary/10 text-primary text-[12px] font-bold flex items-center justify-center gap-2">
+          <button onClick={() => setEditing((v) => !v)} className="mb-3 w-full h-11 rounded-xl border border-primary/40 bg-primary/10 text-primary text-[12px] font-bold flex items-center justify-center gap-2">
             {editing ? <X className="size-4" /> : <Pencil className="size-4" />} {editing ? "FECHAR EDIÇÃO" : "EDITAR FOTOS E PASSOS"}
           </button>
         )}
@@ -121,7 +105,7 @@ function DetailPage() {
           </div>
         )}
 
-        <div className="mt-4">
+        <div>
           <VrumExercisePoster exercise={ex} />
         </div>
       </div>
