@@ -227,16 +227,16 @@ function Field({
 }) {
   return (
     <div className="relative">
-      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 size-[16px] text-white/45" />
+      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 size-[16px] text-white/40 pointer-events-none" />
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full h-12 rounded-xl bg-white/[0.04] border border-white/10 pl-11 pr-11 text-[14px] text-white outline-none placeholder:text-white/40 focus:border-primary/60 focus:bg-white/[0.07] transition"
+        className="w-full h-12 rounded-xl bg-white/[0.05] pl-11 pr-11 text-[14px] text-white outline-none placeholder:text-white/40 focus:bg-white/[0.08] transition"
       />
       {RightIcon && (
-        <button type="button" onClick={onRightClick} className="absolute right-2 top-1/2 -translate-y-1/2 size-8 grid place-items-center text-white/50 hover:text-white">
+        <button type="button" onClick={onRightClick} className="absolute right-2 top-1/2 -translate-y-1/2 size-8 grid place-items-center text-white/40 hover:text-white/80">
           <RightIcon className="size-[16px]" />
         </button>
       )}
