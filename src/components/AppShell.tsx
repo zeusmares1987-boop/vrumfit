@@ -2,8 +2,6 @@ import { Link, Navigate, useNavigate, useRouterState } from "@tanstack/react-rou
 import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut, ChevronLeft } from "lucide-react";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import type { ReactNode, InputHTMLAttributes } from "react";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
-const logoV = logoVAsset.url;
 
 export function AppShell({
   title,

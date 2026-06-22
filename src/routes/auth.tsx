@@ -5,8 +5,6 @@ import { User, Lock, Eye, EyeOff, ChevronRight, Mail, Phone, ArrowLeft } from "l
 import { toast } from "sonner";
 import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
 const heroLogin = heroLoginAsset.url;
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
-const logoV = logoVAsset.url;
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";

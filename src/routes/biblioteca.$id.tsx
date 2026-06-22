@@ -7,8 +7,6 @@ import { VrumExercisePoster } from "@/components/VrumExercisePoster";
 import { getExercisePosterUrl } from "@/lib/exercisePosters";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
-const logoV = logoVAsset.url;
 
 export const Route = createFileRoute("/biblioteca/$id")({
   head: () => ({ meta: [{ title: "Exercício — VRUMFIT" }] }),

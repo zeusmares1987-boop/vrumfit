@@ -10,8 +10,6 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
-const logoV = logoVAsset.url;
 import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
 const headerGym = headerGymAsset.url;
 import tileUsuariosAsset from "@/assets/tile-usuarios.jpg.asset.json";
