@@ -154,7 +154,7 @@ function StudentPage() {
             Olá, <span className="text-primary">{firstName}</span>
           </h1>
           <p className="mt-1 text-[12.5px] text-white/70">Pronto para o treino de hoje?</p>
-          <img src={logoV} alt="" width={56} height={56} decoding="async" loading="lazy" className="absolute right-4 top-4 size-14 opacity-90 drop-shadow-[0_4px_18px_rgba(255,120,30,0.35)]" />
+          
         </div>
       </section>
 

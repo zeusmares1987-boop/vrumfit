@@ -68,7 +68,7 @@ function ResetPasswordPage() {
           <Link to="/auth" className="inline-flex items-center gap-1.5 text-[12px] text-white/70 hover:text-primary">
             <ArrowLeft className="size-3.5" /> Voltar para entrar
           </Link>
-          <img src={logoV} alt="VRUMFIT" width={64} height={64} className="mt-4 size-16 drop-shadow-[0_6px_20px_rgba(255,107,26,0.5)]" />
+          
           <p className="mt-4 text-[10px] uppercase tracking-[0.32em] text-primary font-bold">Recuperação</p>
           <h1 className="mt-1 text-3xl font-black tracking-tight">Crie uma nova senha</h1>
           <p className="mt-1.5 text-[13px] text-white/65 leading-snug">
