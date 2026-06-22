@@ -5,8 +5,9 @@ import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { StoredImage, toStoredImageRef } from "@/components/StoredImage";
 import { toast } from "sonner";
-import { Settings as SettingsIcon, LogOut, Mail, User } from "lucide-react";
+import { Settings as SettingsIcon, LogOut, Mail, Camera } from "lucide-react";
 
 export const Route = createFileRoute("/config")({
   head: () => ({ meta: [{ title: "Configurações — VRUMFIT" }] }),
@@ -23,6 +24,7 @@ function Cfg() {
   const [form, setForm] = useState({ full_name: "", email: "", phone: "", avatar_url: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -51,6 +53,25 @@ function Cfg() {
     toast.success("Perfil atualizado!");
   };
 
+  const uploadAvatar = async (file: File) => {
+    if (!user) return;
+    if (!file.type.startsWith("image/")) return toast.error("Escolha uma imagem.");
+    setUploadingPhoto(true);
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage.from("vrumfit-files").upload(path, file, { contentType: file.type });
+    if (uploadError) {
+      setUploadingPhoto(false);
+      return toast.error(uploadError.message);
+    }
+    const avatarUrl = toStoredImageRef(path);
+    const { error } = await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("id", user.id);
+    setUploadingPhoto(false);
+    if (error) return toast.error(error.message);
+    setForm((current) => ({ ...current, avatar_url: avatarUrl }));
+    toast.success("Foto atualizada!");
+  };
+
   const logout = async () => {
     await signOut();
     nav({ to: "/auth" });
@@ -75,7 +96,7 @@ function Cfg() {
             <div className="flex items-center gap-3 pb-3 border-b border-white/5">
               <div className="size-16 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 grid place-items-center text-primary font-black text-xl overflow-hidden shrink-0">
                 {form.avatar_url
-                  ? <img src={form.avatar_url} alt="" className="size-full object-cover" />
+                  ? <StoredImage src={form.avatar_url} alt="" className="size-full object-cover" />
                   : initials}
               </div>
               <div className="flex-1 min-w-0">
@@ -87,14 +108,20 @@ function Cfg() {
               </div>
             </div>
 
+              <label className="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-primary/40 bg-primary/10 text-[12px] font-black text-primary transition hover:bg-primary/15">
+                <Camera className="size-4" /> {uploadingPhoto ? "ENVIANDO FOTO..." : "TROCAR FOTO DO PERFIL"}
+                <input type="file" accept="image/*" className="sr-only" disabled={uploadingPhoto} onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadAvatar(file);
+                  e.currentTarget.value = "";
+                }} />
+              </label>
+
             <Field label="Nome completo">
               <input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} className={inputCls} />
             </Field>
             <Field label="Telefone">
               <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} />
-            </Field>
-            <Field label="URL do avatar" hint="Cole o link de uma imagem pública">
-              <input value={form.avatar_url} onChange={(e) => setForm({ ...form, avatar_url: e.target.value })} className={inputCls} placeholder="https://…" />
             </Field>
             <button disabled={saving} className={btnPrimary}>{saving ? "SALVANDO…" : "SALVAR PERFIL"}</button>
           </form>
