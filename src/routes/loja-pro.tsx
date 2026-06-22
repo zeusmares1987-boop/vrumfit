@@ -183,6 +183,18 @@ function Panel() {
         </Link>
       }
     >
+      <PageHero
+        eyebrow="Profissional"
+        title="Minhas Ofertas"
+        subtitle="Publique até 5 anúncios e receba contatos direto no seu WhatsApp."
+        icon={Store}
+        stats={[
+          { label: "Ativas", value: `${ativos}/${limite || "—"}` },
+          { label: "Total", value: list.length },
+          { label: "Cliques", value: totalClicks },
+        ]}
+      />
+
       {!plan && (
         <Card className="p-3 flex items-start gap-3 border-amber-500/40">
           <AlertCircle className="size-4 text-amber-400 shrink-0 mt-0.5" />
