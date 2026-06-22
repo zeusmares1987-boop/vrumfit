@@ -63,6 +63,7 @@ const wideTiles: Tile[] = [
 
 function StudentPage() {
   const { user } = useAuth();
+  const qc = useQueryClient();
 
   const { data: profile } = useQuery({
     queryKey: ["my-profile", user?.id],
@@ -94,6 +95,46 @@ function StudentPage() {
     enabled: !!user,
   });
 
+  const { data: myPersonal } = useQuery({
+    queryKey: ["my-personal", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data: stu } = await supabase.from("students").select("personal_id").eq("user_id", user.id).maybeSingle();
+      if (!stu?.personal_id) return null;
+      const { data: prof } = await supabase.from("profiles").select("full_name,email,phone,avatar_url").eq("id", stu.personal_id).maybeSingle();
+      return prof ? { ...prof, id: stu.personal_id } : null;
+    },
+    enabled: !!user,
+  });
+
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: sessionToday } = useQuery({
+    queryKey: ["my-session-today", user?.id, today],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("workout_sessions").select("id").eq("student_id", user.id).eq("session_date", today).maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const markDone = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("not logged");
+      const { error } = await supabase.from("workout_sessions").insert({
+        student_id: user.id,
+        workout_id: currentWorkout?.id ?? null,
+        session_date: today,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Treino marcado! 💪");
+      qc.invalidateQueries({ queryKey: ["my-session-today"] });
+    },
+    onError: (e: any) => toast.error(e.message ?? "Falha"),
+  });
+
   const { data: hasOwner, refetch: refetchHasOwner } = useQuery({
     queryKey: ["has-owner"],
     queryFn: async () => {
@@ -121,7 +162,7 @@ function StudentPage() {
   });
 
   const firstName = profile?.full_name?.split(" ")[0] ?? "Aluno";
-  const today = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+  const todayLabel = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
 
   return (
     <AppShell>
