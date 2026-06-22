@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppShell, Card } from "@/components/AppShell";
+import { AppShell } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Search, Trash2 } from "lucide-react";
+import { Search, Trash2, Users, UserPlus, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 
 type Row = {
@@ -18,7 +19,7 @@ type Row = {
 export const Route = createFileRoute("/alunos")({
   head: () => ({ meta: [{ title: "Alunos — VRUMFIT" }] }),
   component: () => (
-    <RequireAuth allow={["personal","dono"]}>
+    <RequireAuth allow={["personal", "dono"]}>
       <AlunosPage />
     </RequireAuth>
   ),
@@ -28,6 +29,7 @@ function AlunosPage() {
   const { role, user } = useAuth();
   const [list, setList] = useState<Row[]>([]);
   const [q, setQ] = useState("");
+  const [filter, setFilter] = useState<"todos" | "ativo" | "pausado">("todos");
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
@@ -65,50 +67,101 @@ function AlunosPage() {
     setList(list.filter((x) => x.user_id !== id));
   };
 
-  const filtered = list.filter((p) =>
-    (p.profiles?.full_name ?? "").toLowerCase().includes(q.toLowerCase())
-  );
+  const active = list.filter((x) => x.status === "ativo").length;
+  const paused = list.length - active;
+
+  const filtered = list.filter((p) => {
+    const matchQ = (p.profiles?.full_name ?? "").toLowerCase().includes(q.toLowerCase())
+      || (p.profiles?.email ?? "").toLowerCase().includes(q.toLowerCase());
+    const matchF = filter === "todos" || p.status === filter;
+    return matchQ && matchF;
+  });
 
   return (
-    <AppShell title="Alunos" subtitle={loading ? "Carregando…" : `${list.length} no total`}>
-      <Card className="p-3">
-        <p className="text-[11px] text-white/60">
-          Novos alunos entram via <Link to="/auth" className="text-primary">tela de cadastro</Link> escolhendo o papel "Aluno".
+    <AppShell title="Alunos" hideBottomNav={false}>
+      <PageHero
+        eyebrow="Sua carteira"
+        title="Alunos"
+        subtitle={loading ? "Carregando…" : `${list.length} cadastrados · ${active} ativos`}
+        icon={Users}
+        stats={[
+          { label: "Total", value: list.length },
+          { label: "Ativos", value: active },
+          { label: "Pausados", value: paused },
+        ]}
+      />
+
+      <div className="flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/5 p-3">
+        <UserPlus className="size-4 text-primary shrink-0" />
+        <p className="text-[11px] text-muted-foreground">
+          Novos alunos entram pela <Link to="/auth" className="text-primary font-semibold">tela de cadastro</Link> escolhendo o papel "Aluno".
         </p>
-      </Card>
+      </div>
 
       <div className="relative">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Buscar aluno…"
-          className="w-full glass rounded-xl pl-10 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+          placeholder="Buscar por nome ou e-mail…"
+          className="w-full glass rounded-2xl pl-10 pr-3 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50"
         />
       </div>
 
-      <ul className="space-y-2">
-        {filtered.map((p) => (
-          <li key={p.user_id} className="glass rounded-2xl p-3 flex items-center gap-3">
-            <div className="size-10 rounded-full bg-primary/15 border border-primary/30 grid place-items-center text-primary font-bold">
-              {(p.profiles?.full_name ?? "?")[0]}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">{p.profiles?.full_name ?? "Sem nome"}</p>
-              <p className="text-[11px] text-muted-foreground truncate">
-                {p.profiles?.email} · {p.objective ?? "—"}
-              </p>
-            </div>
-            <span className={`size-2 rounded-full ${p.status === "ativo" ? "bg-success" : "bg-muted-foreground"}`} />
-            {role === "dono" && (
-              <button onClick={() => remove(p.user_id)} className="text-muted-foreground hover:text-destructive">
-                <Trash2 className="size-4" />
-              </button>
-            )}
-          </li>
+      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        {(["todos", "ativo", "pausado"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition ${
+              filter === f
+                ? "bg-primary text-primary-foreground"
+                : "glass text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {f}
+          </button>
         ))}
+      </div>
+
+      <ul className="space-y-2">
+        {filtered.map((p) => {
+          const name = p.profiles?.full_name ?? "Sem nome";
+          const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
+          return (
+            <li key={p.user_id} className="glass rounded-2xl p-3 flex items-center gap-3 hover:border-primary/40 transition">
+              <div className="size-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 grid place-items-center text-primary font-black text-sm shrink-0">
+                {initials || "?"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-bold truncate">{name}</p>
+                  <span className={`shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase ${
+                    p.status === "ativo" ? "bg-success/20 text-success" : "bg-muted/30 text-muted-foreground"
+                  }`}>{p.status}</span>
+                </div>
+                <div className="mt-0.5 flex flex-wrap gap-x-3 text-[10px] text-muted-foreground">
+                  {p.profiles?.email && <span className="flex items-center gap-1 truncate"><Mail className="size-2.5" />{p.profiles.email}</span>}
+                  {p.profiles?.phone && <span className="flex items-center gap-1"><Phone className="size-2.5" />{p.profiles.phone}</span>}
+                </div>
+                {p.objective && (
+                  <p className="text-[10px] text-primary/80 font-semibold mt-0.5">→ {p.objective}</p>
+                )}
+              </div>
+              {role === "dono" && (
+                <button onClick={() => remove(p.user_id)} className="text-muted-foreground hover:text-destructive shrink-0 p-1.5">
+                  <Trash2 className="size-4" />
+                </button>
+              )}
+            </li>
+          );
+        })}
         {!loading && filtered.length === 0 && (
-          <p className="text-center text-xs text-white/50 py-6">Nenhum aluno encontrado.</p>
+          <EmptyState
+            icon={Users}
+            title={q || filter !== "todos" ? "Nenhum aluno encontrado" : "Sem alunos ainda"}
+            hint={q ? "Ajuste a busca ou os filtros." : "Compartilhe a tela de cadastro com seus alunos."}
+          />
         )}
       </ul>
     </AppShell>

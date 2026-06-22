@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Check, Plus, Trash2 } from "lucide-react";
+import { Check, Plus, Trash2, X, CreditCard, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 type Plan = { id: string; name: string; price_cents: number; period: string; benefits: string[] | null; status: string };
@@ -46,22 +47,40 @@ function Planos() {
   };
 
   const remove = async (id: string) => {
+    if (!confirm("Remover plano?")) return;
     const { error } = await supabase.from("plans").delete().eq("id", id);
     if (error) return toast.error(error.message);
     setList(list.filter((x) => x.id !== id));
   };
 
   const canEdit = role === "dono";
+  const cheapest = list.length ? Math.min(...list.map((p) => p.price_cents)) : 0;
 
   return (
-    <AppShell title="Planos" subtitle="Assinaturas oferecidas"
-      action={canEdit ? (
-        <button onClick={() => setShow(!show)} className="size-10 rounded-full bg-primary text-primary-foreground grid place-items-center">
-          <Plus className="size-4" />
-        </button>
-      ) : undefined}>
+    <AppShell title="Planos">
+      <PageHero
+        eyebrow="Assinaturas"
+        title="Planos"
+        subtitle="Ofertas e benefícios da sua academia"
+        icon={CreditCard}
+        stats={[
+          { label: "Planos", value: list.length },
+          { label: "A partir de", value: cheapest ? `R$ ${(cheapest / 100).toFixed(0)}` : "—" },
+          { label: "Ativos", value: list.filter((p) => p.status === "ativo").length },
+        ]}
+        action={canEdit ? (
+          <button
+            onClick={() => setShow(!show)}
+            className="size-11 rounded-2xl bg-primary text-primary-foreground grid place-items-center shadow-lg shadow-primary/40 hover:scale-105 transition"
+          >
+            {show ? <X className="size-5" /> : <Plus className="size-5" />}
+          </button>
+        ) : undefined}
+      />
+
       {show && (
-        <Card className="p-3">
+        <Card className="p-4">
+          <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-3">Novo plano</p>
           <form onSubmit={add} className="space-y-2">
             <input placeholder="Nome do plano" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} />
             <input placeholder="Preço (R$)" type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className={inputCls} />
@@ -76,34 +95,52 @@ function Planos() {
         </Card>
       )}
 
-      <div className="space-y-3">
-        {list.map((p) => (
-          <Card key={p.id} className="p-3 relative">
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">{p.name}</p>
-                <p className="text-2xl font-extrabold mt-1">
-                  R$ {(p.price_cents / 100).toFixed(2)}
-                  <span className="text-xs text-muted-foreground font-medium">/{p.period}</span>
-                </p>
-              </div>
-              {canEdit && (
-                <button onClick={() => remove(p.id)} className="text-muted-foreground hover:text-destructive">
-                  <Trash2 className="size-4" />
-                </button>
-              )}
-            </div>
-            <ul className="space-y-1.5">
-              {(p.benefits ?? []).map((f) => (
-                <li key={f} className="flex items-center gap-2 text-xs">
-                  <Check className="size-3.5 text-primary shrink-0" /> {f}
-                </li>
-              ))}
-            </ul>
-          </Card>
-        ))}
-        {list.length === 0 && <p className="text-center text-xs text-white/50 py-6">Nenhum plano cadastrado.</p>}
-      </div>
+      {list.length === 0 ? (
+        <EmptyState
+          icon={CreditCard}
+          title="Sem planos cadastrados"
+          hint={canEdit ? "Toque no + para criar o primeiro plano." : "Aguarde o gestor configurar planos."}
+        />
+      ) : (
+        <div className="space-y-3">
+          {list.map((p, idx) => {
+            const featured = idx === 1 && list.length >= 2;
+            return (
+              <Card key={p.id} className={`p-4 relative overflow-hidden ${featured ? "border-primary/60 bg-gradient-to-br from-primary/10 to-transparent" : ""}`}>
+                {featured && (
+                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-2xl flex items-center gap-1">
+                    <Sparkles className="size-2.5" /> Mais escolhido
+                  </div>
+                )}
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">{p.name}</p>
+                    <p className="text-3xl font-extrabold mt-1 leading-none">
+                      R$ {(p.price_cents / 100).toFixed(2)}
+                      <span className="text-xs text-muted-foreground font-medium ml-1">/{p.period}</span>
+                    </p>
+                  </div>
+                  {canEdit && (
+                    <button onClick={() => remove(p.id)} className="text-muted-foreground hover:text-destructive p-1.5">
+                      <Trash2 className="size-4" />
+                    </button>
+                  )}
+                </div>
+                <ul className="space-y-1.5">
+                  {(p.benefits ?? []).map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-xs">
+                      <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-primary/20">
+                        <Check className="size-2.5 text-primary" strokeWidth={3} />
+                      </span>
+                      <span className="text-foreground/90">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            );
+          })}
+        </div>
+      )}
     </AppShell>
   );
 }

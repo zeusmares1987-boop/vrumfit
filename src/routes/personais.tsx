@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppShell, Card } from "@/components/AppShell";
+import { AppShell } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { UserCog, Search, Mail, Users as UsersIcon } from "lucide-react";
 
 type P = { id: string; full_name: string | null; email: string | null; phone: string | null };
 
@@ -20,6 +22,7 @@ function Personais() {
   const [list, setList] = useState<P[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -43,29 +46,69 @@ function Personais() {
     })();
   }, []);
 
+  const totalAlunos = Object.values(counts).reduce((a, b) => a + b, 0);
+  const filtered = list.filter((p) =>
+    (p.full_name ?? "").toLowerCase().includes(q.toLowerCase()) ||
+    (p.email ?? "").toLowerCase().includes(q.toLowerCase())
+  );
+
   return (
-    <AppShell title="Personais" subtitle={loading ? "Carregando…" : `${list.length} no time`}>
-      <Card className="p-3">
-        <p className="text-[11px] text-white/60">Novos personais entram via cadastro escolhendo o papel "Personal".</p>
-      </Card>
+    <AppShell title="Personais">
+      <PageHero
+        eyebrow="Equipe"
+        title="Personais"
+        subtitle={loading ? "Carregando…" : `${list.length} profissionais ativos`}
+        icon={UserCog}
+        stats={[
+          { label: "Personais", value: list.length },
+          { label: "Alunos", value: totalAlunos },
+          { label: "Média/PT", value: list.length ? (totalAlunos / list.length).toFixed(1) : "0" },
+        ]}
+      />
+
+      <div className="relative">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscar personal…"
+          className="w-full glass rounded-2xl pl-10 pr-3 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+        />
+      </div>
+
       <ul className="space-y-2">
-        {list.map((p) => (
-          <li key={p.id} className="glass rounded-2xl p-3 flex items-center gap-3">
-            <div className="size-10 rounded-full bg-primary/15 border border-primary/30 grid place-items-center text-primary font-bold">
-              {(p.full_name ?? "?")[0]}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">{p.full_name ?? "Sem nome"}</p>
-              <p className="text-[11px] text-muted-foreground truncate">{p.email}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm font-bold text-primary">{counts[p.id] ?? 0}</p>
-              <p className="text-[9px] uppercase text-muted-foreground">alunos</p>
-            </div>
-          </li>
-        ))}
-        {!loading && list.length === 0 && (
-          <p className="text-center text-xs text-white/50 py-6">Nenhum personal cadastrado ainda.</p>
+        {filtered.map((p) => {
+          const name = p.full_name ?? "Sem nome";
+          const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
+          const n = counts[p.id] ?? 0;
+          return (
+            <li key={p.id} className="glass rounded-2xl p-3 flex items-center gap-3 hover:border-primary/40 transition">
+              <div className="size-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 grid place-items-center text-primary font-black text-sm shrink-0">
+                {initials || "?"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold truncate">{name}</p>
+                {p.email && (
+                  <p className="text-[10px] text-muted-foreground flex items-center gap-1 truncate">
+                    <Mail className="size-2.5 shrink-0" />{p.email}
+                  </p>
+                )}
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-lg font-extrabold text-primary leading-none">{n}</p>
+                <p className="text-[9px] uppercase tracking-widest text-muted-foreground mt-1 flex items-center gap-1">
+                  <UsersIcon className="size-2.5" /> alunos
+                </p>
+              </div>
+            </li>
+          );
+        })}
+        {!loading && filtered.length === 0 && (
+          <EmptyState
+            icon={UserCog}
+            title={q ? "Nenhum personal encontrado" : "Sem personais ainda"}
+            hint={q ? "Ajuste a busca." : "Personais entram pelo cadastro como 'Personal'."}
+          />
         )}
       </ul>
     </AppShell>
