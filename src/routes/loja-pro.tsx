@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Plus, Trash2, Pause, Play, Edit3, Eye, AlertCircle, Settings } from "lucide-react";
+import { Plus, Trash2, Pause, Play, Edit3, Eye, AlertCircle, Settings, Store } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
