@@ -87,7 +87,7 @@ function DetailPage() {
           <ArrowLeft className="size-4" />
         </Link>
         <div className="flex items-center gap-2">
-          <img src={logoV} alt="" className="size-8" />
+          <img src={logoV} alt="" width={32} height={32} decoding="async" className="size-8" />
           <div className="leading-tight">
             <div className="text-[14px] font-extrabold tracking-tight">
               <span className="text-white">Vrum</span><span className="text-primary">Fit</span>

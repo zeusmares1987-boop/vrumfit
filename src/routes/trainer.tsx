@@ -99,7 +99,7 @@ function TrainerPage() {
               Olá, <span className="text-primary">{profile?.full_name?.split(" ")[0] ?? "Personal"}</span>
             </h1>
             <p className="mt-1 text-[12px] text-white/70">Disciplina · Foco · Resultados</p>
-            <img src={logoV} alt="" className="absolute right-3 top-1/2 -translate-y-1/2 size-12 opacity-90" />
+            <img src={logoV} alt="" width={48} height={48} decoding="async" loading="lazy" className="absolute right-3 top-1/2 -translate-y-1/2 size-12 opacity-90" />
           </div>
         </div>
       </section>
