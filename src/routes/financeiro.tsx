@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Plus, TrendingUp, TrendingDown, Trash2 } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown, Trash2, X, Wallet, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 type Invoice = {
@@ -38,6 +39,7 @@ function Fin() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [form, setForm] = useState({ student_id: "", plan_id: "", amount: "", due_date: "" });
   const [show, setShow] = useState(false);
+  const [filter, setFilter] = useState<"todos" | "pago" | "pendente">("todos");
 
   const load = async () => {
     try {
@@ -71,15 +73,14 @@ function Fin() {
       setPlans(plansRows);
     } catch (error: any) {
       toast.error(error.message ?? "Falha ao carregar financeiro.");
-      setList([]);
-      setStudents([]);
-      setPlans([]);
+      setList([]); setStudents([]); setPlans([]);
     }
   };
   useEffect(() => { load(); }, []);
 
   const paidSum = list.filter((i) => i.status === "pago").reduce((s, i) => s + i.amount_cents, 0);
   const pendSum = list.filter((i) => i.status !== "pago").reduce((s, i) => s + i.amount_cents, 0);
+  const brl = (c: number) => `R$ ${(c / 100).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`;
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,28 +109,37 @@ function Fin() {
   };
 
   const remove = async (id: string) => {
+    if (!confirm("Remover fatura?")) return;
     const { error } = await supabase.from("invoices").delete().eq("id", id);
     if (error) return toast.error(error.message);
     setList(list.filter((x) => x.id !== id));
   };
 
   const canEdit = role === "dono";
+  const filtered = list.filter((i) => filter === "todos" || i.status === filter);
 
   return (
-    <AppShell title="Financeiro" subtitle="Faturas e recebimentos"
-      action={canEdit ? (
-        <button onClick={() => setShow(!show)} className="size-10 rounded-full bg-primary text-primary-foreground grid place-items-center">
-          <Plus className="size-4" />
-        </button>
-      ) : undefined}>
-      <div className="grid grid-cols-3 gap-3">
-        <Stat label="Recebido" value={`R$ ${(paidSum / 100).toFixed(0)}`} icon={TrendingUp} color="text-success" />
-        <Stat label="A receber" value={`R$ ${(pendSum / 100).toFixed(0)}`} icon={TrendingDown} color="text-destructive" />
-        <Stat label="Total" value={`R$ ${((paidSum + pendSum) / 100).toFixed(0)}`} icon={TrendingUp} color="text-primary" />
-      </div>
+    <AppShell title="Financeiro">
+      <PageHero
+        eyebrow="Caixa"
+        title="Financeiro"
+        subtitle="Faturas, recebimentos e pendências"
+        icon={Wallet}
+        stats={[
+          { label: "Recebido", value: brl(paidSum) },
+          { label: "A receber", value: brl(pendSum) },
+          { label: "Total", value: brl(paidSum + pendSum) },
+        ]}
+        action={canEdit ? (
+          <button onClick={() => setShow(!show)} className="size-11 rounded-2xl bg-primary text-primary-foreground grid place-items-center shadow-lg shadow-primary/40 hover:scale-105 transition">
+            {show ? <X className="size-5" /> : <Plus className="size-5" />}
+          </button>
+        ) : undefined}
+      />
 
       {show && (
-        <Card className="p-3">
+        <Card className="p-4">
+          <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-3">Nova fatura</p>
           <form onSubmit={add} className="space-y-2">
             <select value={form.student_id} onChange={(e) => setForm({ ...form, student_id: e.target.value })} className={inputCls}>
               <option value="">Aluno…</option>
@@ -151,43 +161,55 @@ function Fin() {
         </Card>
       )}
 
-      <ul className="space-y-2">
-        {list.map((i) => (
-          <li key={i.id} className="glass rounded-xl p-3 flex items-center gap-3">
-            <button onClick={() => canEdit && togglePaid(i)}
-              className={`size-8 rounded-lg grid place-items-center ${i.status === "pago" ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"}`}>
-              {i.status === "pago" ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
-            </button>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">
-                {i.profiles?.full_name ?? "—"} {i.plans?.name && <span className="text-white/40">· {i.plans.name}</span>}
-              </p>
-              <p className="text-[10px] text-muted-foreground">
-                Venc.: {new Date(i.due_date).toLocaleDateString("pt-BR")} · {i.status}
-              </p>
-            </div>
-            <p className={`text-sm font-bold ${i.status === "pago" ? "text-success" : "text-destructive"}`}>
-              R$ {(i.amount_cents / 100).toFixed(2)}
-            </p>
-            {canEdit && (
-              <button onClick={() => remove(i.id)} className="text-muted-foreground hover:text-destructive">
-                <Trash2 className="size-3.5" />
-              </button>
-            )}
-          </li>
+      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        {(["todos", "pago", "pendente"] as const).map((f) => (
+          <button key={f} onClick={() => setFilter(f)}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition ${
+              filter === f ? "bg-primary text-primary-foreground" : "glass text-muted-foreground hover:text-foreground"
+            }`}>{f}</button>
         ))}
-        {list.length === 0 && <p className="text-center text-xs text-white/50 py-6">Sem faturas.</p>}
-      </ul>
-    </AppShell>
-  );
-}
+      </div>
 
-function Stat({ label, value, icon: Icon, color }: { label: string; value: string; icon: React.ComponentType<{ className?: string }>; color: string }) {
-  return (
-    <div className="glass rounded-xl p-3">
-      <Icon className={`size-4 ${color}`} />
-      <p className="text-[9px] uppercase tracking-widest text-muted-foreground mt-1.5">{label}</p>
-      <p className={`text-sm font-extrabold mt-0.5 ${color}`}>{value}</p>
-    </div>
+      {filtered.length === 0 ? (
+        <EmptyState icon={Wallet} title="Sem faturas" hint={canEdit ? "Toque no + para registrar a primeira." : undefined} />
+      ) : (
+        <ul className="space-y-2">
+          {filtered.map((i) => {
+            const paid = i.status === "pago";
+            const Icon = paid ? CheckCircle2 : AlertCircle;
+            return (
+              <li key={i.id} className="glass rounded-2xl p-3 flex items-center gap-3 hover:border-primary/40 transition">
+                <button
+                  onClick={() => canEdit && togglePaid(i)}
+                  className={`size-11 rounded-2xl grid place-items-center shrink-0 border ${
+                    paid ? "bg-success/15 text-success border-success/30" : "bg-destructive/15 text-destructive border-destructive/30"
+                  }`}
+                >
+                  <Icon className="size-5" />
+                </button>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold truncate">{i.profiles?.full_name ?? "—"}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">
+                    {i.plans?.name && <>{i.plans.name} · </>}
+                    Venc.: {new Date(i.due_date).toLocaleDateString("pt-BR")}
+                  </p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className={`text-sm font-extrabold ${paid ? "text-success" : "text-destructive"}`}>
+                    R$ {(i.amount_cents / 100).toFixed(2)}
+                  </p>
+                  <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{i.status}</p>
+                </div>
+                {canEdit && (
+                  <button onClick={() => remove(i.id)} className="text-muted-foreground hover:text-destructive shrink-0 p-1">
+                    <Trash2 className="size-3.5" />
+                  </button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </AppShell>
   );
 }

@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { useLocalState } from "@/hooks/use-local-state";
-import { Trash2 } from "lucide-react";
+import { Trash2, TrendingUp, TrendingDown, LineChart } from "lucide-react";
 
 type Point = { date: string; weight: number; bf: number };
 
@@ -42,21 +43,31 @@ function EvoPage() {
   const dBf = last && first ? +(last.bf - first.bf).toFixed(1) : 0;
 
   return (
-    <AppShell title="Evolução" subtitle="Peso e % gordura ao longo do tempo">
-      <Card>
-        <div className="grid grid-cols-2 gap-3">
-          <Stat label="Δ Peso" value={`${dW > 0 ? "+" : ""}${dW} kg`} positive={dW < 0} />
-          <Stat label="Δ Gordura" value={`${dBf > 0 ? "+" : ""}${dBf} pp`} positive={dBf < 0} />
-        </div>
-      </Card>
+    <AppShell title="Evolução">
+      <PageHero
+        eyebrow="Progresso"
+        title="Evolução"
+        subtitle="Acompanhe peso e composição corporal"
+        icon={LineChart}
+        stats={[
+          { label: "Registros", value: pts.length },
+          { label: "Atual", value: last ? `${last.weight}kg` : "—" },
+          { label: "% Gord.", value: last ? `${last.bf}%` : "—" },
+        ]}
+      />
+
+      <div className="grid grid-cols-2 gap-3">
+        <Stat label="Δ Peso" value={`${dW > 0 ? "+" : ""}${dW} kg`} positive={dW < 0} />
+        <Stat label="Δ Gordura" value={`${dBf > 0 ? "+" : ""}${dBf} pp`} positive={dBf < 0} />
+      </div>
 
       <Card>
-        <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-3">Gráfico de peso</h3>
+        <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold mb-3">Gráfico de peso</h3>
         <Chart pts={pts} />
       </Card>
 
       <Card>
-        <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-3">Novo registro</h3>
+        <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold mb-3">Novo registro</h3>
         <form onSubmit={add} className="grid grid-cols-2 gap-2">
           <input placeholder="Peso (kg)" value={w} onChange={(e) => setW(e.target.value)} className={inputCls} />
           <input placeholder="% Gordura" value={bf} onChange={(e) => setBf(e.target.value)} className={inputCls} />
@@ -65,12 +76,12 @@ function EvoPage() {
       </Card>
 
       <Card>
-        <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-3">Histórico</h3>
+        <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold mb-3">Histórico</h3>
         <ul className="space-y-1.5">
           {pts.slice().reverse().map((p, i) => (
-            <li key={i} className="flex items-center justify-between text-xs glass rounded-lg px-3 py-2">
+            <li key={i} className="flex items-center justify-between text-xs glass rounded-xl px-3 py-2.5">
               <span className="font-mono text-muted-foreground">{p.date}</span>
-              <span className="font-semibold">{p.weight} kg · {p.bf}%</span>
+              <span className="font-bold">{p.weight} kg · {p.bf}%</span>
               <button onClick={() => setPts(pts.filter((x) => x !== p))} className="text-muted-foreground hover:text-destructive">
                 <Trash2 className="size-3.5" />
               </button>
@@ -83,10 +94,12 @@ function EvoPage() {
 }
 
 function Stat({ label, value, positive }: { label: string; value: string; positive: boolean }) {
+  const Icon = positive ? TrendingDown : TrendingUp;
   return (
-    <div className="glass rounded-xl p-3">
-      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</p>
-      <p className={`text-xl font-extrabold mt-1 ${positive ? "text-success" : "text-primary"}`}>{value}</p>
+    <div className={`rounded-2xl border p-3 ${positive ? "border-success/30 bg-success/5" : "border-primary/30 bg-primary/5"}`}>
+      <Icon className={`size-4 ${positive ? "text-success" : "text-primary"}`} />
+      <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1.5">{label}</p>
+      <p className={`text-2xl font-extrabold mt-0.5 ${positive ? "text-success" : "text-primary"}`}>{value}</p>
     </div>
   );
 }

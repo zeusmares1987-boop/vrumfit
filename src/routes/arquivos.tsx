@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppShell, Card } from "@/components/AppShell";
+import { AppShell } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
-import { FileText, Upload, Trash2, Download, Loader2 } from "lucide-react";
+import { FileText, Upload, Trash2, Download, Loader2, FolderOpen, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -61,20 +62,14 @@ function Files() {
     setUploading(false);
     e.target.value = "";
     if (error) toast.error(error.message);
-    else {
-      toast.success("Arquivo enviado");
-      refresh();
-    }
+    else { toast.success("Arquivo enviado"); refresh(); }
   };
 
   const remove = async (name: string) => {
-    if (!uid) return;
+    if (!uid || !confirm("Remover arquivo?")) return;
     const { error } = await supabase.storage.from(BUCKET).remove([`${uid}/${name}`]);
     if (error) toast.error(error.message);
-    else {
-      setList((l) => l.filter((x) => x.name !== name));
-      toast.success("Removido");
-    }
+    else { setList((l) => l.filter((x) => x.name !== name)); toast.success("Removido"); }
   };
 
   const download = async (name: string) => {
@@ -85,37 +80,54 @@ function Files() {
   };
 
   const sizeFmt = (b: number) => (b < 1024 ? `${b}B` : b < 1024 ** 2 ? `${(b / 1024).toFixed(0)}KB` : `${(b / 1024 ** 2).toFixed(1)}MB`);
+  const totalSize = list.reduce((a, b) => a + b.size, 0);
 
   return (
-    <AppShell title="Arquivos" subtitle={`${list.length} documento(s)`}
-      action={
-        <label className={`size-10 rounded-full bg-primary text-primary-foreground grid place-items-center cursor-pointer ${uploading ? "opacity-60" : ""}`}>
-          {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
-          <input type="file" onChange={onUpload} className="hidden" disabled={uploading} />
-        </label>
-      }>
-      <Card className="text-center text-xs text-muted-foreground">
-        Armazenamento seguro · seus arquivos só são visíveis para você e sua equipe
-      </Card>
+    <AppShell title="Arquivos">
+      <PageHero
+        eyebrow="Documentos"
+        title="Arquivos"
+        subtitle="PDFs, planilhas e imagens da sua equipe"
+        icon={FolderOpen}
+        stats={[
+          { label: "Arquivos", value: list.length },
+          { label: "Espaço", value: sizeFmt(totalSize) },
+          { label: "Limite", value: "1 GB" },
+        ]}
+        action={
+          <label className={`size-11 rounded-2xl bg-primary text-primary-foreground grid place-items-center cursor-pointer shadow-lg shadow-primary/40 hover:scale-105 transition ${uploading ? "opacity-60" : ""}`}>
+            {uploading ? <Loader2 className="size-5 animate-spin" /> : <Upload className="size-5" />}
+            <input type="file" onChange={onUpload} className="hidden" disabled={uploading} />
+          </label>
+        }
+      />
+
+      <div className="flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/5 p-3">
+        <Shield className="size-4 text-primary shrink-0" />
+        <p className="text-[11px] text-muted-foreground">
+          Armazenamento privado — só você e sua equipe podem ver.
+        </p>
+      </div>
+
       {loading ? (
         <div className="grid place-items-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>
       ) : list.length === 0 ? (
-        <Card className="text-center text-sm text-muted-foreground">Nenhum arquivo ainda. Toque em + para enviar.</Card>
+        <EmptyState icon={FolderOpen} title="Nenhum arquivo ainda" hint="Toque no botão de upload para enviar o primeiro." />
       ) : (
         <ul className="space-y-2">
           {list.map((f) => (
-            <li key={f.id} className="glass rounded-xl p-3 flex items-center gap-3">
-              <div className="size-10 rounded-lg bg-primary/15 border border-primary/25 grid place-items-center">
-                <FileText className="size-4 text-primary" />
+            <li key={f.id} className="glass rounded-2xl p-3 flex items-center gap-3 hover:border-primary/40 transition">
+              <div className="size-11 rounded-2xl bg-gradient-to-br from-primary/25 to-primary/5 border border-primary/30 grid place-items-center shrink-0">
+                <FileText className="size-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate">{f.name.replace(/^\d+-/, "")}</p>
+                <p className="text-sm font-bold truncate">{f.name.replace(/^\d+-/, "")}</p>
                 <p className="text-[10px] text-muted-foreground">{sizeFmt(f.size)} · {f.updated_at?.slice(0, 10)}</p>
               </div>
-              <button onClick={() => download(f.name)} className="text-muted-foreground hover:text-primary">
+              <button onClick={() => download(f.name)} className="size-9 rounded-xl glass grid place-items-center text-muted-foreground hover:text-primary">
                 <Download className="size-4" />
               </button>
-              <button onClick={() => remove(f.name)} className="text-muted-foreground hover:text-destructive">
+              <button onClick={() => remove(f.name)} className="size-9 rounded-xl glass grid place-items-center text-muted-foreground hover:text-destructive">
                 <Trash2 className="size-4" />
               </button>
             </li>
