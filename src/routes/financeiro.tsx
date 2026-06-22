@@ -5,7 +5,10 @@ import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Plus, TrendingUp, TrendingDown, Trash2, X, Wallet, CheckCircle2, AlertCircle } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown, Trash2, X, Wallet, CheckCircle2, AlertCircle, Copy } from "lucide-react";
+
+const PIX_KEY = "54050522000127";
+const PIX_HOLDER = "VRUMFIT";
 import { toast } from "sonner";
 
 type Invoice = {
@@ -152,6 +155,22 @@ function Fin() {
           </button>
         ) : undefined}
       />
+
+      <Card className="p-4 border-primary/30">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-primary font-bold">Pix — pagamento rápido</p>
+            <p className="text-xs text-muted-foreground">CNPJ · {PIX_HOLDER}</p>
+          </div>
+          <button
+            onClick={() => { navigator.clipboard.writeText(PIX_KEY); toast.success("Chave Pix copiada"); }}
+            className="shrink-0 px-3 py-2 rounded-xl bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 hover:scale-105 transition"
+          >
+            <Copy className="size-3.5" /> Copiar
+          </button>
+        </div>
+        <p className="font-mono text-lg font-extrabold tracking-wider break-all">{PIX_KEY}</p>
+      </Card>
 
       {show && (
         <Card className="p-4">
