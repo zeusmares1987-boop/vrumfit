@@ -137,7 +137,7 @@ function OwnerPage() {
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Proprietário";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
-  const today = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+  
 
   const avatarUrl = (profile as { avatar_url?: string } | undefined)?.avatar_url;
   const initial = firstName.charAt(0).toUpperCase();
