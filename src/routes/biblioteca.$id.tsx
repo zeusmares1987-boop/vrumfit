@@ -33,6 +33,19 @@ function DetailPage() {
       return data;
     },
   });
+  const { data: imageAudit } = useQuery({
+    queryKey: ["exercise-image-audit"],
+    queryFn: async () => (await supabase.from("exercises").select("image_start")).data ?? [],
+  });
+
+  const repeatedImages = new Set(
+    Object.entries(
+      (imageAudit ?? []).reduce<Record<string, number>>((acc, item: any) => {
+        if (item.image_start) acc[item.image_start] = (acc[item.image_start] ?? 0) + 1;
+        return acc;
+      }, {})
+    ).filter(([, count]) => count > 1).map(([url]) => url)
+  );
 
   useEffect(() => {
     if (!ex) return;
@@ -122,7 +135,7 @@ function DetailPage() {
 
         {/* Início / Fim */}
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <FrameCard label="INÍCIO" image={ex.image_start} />
+          <FrameCard label="INÍCIO" image={ex.image_start && !repeatedImages.has(ex.image_start) ? ex.image_start : null} />
           <FrameCard label="FIM" image={ex.image_end} />
         </div>
 
