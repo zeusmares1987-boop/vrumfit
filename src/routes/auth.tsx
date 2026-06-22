@@ -143,60 +143,84 @@ function AuthPage() {
         </div>
 
         <div className="mt-auto w-full max-w-md mx-auto">
-          <div className="mb-4 text-center">
-            <h2 className="text-lg font-semibold text-white/95 tracking-tight">{title}</h2>
+          <div
+            className="rounded-3xl border border-white/10 bg-black/55 backdrop-blur-xl px-6 py-7 sm:px-7"
+            style={{ boxShadow: "0 30px 80px -30px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05)" }}
+          >
+            <div className="mb-5">
+              <h2 className="text-[19px] font-semibold text-white tracking-tight">{title}</h2>
+              <p className="mt-1 text-[12px] text-white/55">
+                {mode === "login" ? "Entre com seu e-mail e senha." : mode === "signup" ? "Preencha seus dados abaixo." : "Informe seu e-mail cadastrado."}
+              </p>
+            </div>
+
+            {mode === "login" && (
+              <form onSubmit={onLogin} className="flex flex-col">
+                <div className="flex flex-col gap-2.5">
+                  <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
+                  <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha" value={password} onChange={setPassword}
+                    rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
+                </div>
+
+                <button type="button" onClick={() => setMode("forgot")} className="self-end mt-2.5 text-[12px] font-medium text-white/60 hover:text-primary transition">
+                  Esqueci minha senha
+                </button>
+
+                <PrimaryButton disabled={busy} type="submit">{busy ? "Entrando..." : "Entrar"}</PrimaryButton>
+
+                <div className="my-4 flex items-center gap-3 text-[10px] tracking-[0.3em] text-white/35">
+                  <span className="h-px flex-1 bg-white/10" /> OU <span className="h-px flex-1 bg-white/10" />
+                </div>
+
+                <button type="button" onClick={onGoogle} disabled={busy} className="h-12 rounded-xl border border-white/15 bg-white/[0.04] flex items-center justify-center gap-3 text-[13px] font-medium text-white/90 hover:bg-white/[0.08] hover:border-white/25 transition">
+                  <GoogleIcon /> Continuar com Google
+                </button>
+              </form>
+            )}
+
+            {mode === "signup" && (
+              <form onSubmit={onSignup} className="flex flex-col gap-2.5">
+                <Field icon={User} type="text" placeholder="Nome completo" value={fullName} onChange={setFullName} />
+                <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
+                <Field icon={Phone} type="tel" placeholder="Telefone (opcional)" value={phone} onChange={setPhone} />
+                <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha (mín. 6)" value={password} onChange={setPassword}
+                  rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
+                <div className="mt-1 flex gap-2">
+                  {(["aluno", "personal"] as const).map((r) => (
+                    <button type="button" key={r} onClick={() => setAccountRole(r)} className={`flex-1 h-11 rounded-xl border text-[13px] font-semibold transition ${accountRole === r ? "border-primary bg-primary/15 text-primary" : "border-white/15 bg-white/[0.04] text-white/75 hover:border-white/30"}`}>
+                      {r === "aluno" ? "Sou Aluno" : "Sou Personal"}
+                    </button>
+                  ))}
+                </div>
+                <PrimaryButton disabled={busy} type="submit">{busy ? "Criando..." : "Criar conta"}</PrimaryButton>
+              </form>
+            )}
+
+            {mode === "forgot" && (
+              <form onSubmit={onForgot} className="flex flex-col gap-3">
+                <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
+                <PrimaryButton disabled={busy} type="submit">{busy ? "Enviando..." : "Enviar link"}</PrimaryButton>
+              </form>
+            )}
           </div>
 
-          {mode === "login" && (
-            <form onSubmit={onLogin} className="flex flex-col gap-3.5">
-              <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
-              <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha" value={password} onChange={setPassword}
-                rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
-              <PrimaryButton disabled={busy} type="submit">{busy ? "Entrando..." : "Entrar"}</PrimaryButton>
-              <button type="button" onClick={() => setMode("forgot")} className="mt-1 text-center text-[13px] font-medium text-primary/90 hover:text-primary underline underline-offset-4 decoration-primary/40">
-                Esqueci minha senha
+          <div className="mt-5 text-center text-[13px] text-white/60">
+            {mode === "login" ? (
+              <>
+                Não tem conta?{" "}
+                <button type="button" onClick={() => setMode("signup")} className="font-semibold text-primary hover:text-primary/80">
+                  Criar conta
+                </button>
+              </>
+            ) : (
+              <button type="button" onClick={() => setMode("login")} className="inline-flex items-center gap-1.5 font-medium text-white/70 hover:text-white">
+                <ArrowLeft className="size-3.5" /> Voltar ao login
               </button>
-              <div className="my-1 flex items-center gap-3 text-[11px] text-white/40">
-                <span className="h-px flex-1 bg-white/10" /> OU <span className="h-px flex-1 bg-white/10" />
-              </div>
-              <button type="button" onClick={onGoogle} disabled={busy} className="h-12 rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md flex items-center justify-center gap-3 text-sm font-medium text-white hover:bg-black/60 transition">
-                <GoogleIcon /> Entrar com Google
-              </button>
-              <button type="button" onClick={() => setMode("signup")} className="mt-2 h-14 w-full rounded-2xl border border-primary/40 bg-black/40 backdrop-blur-md flex items-center justify-center gap-2 text-sm font-semibold text-white hover:border-primary hover:bg-primary/10 transition">
-                Criar conta <ChevronRight className="size-4 text-primary" />
-              </button>
-            </form>
-          )}
+            )}
+          </div>
 
-          {mode === "signup" && (
-            <form onSubmit={onSignup} className="flex flex-col gap-3">
-              <BackBtn onClick={() => setMode("login")}>Voltar</BackBtn>
-              <Field icon={User} type="text" placeholder="Nome completo" value={fullName} onChange={setFullName} />
-              <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
-              <Field icon={Phone} type="tel" placeholder="Telefone (opcional)" value={phone} onChange={setPhone} />
-              <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha (mín. 6)" value={password} onChange={setPassword}
-                rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
-              <div className="flex gap-2">
-                {(["aluno", "personal"] as const).map((r) => (
-                  <button type="button" key={r} onClick={() => setAccountRole(r)} className={`flex-1 h-12 rounded-2xl border text-sm font-semibold transition ${accountRole === r ? "border-primary bg-primary/15 text-primary" : "border-white/15 bg-black/40 text-white/80 hover:border-white/30"}`}>
-                    {r === "aluno" ? "Sou Aluno" : "Sou Personal"}
-                  </button>
-                ))}
-              </div>
-              <PrimaryButton disabled={busy} type="submit">{busy ? "Criando..." : "Criar conta"}</PrimaryButton>
-            </form>
-          )}
-
-          {mode === "forgot" && (
-            <form onSubmit={onForgot} className="flex flex-col gap-3.5">
-              <BackBtn onClick={() => setMode("login")}>Voltar</BackBtn>
-              <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
-              <PrimaryButton disabled={busy} type="submit">{busy ? "Enviando..." : "Enviar link"}</PrimaryButton>
-            </form>
-          )}
-
-          <p className="mt-6 text-center text-[11px] text-white/40">
-            © {new Date().getFullYear()} VRUMFIT PERSONAL · Todos os direitos reservados
+          <p className="mt-4 text-center text-[10px] tracking-wider text-white/35">
+            © {new Date().getFullYear()} VRUMFIT PERSONAL
           </p>
         </div>
       </div>
