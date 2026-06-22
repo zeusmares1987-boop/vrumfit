@@ -125,7 +125,7 @@ function AuthPage() {
     <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black flex flex-col">
       {/* HERO — top half, fixed proportion */}
       <div className="relative w-full h-[42dvh] min-h-[280px] shrink-0">
-        <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-[center_30%]" />
+        <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-[center_top]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black" />
       </div>
 
