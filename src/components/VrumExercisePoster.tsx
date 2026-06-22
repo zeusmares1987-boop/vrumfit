@@ -1,4 +1,5 @@
 import { BarChart2, BarChart3, Check, Clock, ListChecks, Target } from "lucide-react";
+import { useState } from "react";
 
 export interface VrumExercisePosterData {
   name: string;
@@ -72,7 +73,7 @@ function CompactPhoto({ label, image, name }: { label: string; image?: string | 
         <span className="block skew-x-[12deg]">{label}</span>
       </div>
       {image ? (
-        <img src={image} alt={`${label} — ${name}`} className="h-full w-full object-cover grayscale contrast-125 saturate-125" loading="lazy" />
+        <SafeImage src={image} alt={`${label} — ${name}`} className="h-full w-full object-cover grayscale contrast-125 saturate-125" size="small" />
       ) : (
         <div className="grid h-full place-items-center text-primary">
           <Target className="size-8" />
@@ -121,7 +122,7 @@ function PhotoFrame({ label, image, alt }: { label: string; image?: string | nul
         <span className="block skew-x-[12deg]">{label}</span>
       </div>
       {image ? (
-        <img src={image} alt={alt} className="h-full w-full object-cover object-center grayscale contrast-125 saturate-125" loading="lazy" />
+        <SafeImage src={image} alt={alt} className="h-full w-full object-cover object-center grayscale contrast-125 saturate-125" size="large" />
       ) : (
         <div className="grid h-full place-items-center bg-card text-primary">
           <Target className="size-20 opacity-80" />
@@ -130,6 +131,20 @@ function PhotoFrame({ label, image, alt }: { label: string; image?: string | nul
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_65%,color-mix(in_oklab,var(--primary)_24%,transparent),transparent_28%)] mix-blend-screen" />
     </div>
   );
+}
+
+function SafeImage({ src, alt, className, size }: { src: string; alt: string; className: string; size: "small" | "large" }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <div className="grid h-full w-full place-items-center bg-card text-primary">
+        <Target className={size === "large" ? "size-20 opacity-80" : "size-8 opacity-80"} />
+      </div>
+    );
+  }
+
+  return <img src={src} alt={alt} className={className} loading="lazy" onError={() => setFailed(true)} />;
 }
 
 function TargetBand({ target }: { target: string }) {
