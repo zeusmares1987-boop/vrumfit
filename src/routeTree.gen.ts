@@ -13,6 +13,7 @@ import { Route as TreinosRouteImport } from './routes/treinos'
 import { Route as TrainerRouteImport } from './routes/trainer'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as StudentRouteImport } from './routes/student'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PersonaisRouteImport } from './routes/personais'
@@ -56,6 +57,11 @@ const SuporteRoute = SuporteRouteImport.update({
 const StudentRoute = StudentRouteImport.update({
   id: '/student',
   path: '/student',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProdutosRoute = ProdutosRouteImport.update({
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/personais': typeof PersonaisRoute
   '/planos': typeof PlanosRoute
   '/produtos': typeof ProdutosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/student': typeof StudentRoute
   '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/personais': typeof PersonaisRoute
   '/planos': typeof PlanosRoute
   '/produtos': typeof ProdutosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/student': typeof StudentRoute
   '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
@@ -260,6 +268,7 @@ export interface FileRoutesById {
   '/personais': typeof PersonaisRoute
   '/planos': typeof PlanosRoute
   '/produtos': typeof ProdutosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/student': typeof StudentRoute
   '/suporte': typeof SuporteRoute
   '/trainer': typeof TrainerRoute
@@ -292,6 +301,7 @@ export interface FileRouteTypes {
     | '/personais'
     | '/planos'
     | '/produtos'
+    | '/reset-password'
     | '/student'
     | '/suporte'
     | '/trainer'
@@ -321,6 +331,7 @@ export interface FileRouteTypes {
     | '/personais'
     | '/planos'
     | '/produtos'
+    | '/reset-password'
     | '/student'
     | '/suporte'
     | '/trainer'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/personais'
     | '/planos'
     | '/produtos'
+    | '/reset-password'
     | '/student'
     | '/suporte'
     | '/trainer'
@@ -382,6 +394,7 @@ export interface RootRouteChildren {
   PersonaisRoute: typeof PersonaisRoute
   PlanosRoute: typeof PlanosRoute
   ProdutosRoute: typeof ProdutosRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   StudentRoute: typeof StudentRoute
   SuporteRoute: typeof SuporteRoute
   TrainerRoute: typeof TrainerRoute
@@ -416,6 +429,13 @@ declare module '@tanstack/react-router' {
       path: '/student'
       fullPath: '/student'
       preLoaderRoute: typeof StudentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/produtos': {
@@ -645,6 +665,7 @@ const rootRouteChildren: RootRouteChildren = {
   PersonaisRoute: PersonaisRoute,
   PlanosRoute: PlanosRoute,
   ProdutosRoute: ProdutosRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   StudentRoute: StudentRoute,
   SuporteRoute: SuporteRoute,
   TrainerRoute: TrainerRoute,
