@@ -26,7 +26,7 @@ type ProfileName = { id: string; full_name: string | null };
 export const Route = createFileRoute("/financeiro")({
   head: () => ({ meta: [{ title: "Financeiro — VRUMFIT" }] }),
   component: () => (
-    <RequireAuth allow={["dono", "personal"]}>
+    <RequireAuth allow={["dono", "personal", "aluno"]}>
       <Fin />
     </RequireAuth>
   ),
@@ -44,7 +44,9 @@ function Fin() {
   const load = async () => {
     if (!user) return;
     try {
-      const studentsQuery = role === "personal"
+      const studentsQuery = role === "aluno" && user
+        ? Promise.resolve({ data: [{ user_id: user.id }], error: null } as any)
+        : role === "personal"
         ? supabase.from("students").select("user_id").eq("personal_id", user.id)
         : supabase.from("students").select("user_id");
       const stRes = await studentsQuery;
@@ -52,7 +54,9 @@ function Fin() {
       const studentRows = (stRes.data ?? []) as { user_id: string }[];
       const myStudentIds = studentRows.map((s) => s.user_id);
 
-      const invoicesQuery = role === "personal"
+      const invoicesQuery = role === "aluno"
+        ? supabase.from("invoices").select("*").eq("student_id", user.id).order("due_date", { ascending: false })
+        : role === "personal"
         ? (myStudentIds.length
             ? supabase.from("invoices").select("*").in("student_id", myStudentIds).order("due_date", { ascending: false })
             : Promise.resolve({ data: [], error: null } as any))
@@ -135,7 +139,7 @@ function Fin() {
       <PageHero
         eyebrow="Caixa"
         title="Financeiro"
-        subtitle="Faturas, recebimentos e pendências"
+        subtitle={role === "aluno" ? "Suas cobranças e pagamentos" : "Faturas, recebimentos e pendências"}
         icon={Wallet}
         stats={[
           { label: "Recebido", value: brl(paidSum) },
@@ -200,7 +204,7 @@ function Fin() {
                   <Icon className="size-5" />
                 </button>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate">{i.profiles?.full_name ?? "—"}</p>
+                  <p className="text-sm font-bold truncate">{role === "aluno" ? "Minha fatura" : i.profiles?.full_name ?? "—"}</p>
                   <p className="text-[10px] text-muted-foreground truncate">
                     {i.plans?.name && <>{i.plans.name} · </>}
                     Venc.: {new Date(i.due_date).toLocaleDateString("pt-BR")}
