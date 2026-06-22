@@ -33,7 +33,7 @@ export const Route = createFileRoute("/financeiro")({
 });
 
 function Fin() {
-  const { role } = useAuth();
+  const { user, role } = useAuth();
   const [list, setList] = useState<Invoice[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -42,18 +42,29 @@ function Fin() {
   const [filter, setFilter] = useState<"todos" | "pago" | "pendente">("todos");
 
   const load = async () => {
+    if (!user) return;
     try {
-      const [invRes, stRes, plRes] = await Promise.all([
-        supabase.from("invoices").select("*").order("due_date", { ascending: false }),
-        supabase.from("students").select("user_id"),
+      const studentsQuery = role === "personal"
+        ? supabase.from("students").select("user_id").eq("personal_id", user.id)
+        : supabase.from("students").select("user_id");
+      const stRes = await studentsQuery;
+      if (stRes.error) throw stRes.error;
+      const studentRows = (stRes.data ?? []) as { user_id: string }[];
+      const myStudentIds = studentRows.map((s) => s.user_id);
+
+      const invoicesQuery = role === "personal"
+        ? (myStudentIds.length
+            ? supabase.from("invoices").select("*").in("student_id", myStudentIds).order("due_date", { ascending: false })
+            : Promise.resolve({ data: [], error: null } as any))
+        : supabase.from("invoices").select("*").order("due_date", { ascending: false });
+      const [invRes, plRes] = await Promise.all([
+        invoicesQuery,
         supabase.from("plans").select("id,name,price_cents").eq("status", "ativo"),
       ]);
       if (invRes.error) throw invRes.error;
-      if (stRes.error) throw stRes.error;
       if (plRes.error) throw plRes.error;
 
       const invoices = (invRes.data ?? []) as Omit<Invoice, "profiles" | "plans">[];
-      const studentRows = (stRes.data ?? []) as { user_id: string }[];
       const plansRows = (plRes.data ?? []) as Plan[];
       const profileIds = Array.from(new Set([...studentRows.map((s) => s.user_id), ...invoices.map((i) => i.student_id)]));
       const { data: profs, error: profError } = profileIds.length
@@ -76,7 +87,7 @@ function Fin() {
       setList([]); setStudents([]); setPlans([]);
     }
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [user?.id, role]);
 
   const paidSum = list.filter((i) => i.status === "pago").reduce((s, i) => s + i.amount_cents, 0);
   const pendSum = list.filter((i) => i.status !== "pago").reduce((s, i) => s + i.amount_cents, 0);
