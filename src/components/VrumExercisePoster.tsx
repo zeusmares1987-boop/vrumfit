@@ -28,25 +28,58 @@ export function VrumExercisePoster({ exercise, compact = false }: VrumExercisePo
   const target = exercise.target_muscle ?? exercise.exercise_categories?.name ?? "GERAL";
   const steps = exercise.execution_steps?.filter(Boolean) ?? [];
 
+  if (compact) {
+    return <CompactPoster exercise={exercise} />;
+  }
+
   return (
-    <article className="vrum-poster relative mx-auto w-full max-w-[691px] overflow-hidden rounded-[22px] border border-border bg-background text-foreground shadow-2xl">
-      <div className={compact ? "aspect-[4/3] overflow-hidden" : "aspect-[691/1536]"}>
-        <div className={compact ? "origin-top scale-[0.48] sm:scale-[0.54]" : "h-full"}>
-          <div className="relative flex aspect-[691/1536] w-[691px] flex-col bg-background px-6 py-8 font-display">
-            <PosterHeader name={exercise.name} />
-            <PosterPhotos start={exercise.image_start} end={exercise.image_end ?? exercise.image_start} name={exercise.name} />
-            {!compact && (
-              <>
-                <TargetBand target={target} />
-                <StatsBand exercise={exercise} />
-                <ExecutionBand steps={steps} />
-                <PosterFooter />
-              </>
-            )}
-          </div>
-        </div>
+    <article className="vrum-poster-shell relative mx-auto overflow-hidden rounded-[22px] border border-border bg-background text-foreground shadow-2xl">
+      <div className="vrum-poster-canvas relative flex flex-col bg-background px-6 py-8 font-display">
+        <PosterHeader name={exercise.name} />
+        <PosterPhotos start={exercise.image_start} end={exercise.image_end ?? exercise.image_start} name={exercise.name} />
+        <TargetBand target={target} />
+        <StatsBand exercise={exercise} />
+        <ExecutionBand steps={steps} />
+        <PosterFooter />
       </div>
     </article>
+  );
+}
+
+function CompactPoster({ exercise }: { exercise: VrumExercisePosterData }) {
+  return (
+    <article className="relative aspect-[4/3] overflow-hidden bg-background text-foreground">
+      <div className="grid h-full grid-cols-2 gap-1.5 p-1.5">
+        <CompactPhoto label="INÍCIO" image={exercise.image_start} name={exercise.name} />
+        <CompactPhoto label="FIM" image={exercise.image_end ?? exercise.image_start} name={exercise.name} />
+      </div>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/85 to-transparent p-2.5 pt-10">
+        <p className="truncate text-[12px] font-black italic uppercase leading-tight">
+          {exercise.name}
+        </p>
+        <p className="truncate text-[10px] font-black italic uppercase text-primary">
+          {exercise.target_muscle ?? exercise.exercise_categories?.name ?? "EXECUÇÃO"}
+        </p>
+      </div>
+    </article>
+  );
+}
+
+function CompactPhoto({ label, image, name }: { label: string; image?: string | null; name: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-[10px] border border-border bg-card">
+      <div className="absolute left-2 top-2 z-10 skew-x-[-12deg] rounded-[4px] border border-primary bg-background/75 px-2 py-0.5 text-[9px] font-black italic">
+        <span className="block skew-x-[12deg]">{label}</span>
+      </div>
+      {image ? (
+        <img src={image} alt={`${label} — ${name}`} className="h-full w-full object-cover grayscale contrast-125 saturate-125" loading="lazy" />
+      ) : (
+        <div className="grid h-full place-items-center text-primary">
+          <Target className="size-8" />
+        </div>
+      )}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_65%,color-mix(in_oklab,var(--primary)_22%,transparent),transparent_30%)] mix-blend-screen" />
+    </div>
   );
 }
 
