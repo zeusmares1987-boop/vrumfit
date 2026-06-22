@@ -80,6 +80,16 @@ function DetailPage() {
     toast.success("Foto atualizada!");
   }
 
+  async function removeExercisePhoto(field: "image_start" | "image_end") {
+    if (!ex || role !== "dono") return;
+    const payload = field === "image_start" ? { image_start: null } : { image_end: null };
+    const { error } = await supabase.from("exercises").update(payload).eq("id", ex.id);
+    if (error) return toast.error(error.message);
+    setForm((current) => ({ ...current, [field]: "" }));
+    refetch();
+    toast.success("Foto removida.");
+  }
+
   if (!ex) {
     return (
       <div className="min-h-[100dvh] grid place-items-center bg-background text-white/60">
@@ -112,8 +122,8 @@ function DetailPage() {
 
         {editing && role === "dono" && (
           <div className="mt-3 rounded-2xl border border-primary/30 bg-black/60 p-4 space-y-3">
-            <PhotoUploadField label="FOTO INÍCIO" value={form.image_start} loading={uploadingField === "image_start"} onFile={(file) => uploadExercisePhoto(file, "image_start")} />
-            <PhotoUploadField label="FOTO FIM" value={form.image_end} loading={uploadingField === "image_end"} onFile={(file) => uploadExercisePhoto(file, "image_end")} />
+            <PhotoUploadField label="FOTO INÍCIO" value={form.image_start} loading={uploadingField === "image_start"} onFile={(file) => uploadExercisePhoto(file, "image_start")} onRemove={() => removeExercisePhoto("image_start")} />
+            <PhotoUploadField label="FOTO FIM" value={form.image_end} loading={uploadingField === "image_end"} onFile={(file) => uploadExercisePhoto(file, "image_end")} onRemove={() => removeExercisePhoto("image_end")} />
             <div>
               <p className="text-[10px] tracking-widest font-bold text-primary mb-1.5">PASSOS — UM POR LINHA</p>
               <textarea value={form.execution_steps} onChange={(e) => setForm((f) => ({ ...f, execution_steps: e.target.value }))} className="min-h-28 w-full rounded-xl border border-white/10 bg-black/55 px-3 py-2 text-[12px] outline-none focus:border-primary/60" />
@@ -132,7 +142,7 @@ function DetailPage() {
   );
 }
 
-function PhotoUploadField({ label, value, loading, onFile }: { label: string; value: string; loading: boolean; onFile: (file: File) => void }) {
+function PhotoUploadField({ label, value, loading, onFile, onRemove }: { label: string; value: string; loading: boolean; onFile: (file: File) => void; onRemove: () => void }) {
   return (
     <div>
       <p className="text-[10px] tracking-widest font-bold text-primary mb-1.5">{label}</p>
