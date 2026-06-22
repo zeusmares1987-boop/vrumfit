@@ -5,7 +5,8 @@ import { ArrowLeft, Check, Target, BarChart3, Clock, BarChart2, Dumbbell, ListCh
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import logoV from "@/assets/logo-v.png";
+import logoVAsset from "@/assets/logo-v.webp.asset.json";
+const logoV = logoVAsset.url;
 
 export const Route = createFileRoute("/biblioteca/$id")({
   head: () => ({ meta: [{ title: "Exercício — VRUMFIT" }] }),
