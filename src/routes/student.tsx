@@ -294,6 +294,16 @@ function StudentPage() {
       <section className="mt-2 grid grid-cols-2 gap-2">
         {wideTiles.map((t) => <PhotoTile key={t.label} {...t} wide />)}
       </section>
+
+      {myPersonal?.phone && (
+        <a
+          href={`https://wa.me/${myPersonal.phone.replace(/\D/g, "")}`}
+          target="_blank" rel="noopener noreferrer"
+          className="mt-5 flex items-center justify-center gap-2 h-12 rounded-2xl bg-success/15 border border-success/40 text-success text-[13px] font-extrabold uppercase tracking-wider"
+        >
+          <MessageCircle className="size-4" /> Falar com meu personal
+        </a>
+      )}
     </AppShell>
   );
 }
