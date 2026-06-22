@@ -98,3 +98,20 @@
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
+
+@layer components {
+  .vrum-poster-shell {
+    width: min(100%, 691px);
+  }
+
+  .vrum-poster-canvas {
+    width: 691px;
+    height: 1536px;
+    transform-origin: top left;
+    transform: scale(calc(min(100vw - 2.5rem, 691px) / 691));
+  }
+
+  .vrum-poster-shell:has(.vrum-poster-canvas) {
+    height: calc(1536px * (min(100vw - 2.5rem, 691px) / 691));
+  }
+}
