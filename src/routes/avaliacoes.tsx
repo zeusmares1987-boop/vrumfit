@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
+import { ClipboardCheck, Activity } from "lucide-react";
 
 export const Route = createFileRoute("/avaliacoes")({
   head: () => ({ meta: [{ title: "Avaliação Física — VRUMFIT" }] }),
@@ -26,7 +28,6 @@ function AvaliacaoPage() {
     e.preventDefault();
     const imc = +(weight / Math.pow(height / 100, 2)).toFixed(1);
     const classe = imc < 18.5 ? "Abaixo do peso" : imc < 25 ? "Peso ideal" : imc < 30 ? "Sobrepeso" : "Obesidade";
-    // US Navy BF
     const bf = sex === "M"
       ? +(495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450).toFixed(1)
       : +(495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450).toFixed(1);
@@ -36,7 +37,14 @@ function AvaliacaoPage() {
   };
 
   return (
-    <AppShell title="Avaliação Física" subtitle="IMC · % Gordura (Navy) · RCQ">
+    <AppShell title="Avaliação Física">
+      <PageHero
+        eyebrow="Bioimpedância"
+        title="Avaliação Física"
+        subtitle="IMC · % Gordura (método US Navy) · RCQ"
+        icon={ClipboardCheck}
+      />
+
       <Card>
         <form onSubmit={calc} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -44,7 +52,7 @@ function AvaliacaoPage() {
               <div className="flex gap-2">
                 {(["M", "F"] as const).map((s) => (
                   <button key={s} type="button" onClick={() => setSex(s)}
-                    className={`flex-1 py-2 rounded-xl text-sm font-semibold ${sex === s ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"}`}>
+                    className={`flex-1 py-2 rounded-xl text-sm font-semibold transition ${sex === s ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"}`}>
                     {s === "M" ? "Masc." : "Fem."}
                   </button>
                 ))}
@@ -64,11 +72,14 @@ function AvaliacaoPage() {
       </Card>
 
       {result && (
-        <Card>
-          <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Resultado</h3>
-          <div className="grid grid-cols-2 gap-3 mt-3">
+        <Card className="border-primary/40">
+          <div className="flex items-center gap-2 mb-3">
+            <Activity className="size-4 text-primary" />
+            <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold">Resultado</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
             <Box label="IMC" value={result.imc.toString()} hint={result.classe} />
-            <Box label="% Gordura" value={`${result.bf}%`} hint="Método US Navy" />
+            <Box label="% Gordura" value={`${result.bf}%`} hint="US Navy" />
             <Box label="Massa magra" value={`${result.mm} kg`} hint="Estimada" />
             <Box label="RCQ" value={result.rcq.toString()} hint="Cintura/Quadril" />
           </div>
@@ -80,9 +91,9 @@ function AvaliacaoPage() {
 
 function Box({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
-    <div className="glass rounded-xl p-3">
+    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-transparent p-3">
       <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</p>
-      <p className="text-xl font-extrabold text-primary mt-1">{value}</p>
+      <p className="text-2xl font-extrabold text-primary mt-1">{value}</p>
       <p className="text-[10px] text-muted-foreground mt-0.5">{hint}</p>
     </div>
   );

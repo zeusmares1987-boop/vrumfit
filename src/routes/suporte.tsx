@@ -1,15 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import { HelpCircle, ChevronDown, ChevronUp, MessageSquare, Inbox } from "lucide-react";
 
 const faqs = [
-  { q: "Como prescrever um treino?", a: "Vá em Treinos, escolha frequência e objetivo, clique em Gerar Planilha e exporte." },
+  { q: "Como prescrever um treino?", a: "Vá em Treinos, escolha frequência e objetivo, clique em Gerar e exporte em PDF." },
   { q: "Posso editar a dieta gerada?", a: "Sim. A geração é uma sugestão calculada — adapte os itens antes de exportar." },
-  { q: "Os dados ficam salvos?", a: "Sim, todos os dados sincronizam na nuvem entre seus dispositivos." },
+  { q: "Os dados ficam salvos?", a: "Sim, tudo sincroniza na nuvem entre seus dispositivos automaticamente." },
   { q: "Como cancelo a conta de um aluno?", a: "Abra Alunos, toque na lixeira ao lado do nome (apenas Dono)." },
 ];
 
@@ -52,23 +54,46 @@ function Sup() {
   };
 
   return (
-    <AppShell title="Suporte" subtitle="FAQ e contato direto">
-      <Card className="p-3">
-        <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-2">Perguntas frequentes</h3>
-        <ul className="space-y-2">
-          {faqs.map((f, i) => (
-            <li key={i} className="border-t border-border pt-2 first:border-0 first:pt-0">
-              <button onClick={() => setOpen(open === i ? null : i)} className="w-full text-left text-sm font-semibold flex items-center justify-between">
-                {f.q}<span className="text-primary">{open === i ? "−" : "+"}</span>
-              </button>
-              {open === i && <p className="text-xs text-muted-foreground mt-1.5">{f.a}</p>}
-            </li>
-          ))}
+    <AppShell title="Suporte">
+      <PageHero
+        eyebrow="Ajuda"
+        title="Suporte"
+        subtitle="Tire dúvidas ou fale com a equipe VrumFit"
+        icon={HelpCircle}
+        stats={[
+          { label: "FAQ", value: faqs.length },
+          { label: "Tickets", value: tickets.length },
+          { label: "Resposta", value: "~24h" },
+        ]}
+      />
+
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <HelpCircle className="size-4 text-primary" />
+          <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold">Perguntas frequentes</h3>
+        </div>
+        <ul className="space-y-1">
+          {faqs.map((f, i) => {
+            const isOpen = open === i;
+            return (
+              <li key={i} className="border-t border-white/5 first:border-0">
+                <button onClick={() => setOpen(isOpen ? null : i)}
+                  className="w-full text-left text-sm font-bold flex items-center justify-between py-3 hover:text-primary transition">
+                  {f.q}
+                  {isOpen ? <ChevronUp className="size-4 text-primary shrink-0" /> : <ChevronDown className="size-4 text-muted-foreground shrink-0" />}
+                </button>
+                {isOpen && <p className="text-xs text-muted-foreground pb-3 leading-relaxed">{f.a}</p>}
+              </li>
+            );
+          })}
         </ul>
       </Card>
 
-      <Card className="p-3">
-        <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-2">Abrir ticket</h3>
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <MessageSquare className="size-4 text-primary" />
+          <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold">Abrir ticket</h3>
+        </div>
         <form onSubmit={submit} className="space-y-2">
           <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Assunto" className={inputCls} />
           <textarea value={msg} onChange={(e) => setMsg(e.target.value)} placeholder="Descreva sua dúvida…" className={`${inputCls} min-h-[100px] py-2`} />
@@ -77,17 +102,22 @@ function Sup() {
       </Card>
 
       {tickets.length > 0 && (
-        <Card className="p-3">
-          <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground mb-2">Meus tickets</h3>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Inbox className="size-4 text-primary" />
+            <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold">Meus tickets</h3>
+          </div>
           <ul className="space-y-2">
             {tickets.map((t) => (
-              <li key={t.id} className="glass rounded-xl p-2.5">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold">{t.subject}</p>
-                  <span className="text-[10px] uppercase text-primary">{t.status}</span>
+              <li key={t.id} className="glass rounded-2xl p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-bold truncate">{t.subject}</p>
+                  <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shrink-0 ${
+                    t.status === "aberto" ? "bg-primary/20 text-primary" : "bg-success/20 text-success"
+                  }`}>{t.status}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">{t.message}</p>
-                <p className="text-[10px] text-white/40 mt-1">{new Date(t.created_at).toLocaleString("pt-BR")}</p>
+                <p className="text-[10px] text-muted-foreground mt-1.5">{new Date(t.created_at).toLocaleString("pt-BR")}</p>
               </li>
             ))}
           </ul>
