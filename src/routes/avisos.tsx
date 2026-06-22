@@ -22,7 +22,7 @@ export const Route = createFileRoute("/avisos")({
 function Avisos() {
   const { user, role } = useAuth();
   const [list, setList] = useState<N[]>([]);
-  const [form, setForm] = useState({ title: "", message: "", audience: "todos" });
+  const [form, setForm] = useState({ title: "", message: "", audience: role === "personal" ? "alunos" : "todos" });
   const [show, setShow] = useState(false);
 
   const load = async () => {
