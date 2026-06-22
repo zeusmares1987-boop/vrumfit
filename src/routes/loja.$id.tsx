@@ -4,7 +4,6 @@ import { AppShell, Card, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { MessageCircle, ArrowLeft, BookOpen, Dumbbell } from "lucide-react";
-import { toast } from "sonner";
 
 type Module = { t: string; d?: string };
 type Offer = {
@@ -64,14 +63,6 @@ function Detail() {
     })();
   }, [id]);
 
-  const openWa = async () => {
-    if (!o?.whatsapp) return toast.error("Vendedor sem WhatsApp cadastrado.");
-    const num = o.whatsapp.replace(/\D/g, "");
-    const msg = encodeURIComponent(`Olá! Tenho interesse na oferta "${o.title}" do VRUMFIT.`);
-    await supabase.rpc("bump_wa_click", { _product: o.id });
-    window.open(`https://wa.me/${num}?text=${msg}`, "_blank");
-  };
-
   if (loading) return <AppShell title="Oferta">{null}</AppShell>;
   if (!o)
     return (
@@ -82,6 +73,10 @@ function Detail() {
         </Card>
       </AppShell>
     );
+
+  const waNumber = o.whatsapp?.replace(/\D/g, "") ?? "";
+  const waText = encodeURIComponent(`Olá! Tenho interesse na oferta "${o.title}" do VRUMFIT.`);
+  const waHref = waNumber ? `https://wa.me/${waNumber}?text=${waText}` : undefined;
 
   return (
     <AppShell title={o.title} subtitle={seller?.display_name ?? "Vendedor"}>
@@ -197,9 +192,15 @@ function Detail() {
 
       <div className="fixed bottom-20 left-0 right-0 px-4 z-30">
         <div className="max-w-md mx-auto">
-          <button onClick={openWa} className={`${btnPrimary} w-full flex items-center justify-center gap-2 shadow-2xl`}>
-            <MessageCircle className="size-4" /> CHAMAR NO WHATSAPP
-          </button>
+          {waHref ? (
+            <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btnPrimary} w-full flex items-center justify-center gap-2 shadow-2xl`}>
+              <MessageCircle className="size-4" /> CHAMAR NO WHATSAPP
+            </a>
+          ) : (
+            <button disabled className={`${btnPrimary} w-full flex items-center justify-center gap-2 shadow-2xl opacity-60`}>
+              <MessageCircle className="size-4" /> SEM WHATSAPP
+            </button>
+          )}
         </div>
       </div>
     </AppShell>
