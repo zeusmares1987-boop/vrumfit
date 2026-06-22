@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
+import { StoredImage } from "@/components/StoredImage";
 import { Download, BookOpen, FileDown, Zap, Clock, Flame, ChevronDown, ChevronUp, Play, Dumbbell } from "lucide-react";
 import type { WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateWorkoutPDFBlob } from "@/lib/pdf-lazy";
@@ -267,7 +268,7 @@ function TreinosPage() {
                             <>
                               <div className="relative size-16 shrink-0 rounded-lg overflow-hidden border border-primary/30 bg-black">
                                 {exercisePhoto ? (
-                                  <img src={exercisePhoto} alt={`Execução do exercício ${ex.name}`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                                  <StoredImage src={exercisePhoto} alt={`Execução do exercício ${ex.name}`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                                 ) : (
                                   <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_35%_25%,color-mix(in_oklab,var(--primary)_30%,transparent),transparent_36%),linear-gradient(135deg,color-mix(in_oklab,var(--surface)_92%,black),black)]">
                                     <span className="text-[13px] font-black text-primary">{ex.name.split(/\s+/).slice(0, 2).map((p) => p[0]).join("").toUpperCase()}</span>
