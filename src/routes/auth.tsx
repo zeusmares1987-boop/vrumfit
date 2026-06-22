@@ -139,10 +139,7 @@ function AuthPage() {
         </div>
 
         <div className="mt-auto w-full max-w-md mx-auto">
-          <div
-            className="rounded-3xl border border-white/10 bg-black/75 backdrop-blur-xl px-6 py-6 sm:px-7"
-            style={{ boxShadow: "0 30px 80px -30px rgba(0,0,0,0.9)" }}
-          >
+          <div className="px-1 py-2">
             <div className="mb-4">
               <h2 className="text-[18px] font-semibold text-white tracking-tight">{title}</h2>
               <p className="mt-0.5 text-[12px] text-white/55">
