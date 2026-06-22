@@ -31,7 +31,6 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
-  const [accountRole, setAccountRole] = useState<"aluno" | "personal">("aluno");
   const [showPwd, setShowPwd] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -85,7 +84,7 @@ function AuthPage() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
-        data: { full_name: fullName, phone, role: accountRole },
+        data: { full_name: fullName, phone, role: "aluno" },
       },
     });
     setBusy(false);
@@ -185,13 +184,6 @@ function AuthPage() {
                 <Field icon={Phone} type="tel" placeholder="Telefone (opcional)" value={phone} onChange={setPhone} />
                 <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha (mín. 6)" value={password} onChange={setPassword}
                   rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
-                <div className="mt-1 flex gap-2">
-                  {(["aluno", "personal"] as const).map((r) => (
-                    <button type="button" key={r} onClick={() => setAccountRole(r)} className={`flex-1 h-11 rounded-xl border text-[13px] font-semibold transition ${accountRole === r ? "border-primary bg-primary/15 text-primary" : "border-white/15 bg-white/[0.04] text-white/75 hover:border-white/30"}`}>
-                      {r === "aluno" ? "Sou Aluno" : "Sou Personal"}
-                    </button>
-                  ))}
-                </div>
                 <PrimaryButton disabled={busy} type="submit">{busy ? "Criando..." : "Criar conta"}</PrimaryButton>
               </form>
             )}
