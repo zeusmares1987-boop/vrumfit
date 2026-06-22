@@ -43,24 +43,37 @@ function BibliotecaPage() {
 
   return (
     <AppShell title="Execução" subtitle="Biblioteca VrumFit">
+      <PageHero
+        eyebrow="Biblioteca"
+        title="Execução VrumFit"
+        subtitle="Pôsteres de execução com INÍCIO/FIM e músculo-alvo destacado."
+        icon={BookOpen}
+        stats={[
+          { label: "Exercícios", value: exercises?.length ?? 0 },
+          { label: "Categorias", value: cats?.length ?? 0 },
+          { label: "Filtro", value: catSlug ? (cats?.find((c) => c.slug === catSlug)?.name ?? "—") : "Todos" },
+        ]}
+        action={
+          role === "dono" ? (
+            <Link to="/biblioteca" className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl border border-primary/40 bg-primary/15 text-primary text-[12px] font-semibold hover:bg-primary/25">
+              <Plus className="size-3.5" /> Novo
+            </Link>
+          ) : undefined
+        }
+      />
+
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-[18px] text-white/55" />
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar exercício..."
           className="w-full h-12 rounded-2xl bg-black/60 border border-white/10 pl-12 pr-4 text-[13px] outline-none placeholder:text-white/45 focus:border-primary/60 transition" />
       </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
         <Chip active={catSlug === null} onClick={() => setCatSlug(null)}>Todos</Chip>
         {cats?.map((c) => (
           <Chip key={c.id} active={catSlug === c.slug} onClick={() => setCatSlug(c.slug)}>{c.name}</Chip>
         ))}
       </div>
-
-      {role === "dono" && (
-        <Link to="/biblioteca" className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-xl border border-primary/40 text-primary text-[12px] font-semibold hover:bg-primary/10">
-          <Plus className="size-3.5" /> Novo exercício
-        </Link>
-      )}
 
       <section className="mt-3 grid grid-cols-2 gap-2.5 pb-4">
         {(exercises ?? []).map((e: any) => {
