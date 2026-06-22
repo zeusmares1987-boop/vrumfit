@@ -81,6 +81,7 @@ function Personais() {
 
   return (
     <AppShell title="Personais">
+      {creds && <CredentialsModal info={creds} onClose={() => setCreds(null)} />}
       <PageHero
         eyebrow="Equipe"
         title="Personais"
@@ -95,7 +96,7 @@ function Personais() {
 
       <div className="flex items-center justify-between gap-2 rounded-2xl border border-primary/25 bg-primary/5 p-3">
         <UserPlus className="size-4 text-primary shrink-0" />
-        <p className="text-[11px] text-muted-foreground">Dono cadastra o personal e define a senha inicial.</p>
+        <p className="text-[11px] text-muted-foreground">Cadastre por e-mail. Deixe a senha em branco que o sistema gera e mostra pra copiar.</p>
         <button onClick={() => setShowCreate((s) => !s)} className="shrink-0 rounded-xl bg-primary px-3 py-2 text-[10px] font-bold text-primary-foreground">
           {showCreate ? "FECHAR" : "NOVO"}
         </button>
@@ -106,7 +107,7 @@ function Personais() {
           <form onSubmit={addPersonal} className="space-y-3">
             <Field label="Nome"><input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className={inputCls} required /></Field>
             <Field label="E-mail"><input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} required /></Field>
-            <Field label="Senha inicial"><input value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={inputCls} minLength={6} required /></Field>
+            <Field label="Senha inicial (opcional)"><input value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={inputCls} minLength={6} placeholder="deixe vazio para gerar" /></Field>
             <Field label="Telefone"><input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} /></Field>
             <button disabled={creating} className={btnPrimary}>{creating ? "CADASTRANDO…" : "CADASTRAR PERSONAL"}</button>
           </form>
