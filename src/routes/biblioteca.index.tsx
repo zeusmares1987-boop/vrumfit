@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Dumbbell, BookOpen } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { VrumExercisePoster } from "@/components/VrumExercisePoster";
 import { getExercisePosterUrl } from "@/lib/exercisePosters";
 import { useAuth } from "@/lib/auth";
