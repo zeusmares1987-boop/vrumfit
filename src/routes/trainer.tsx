@@ -8,7 +8,8 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import logoV from "@/assets/logo-v.png";
+import logoVAsset from "@/assets/logo-v.webp.asset.json";
+const logoV = logoVAsset.url;
 import headerGym from "@/assets/header-gym.jpg";
 import tileAlunos from "@/assets/tile-alunos.jpg";
 import tileTreinos from "@/assets/tile-treinos.jpg";
@@ -98,7 +99,7 @@ function TrainerPage() {
               Olá, <span className="text-primary">{profile?.full_name?.split(" ")[0] ?? "Personal"}</span>
             </h1>
             <p className="mt-1 text-[12px] text-white/70">Disciplina · Foco · Resultados</p>
-            <img src={logoV} alt="" className="absolute right-3 top-1/2 -translate-y-1/2 size-12 opacity-90" />
+            <img src={logoV} alt="" width={48} height={48} decoding="async" loading="lazy" className="absolute right-3 top-1/2 -translate-y-1/2 size-12 opacity-90" />
           </div>
         </div>
       </section>

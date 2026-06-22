@@ -2,7 +2,8 @@ import { Link, Navigate, useNavigate, useRouterState } from "@tanstack/react-rou
 import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut, ChevronLeft } from "lucide-react";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import type { ReactNode, InputHTMLAttributes } from "react";
-import logoV from "@/assets/logo-v.png";
+import logoVAsset from "@/assets/logo-v.webp.asset.json";
+const logoV = logoVAsset.url;
 
 export function AppShell({
   title,
@@ -58,7 +59,7 @@ export function AppShell({
             </button>
           )}
           <Link to={home} className="flex items-center gap-2 shrink-0">
-            <img src={logoV} alt="" className="size-8" />
+            <img src={logoV} alt="" width={32} height={32} decoding="async" className="size-8" />
             <div className="leading-tight">
               <div className="text-[15px] font-extrabold tracking-tight">
                 <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
