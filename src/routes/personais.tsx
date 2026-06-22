@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { AppShell } from "@/components/AppShell";
+import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { createPersonalForOwner } from "@/lib/students.functions";
 import { toast } from "sonner";
-import { UserCog, Search, Mail, Users as UsersIcon } from "lucide-react";
+import { UserCog, Search, Mail, Users as UsersIcon, UserPlus } from "lucide-react";
 
 type P = { id: string; full_name: string | null; email: string | null; phone: string | null };
 
@@ -19,13 +21,16 @@ export const Route = createFileRoute("/personais")({
 });
 
 function Personais() {
+  const createPersonal = useServerFn(createPersonalForOwner);
   const [list, setList] = useState<P[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
+  const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState({ fullName: "", email: "", password: "", phone: "" });
 
-  useEffect(() => {
-    (async () => {
+  const load = async () => {
       const { data: roles, error } = await supabase
         .from("user_roles")
         .select("user_id")
@@ -43,8 +48,27 @@ function Personais() {
       (studs ?? []).forEach((s) => { if (s.personal_id) c[s.personal_id] = (c[s.personal_id] ?? 0) + 1; });
       setCounts(c);
       setLoading(false);
-    })();
+  };
+
+  useEffect(() => {
+    load();
   }, []);
+
+  const addPersonal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreating(true);
+    try {
+      await createPersonal({ data: form });
+      toast.success("Personal cadastrado. Envie e-mail e senha para ele.");
+      setForm({ fullName: "", email: "", password: "", phone: "" });
+      setShowCreate(false);
+      load();
+    } catch (error: any) {
+      toast.error(error.message ?? "Falha ao cadastrar personal.");
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const totalAlunos = Object.values(counts).reduce((a, b) => a + b, 0);
   const filtered = list.filter((p) =>
@@ -65,6 +89,26 @@ function Personais() {
           { label: "Média/PT", value: list.length ? (totalAlunos / list.length).toFixed(1) : "0" },
         ]}
       />
+
+      <div className="flex items-center justify-between gap-2 rounded-2xl border border-primary/25 bg-primary/5 p-3">
+        <UserPlus className="size-4 text-primary shrink-0" />
+        <p className="text-[11px] text-muted-foreground">Dono cadastra o personal e define a senha inicial.</p>
+        <button onClick={() => setShowCreate((s) => !s)} className="shrink-0 rounded-xl bg-primary px-3 py-2 text-[10px] font-bold text-primary-foreground">
+          {showCreate ? "FECHAR" : "NOVO"}
+        </button>
+      </div>
+
+      {showCreate && (
+        <Card className="p-4">
+          <form onSubmit={addPersonal} className="space-y-3">
+            <Field label="Nome"><input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className={inputCls} required /></Field>
+            <Field label="E-mail"><input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} required /></Field>
+            <Field label="Senha inicial"><input value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={inputCls} minLength={6} required /></Field>
+            <Field label="Telefone"><input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} /></Field>
+            <button disabled={creating} className={btnPrimary}>{creating ? "CADASTRANDO…" : "CADASTRAR PERSONAL"}</button>
+          </form>
+        </Card>
+      )}
 
       <div className="relative">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
