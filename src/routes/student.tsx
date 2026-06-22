@@ -7,6 +7,7 @@ import {
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
+import { StoredImage } from "@/components/StoredImage";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
@@ -257,7 +258,7 @@ function StudentPage() {
             <div className="flex items-center gap-3">
               <div className="size-12 rounded-2xl border border-primary/40 bg-primary/10 grid place-items-center text-primary font-black overflow-hidden shrink-0">
                 {myPersonal.avatar_url
-                  ? <img src={myPersonal.avatar_url} alt="" className="w-full h-full object-cover" />
+                  ? <StoredImage src={myPersonal.avatar_url} alt="" className="w-full h-full object-cover" />
                   : <UserCog className="size-5" />}
               </div>
               <div className="flex-1 min-w-0">
