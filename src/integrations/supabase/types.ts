@@ -338,6 +338,7 @@ export type Database = {
           id: string
           mime: string | null
           name: string
+          personal_id: string | null
           target_user_id: string | null
           uploaded_by: string
         }
@@ -348,6 +349,7 @@ export type Database = {
           id?: string
           mime?: string | null
           name: string
+          personal_id?: string | null
           target_user_id?: string | null
           uploaded_by: string
         }
@@ -358,6 +360,7 @@ export type Database = {
           id?: string
           mime?: string | null
           name?: string
+          personal_id?: string | null
           target_user_id?: string | null
           uploaded_by?: string
         }
@@ -407,6 +410,7 @@ export type Database = {
           id: string
           mp_payment_id: string | null
           paid_at: string | null
+          personal_id: string | null
           plan_id: string | null
           status: Database["public"]["Enums"]["invoice_status"]
           student_id: string
@@ -419,6 +423,7 @@ export type Database = {
           id?: string
           mp_payment_id?: string | null
           paid_at?: string | null
+          personal_id?: string | null
           plan_id?: string | null
           status?: Database["public"]["Enums"]["invoice_status"]
           student_id: string
@@ -431,6 +436,7 @@ export type Database = {
           id?: string
           mp_payment_id?: string | null
           paid_at?: string | null
+          personal_id?: string | null
           plan_id?: string | null
           status?: Database["public"]["Enums"]["invoice_status"]
           student_id?: string
@@ -1025,6 +1031,7 @@ export type Database = {
       bump_wa_click: { Args: { _product: string }; Returns: undefined }
       can_add_student: { Args: { _personal_id: string }; Returns: boolean }
       can_publish_offer: { Args: { _seller: string }; Returns: boolean }
+      can_view_profile: { Args: { _profile_id: string }; Returns: boolean }
       claim_ownership: { Args: never; Returns: boolean }
       current_plan: {
         Args: { _uid: string }
@@ -1061,6 +1068,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_my_student: {
+        Args: { _personal_id?: string; _student_id: string }
         Returns: boolean
       }
     }
