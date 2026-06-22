@@ -121,16 +121,20 @@ function AuthPage() {
     setBusy(false);
   };
 
+  const title = mode === "login" ? "Acesse sua conta" : mode === "signup" ? "Crie sua conta" : "Recuperar acesso";
+  const subtitle = mode === "login" ? "Treinos, dieta e evolução em um só lugar." : mode === "signup" ? "Comece em menos de um minuto." : "Enviaremos um link seguro para seu e-mail.";
+
   return (
     <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground">
-      <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-center" />
-      <div className="absolute inset-0" style={{ background: "radial-gradient(120% 60% at 50% 0%, transparent 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.94) 100%)" }} />
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/85 to-transparent" />
+      <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-center scale-105" />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(120% 60% at 50% 0%, transparent 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.96) 100%)" }} />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/90 to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full" style={{ background: "radial-gradient(closest-side, rgba(255,120,30,0.28), transparent 70%)" }} />
 
-      <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),2.5rem)] pb-[max(env(safe-area-inset-bottom),1.25rem)]">
-        <div className="mt-[10vh] flex flex-col items-center">
-          <img src={logoV} alt="VRUMFIT" width={120} height={120} className="size-[100px] drop-shadow-[0_8px_30px_rgba(255,140,40,0.45)]" />
-          <h1 className="mt-3 text-[36px] leading-none font-extrabold tracking-tight">
+      <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),2rem)] pb-[max(env(safe-area-inset-bottom),1.25rem)]">
+        <div className="mt-[6vh] flex flex-col items-center">
+          <img src={logoV} alt="VRUMFIT" width={120} height={120} className="size-[96px] drop-shadow-[0_10px_36px_rgba(255,140,40,0.55)]" />
+          <h1 className="mt-3 text-[34px] leading-none font-extrabold tracking-tight">
             <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
           </h1>
           <div className="mt-2 flex items-center gap-3">
@@ -138,9 +142,14 @@ function AuthPage() {
             <span className="text-[11px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
             <span className="h-px w-6 bg-primary/70" />
           </div>
+          <p className="mt-5 text-[13px] text-white/70 text-center max-w-[260px] leading-snug">{subtitle}</p>
         </div>
 
         <div className="mt-auto w-full max-w-md mx-auto">
+          <div className="mb-4 text-center">
+            <h2 className="text-lg font-semibold text-white/95 tracking-tight">{title}</h2>
+          </div>
+
           {mode === "login" && (
             <form onSubmit={onLogin} className="flex flex-col gap-3.5">
               <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
@@ -150,10 +159,13 @@ function AuthPage() {
               <button type="button" onClick={() => setMode("forgot")} className="mt-1 text-center text-[13px] font-medium text-primary/90 hover:text-primary underline underline-offset-4 decoration-primary/40">
                 Esqueci minha senha
               </button>
+              <div className="my-1 flex items-center gap-3 text-[11px] text-white/40">
+                <span className="h-px flex-1 bg-white/10" /> OU <span className="h-px flex-1 bg-white/10" />
+              </div>
               <button type="button" onClick={onGoogle} disabled={busy} className="h-12 rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md flex items-center justify-center gap-3 text-sm font-medium text-white hover:bg-black/60 transition">
                 <GoogleIcon /> Entrar com Google
               </button>
-              <button type="button" onClick={() => setMode("signup")} className="mt-2 h-14 w-full rounded-2xl border border-primary/40 bg-black/40 backdrop-blur-md flex items-center justify-center gap-2 text-sm font-semibold text-white hover:border-primary transition">
+              <button type="button" onClick={() => setMode("signup")} className="mt-2 h-14 w-full rounded-2xl border border-primary/40 bg-black/40 backdrop-blur-md flex items-center justify-center gap-2 text-sm font-semibold text-white hover:border-primary hover:bg-primary/10 transition">
                 Criar conta <ChevronRight className="size-4 text-primary" />
               </button>
             </form>
@@ -169,7 +181,7 @@ function AuthPage() {
                 rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
               <div className="flex gap-2">
                 {(["aluno", "personal"] as const).map((r) => (
-                  <button type="button" key={r} onClick={() => setAccountRole(r)} className={`flex-1 h-12 rounded-2xl border text-sm font-semibold transition ${accountRole === r ? "border-primary bg-primary/15 text-primary" : "border-white/15 bg-black/40 text-white/80"}`}>
+                  <button type="button" key={r} onClick={() => setAccountRole(r)} className={`flex-1 h-12 rounded-2xl border text-sm font-semibold transition ${accountRole === r ? "border-primary bg-primary/15 text-primary" : "border-white/15 bg-black/40 text-white/80 hover:border-white/30"}`}>
                     {r === "aluno" ? "Sou Aluno" : "Sou Personal"}
                   </button>
                 ))}
@@ -181,11 +193,14 @@ function AuthPage() {
           {mode === "forgot" && (
             <form onSubmit={onForgot} className="flex flex-col gap-3.5">
               <BackBtn onClick={() => setMode("login")}>Voltar</BackBtn>
-              <p className="text-sm text-white/70 text-center">Informe seu e-mail para receber o link de recuperação.</p>
               <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
               <PrimaryButton disabled={busy} type="submit">{busy ? "Enviando..." : "Enviar link"}</PrimaryButton>
             </form>
           )}
+
+          <p className="mt-6 text-center text-[11px] text-white/40">
+            © {new Date().getFullYear()} VRUMFIT PERSONAL · Todos os direitos reservados
+          </p>
         </div>
       </div>
     </main>
