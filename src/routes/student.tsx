@@ -125,11 +125,14 @@ function StudentPage() {
     onError: (e: any) => toast.error(e.message ?? "Falha ao reivindicar."),
   });
 
+  const firstName = profile?.full_name?.split(" ")[0] ?? "Aluno";
+  const today = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+
   return (
     <AppShell>
       {hasOwner === false && (
         <button onClick={() => claim.mutate()} disabled={claim.isPending}
-          className="w-full mb-3 rounded-2xl border border-primary/50 bg-primary/10 hover:bg-primary/20 p-3 flex items-center gap-3 text-left transition disabled:opacity-60">
+          className="w-full mb-3 rounded-2xl border border-primary/50 bg-primary/10 hover:bg-primary/15 p-3 flex items-center gap-3 text-left transition disabled:opacity-60">
           <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
             <Crown className="size-5" />
           </div>
@@ -141,56 +144,59 @@ function StudentPage() {
         </button>
       )}
 
-      {/* Welcome */}
-      <section className="relative">
-        <div className="relative rounded-[18px] overflow-hidden">
-          <img src={headerGym} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-black/30" />
-          <div className="relative p-4 pr-20 min-h-[88px]">
-            <h1 className="text-[22px] font-extrabold leading-tight tracking-tight">
-              Bem-vindo, <span className="text-primary">{profile?.full_name?.split(" ")[0] ?? "Aluno"}</span>
-            </h1>
-            <p className="mt-1 text-[12px] text-white/70">Bora treinar firme hoje.</p>
-            <img src={logoV} alt="" width={48} height={48} decoding="async" loading="lazy" className="absolute right-3 top-1/2 -translate-y-1/2 size-12 opacity-90" />
-          </div>
+      {/* Welcome hero */}
+      <section className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-30px_rgba(255,120,30,0.45)]">
+        <img src={headerGym} alt="" className="absolute inset-0 w-full h-full object-cover opacity-55" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-black/80 to-primary/25" />
+        <div className="relative p-5">
+          <p className="text-[10px] uppercase tracking-[0.25em] text-primary/85 font-bold">{today}</p>
+          <h1 className="mt-1 text-[26px] font-black leading-tight tracking-tight">
+            Olá, <span className="text-primary">{firstName}</span>
+          </h1>
+          <p className="mt-1 text-[12.5px] text-white/70">Pronto para o treino de hoje?</p>
+          <img src={logoV} alt="" width={56} height={56} decoding="async" loading="lazy" className="absolute right-4 top-4 size-14 opacity-90 drop-shadow-[0_4px_18px_rgba(255,120,30,0.35)]" />
         </div>
       </section>
 
-      {/* Treino atual */}
-      <Link to="/treinos" className="mt-4 block rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/20 via-black/40 to-black/60 p-4 hover:border-primary/60 transition">
-        <div className="flex items-center gap-3">
-          <div className="size-12 rounded-xl bg-primary/20 border border-primary/40 grid place-items-center text-primary">
-            <Dumbbell className="size-5" />
+      {/* Treino + Dieta */}
+      <div className="mt-4 grid gap-2.5">
+        <Link to="/treinos" className="group relative block rounded-2xl border border-primary/40 bg-gradient-to-br from-primary/20 via-black/40 to-black/70 p-4 hover:border-primary/70 hover:translate-y-[-1px] transition">
+          <div className="flex items-center gap-3">
+            <div className="size-12 rounded-xl bg-primary/25 border border-primary/50 grid place-items-center text-primary shadow-[0_6px_18px_-6px_rgba(255,120,30,0.6)]">
+              <Dumbbell className="size-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">Meu treino atual</p>
+              <p className="text-[16px] font-extrabold truncate mt-0.5">{currentWorkout?.name ?? "Nenhum treino ativo"}</p>
+              <p className="text-[11.5px] text-white/65 truncate">{currentWorkout?.objective ?? "Aguardando prescrição do personal"}</p>
+            </div>
+            <ChevronRight className="size-5 text-primary group-hover:translate-x-0.5 transition" />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] uppercase tracking-wider text-primary font-semibold">Meu treino atual</p>
-            <p className="text-[16px] font-extrabold truncate">{currentWorkout?.name ?? "Nenhum treino ativo"}</p>
-            <p className="text-[11px] text-white/60">{currentWorkout?.objective ?? "Seu personal vai prescrever em breve"}</p>
-          </div>
-          <ChevronRight className="size-5 text-primary" />
-        </div>
-      </Link>
+        </Link>
 
-      {/* Dieta atual */}
-      <Link to="/dieta" className="mt-3 block rounded-2xl border border-white/15 bg-white/[0.03] p-4 hover:border-primary/40 transition">
-        <div className="flex items-center gap-3">
-          <div className="size-12 rounded-xl bg-white/5 border border-primary/30 grid place-items-center text-primary">
-            <Apple className="size-5" />
+        <Link to="/dieta" className="group relative block rounded-2xl border border-white/12 bg-white/[0.035] p-4 hover:border-primary/45 hover:bg-white/[0.05] transition">
+          <div className="flex items-center gap-3">
+            <div className="size-12 rounded-xl bg-white/5 border border-primary/30 grid place-items-center text-primary">
+              <Apple className="size-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">Minha dieta atual</p>
+              <p className="text-[16px] font-extrabold truncate mt-0.5">{currentDiet?.name ?? "Nenhuma dieta ativa"}</p>
+              <p className="text-[11.5px] text-white/65 truncate">{currentDiet?.objective ?? "Aguardando prescrição do personal"}</p>
+            </div>
+            <ChevronRight className="size-5 text-primary group-hover:translate-x-0.5 transition" />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] uppercase tracking-wider text-primary font-semibold">Minha dieta atual</p>
-            <p className="text-[16px] font-extrabold truncate">{currentDiet?.name ?? "Nenhuma dieta ativa"}</p>
-            <p className="text-[11px] text-white/60">{currentDiet?.objective ?? "Seu personal vai prescrever em breve"}</p>
-          </div>
-          <ChevronRight className="size-5 text-primary" />
-        </div>
-      </Link>
+        </Link>
+      </div>
 
-      <h2 className="mt-6 text-[20px] font-extrabold tracking-tight flex items-center gap-2">
-        <span className="inline-block w-[3px] h-5 bg-primary rounded-full" /> Módulos
-      </h2>
+      {/* Section header */}
+      <div className="mt-7 mb-3 flex items-center gap-2.5">
+        <span className="inline-block w-1 h-5 bg-primary rounded-full" />
+        <h2 className="text-[18px] font-black tracking-tight">Módulos</h2>
+        <span className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
+      </div>
 
-      <section className="mt-3 grid grid-cols-3 gap-2">
+      <section className="grid grid-cols-3 gap-2">
         {smallTiles.map((t) => <PhotoTile key={t.label} {...t} />)}
       </section>
       <section className="mt-2 grid grid-cols-2 gap-2">
@@ -202,19 +208,19 @@ function StudentPage() {
 
 function PhotoTile({ icon: Icon, label, hint, to, bg, wide }: Tile & { wide?: boolean }) {
   return (
-    <Link to={to} className={`group relative rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition block ${wide ? "aspect-[16/9]" : "aspect-[5/6]"}`}>
-      <img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0.15) 100%)" }} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+    <Link to={to} className={`group relative rounded-2xl overflow-hidden border border-white/10 hover:border-primary/55 hover:translate-y-[-2px] hover:shadow-[0_12px_30px_-12px_rgba(255,120,30,0.55)] transition-all duration-200 block ${wide ? "aspect-[16/9]" : "aspect-[5/6]"}`}>
+      <img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-[1.04] transition-transform duration-500" loading="lazy" />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.2) 100%)" }} />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
       <div className="relative h-full p-3 flex flex-col">
-        <div className="size-9 rounded-xl border border-primary/50 bg-black/55 backdrop-blur-sm grid place-items-center text-primary">
+        <div className="size-9 rounded-xl border border-primary/55 bg-black/55 backdrop-blur-sm grid place-items-center text-primary group-hover:bg-primary/20 transition">
           <Icon className="size-[16px]" />
         </div>
         <div className="mt-auto pr-5">
           <p className="text-[13px] font-extrabold leading-tight">{label}</p>
           <p className="text-[10px] text-white/65 leading-snug mt-0.5 line-clamp-2">{hint}</p>
         </div>
-        <ChevronRight className="absolute bottom-2.5 right-2.5 size-4 text-primary" />
+        <ChevronRight className="absolute bottom-2.5 right-2.5 size-4 text-primary opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 transition" />
       </div>
     </Link>
   );
