@@ -4,13 +4,23 @@ import { z } from "zod";
 
 const objectiveSchema = z.enum(["hipertrofia", "emagrecimento", "forca", "condicionamento", "saude", "manutencao"]);
 
+function genPassword() {
+  // 10 chars, fácil de ditar: 2 letras maiúsculas + 4 dígitos + 4 letras minúsculas
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const lower = "abcdefghijkmnpqrstuvwxyz";
+  const digits = "23456789";
+  const pick = (s: string, n: number) =>
+    Array.from({ length: n }, () => s[Math.floor(Math.random() * s.length)]).join("");
+  return pick(upper, 2) + pick(digits, 4) + pick(lower, 4);
+}
+
 export const createStudentForPersonal = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) =>
     z.object({
       fullName: z.string().trim().min(2),
       email: z.string().trim().email(),
-      password: z.string().min(6),
+      password: z.string().min(6).optional().or(z.literal("")),
       phone: z.string().trim().optional(),
       objective: objectiveSchema.optional(),
     }).parse(data),
@@ -35,9 +45,10 @@ export const createStudentForPersonal = createServerFn({ method: "POST" })
     }
 
     const email = data.email.toLowerCase();
+    const password = data.password && data.password.length >= 6 ? data.password : genPassword();
     const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email,
-      password: data.password,
+      password,
       email_confirm: true,
       user_metadata: {
         full_name: data.fullName,
@@ -69,7 +80,7 @@ export const createStudentForPersonal = createServerFn({ method: "POST" })
     });
     if (studentError) throw studentError;
 
-    return { id: studentId, email };
+    return { id: studentId, email, password };
   });
 
 export const createPersonalForOwner = createServerFn({ method: "POST" })
@@ -78,7 +89,7 @@ export const createPersonalForOwner = createServerFn({ method: "POST" })
     z.object({
       fullName: z.string().trim().min(2),
       email: z.string().trim().email(),
-      password: z.string().min(6),
+      password: z.string().min(6).optional().or(z.literal("")),
       phone: z.string().trim().optional(),
     }).parse(data),
   )
@@ -92,9 +103,10 @@ export const createPersonalForOwner = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const email = data.email.toLowerCase();
+    const password = data.password && data.password.length >= 6 ? data.password : genPassword();
     const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email,
-      password: data.password,
+      password,
       email_confirm: true,
       user_metadata: {
         full_name: data.fullName,
@@ -121,5 +133,5 @@ export const createPersonalForOwner = createServerFn({ method: "POST" })
       .upsert({ user_id: personalId, role: "personal" }, { onConflict: "user_id,role" });
     if (roleError) throw roleError;
 
-    return { id: personalId, email };
+    return { id: personalId, email, password };
   });

@@ -969,6 +969,47 @@ export type Database = {
           },
         ]
       }
+      workout_sessions: {
+        Row: {
+          created_at: string
+          duration_min: number | null
+          id: string
+          notes: string | null
+          session_date: string
+          student_id: string
+          updated_at: string
+          workout_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_min?: number | null
+          id?: string
+          notes?: string | null
+          session_date?: string
+          student_id: string
+          updated_at?: string
+          workout_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_min?: number | null
+          id?: string
+          notes?: string | null
+          session_date?: string
+          student_id?: string
+          updated_at?: string
+          workout_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_sessions_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workouts: {
         Row: {
           aerobic: string | null

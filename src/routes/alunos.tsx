@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
@@ -7,7 +7,8 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { createStudentForPersonal } from "@/lib/students.functions";
-import { Search, Trash2, Users, UserPlus, Mail, Phone } from "lucide-react";
+import { CredentialsModal, type CredentialsInfo } from "@/components/Credentials";
+import { Search, Trash2, Users, UserPlus, Mail, Phone, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 type Row = {
@@ -15,7 +16,7 @@ type Row = {
   objective: string | null;
   status: string;
   personal_id: string | null;
-  profiles: { full_name: string | null; email: string | null; phone: string | null } | null;
+  profiles: { full_name: string | null; email: string | null; phone: string | null; avatar_url: string | null } | null;
 };
 type StudentObjective = "hipertrofia" | "emagrecimento" | "forca" | "condicionamento" | "saude" | "manutencao";
 
@@ -37,6 +38,7 @@ function AlunosPage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [creds, setCreds] = useState<CredentialsInfo | null>(null);
   const [form, setForm] = useState<{ fullName: string; email: string; password: string; phone: string; objective: StudentObjective }>({ fullName: "", email: "", password: "", phone: "", objective: "manutencao" });
 
   const load = async () => {
@@ -52,7 +54,7 @@ function AlunosPage() {
       const rows = (data ?? []) as Omit<Row, "profiles">[];
       const ids = rows.map((r) => r.user_id);
       const { data: profiles, error: profileError } = ids.length
-        ? await supabase.from("profiles").select("id,full_name,email,phone").in("id", ids)
+        ? await supabase.from("profiles").select("id,full_name,email,phone,avatar_url").in("id", ids)
         : { data: [], error: null };
       if (profileError) throw profileError;
       const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
@@ -78,8 +80,9 @@ function AlunosPage() {
     e.preventDefault();
     setCreating(true);
     try {
-      await createStudent({ data: form });
-      toast.success("Aluno cadastrado. Envie e-mail e senha para ele.");
+      const result = await createStudent({ data: form });
+      toast.success("Aluno cadastrado.");
+      setCreds({ name: form.fullName, email: result.email, password: result.password });
       setForm({ fullName: "", email: "", password: "", phone: "", objective: "manutencao" });
       setShowCreate(false);
       load();
@@ -102,6 +105,7 @@ function AlunosPage() {
 
   return (
     <AppShell title="Alunos" hideBottomNav={false}>
+      {creds && <CredentialsModal info={creds} onClose={() => setCreds(null)} />}
       <PageHero
         eyebrow="Sua carteira"
         title="Alunos"
@@ -117,7 +121,7 @@ function AlunosPage() {
       <div className="flex items-center justify-between gap-2 rounded-2xl border border-primary/25 bg-primary/5 p-3">
         <UserPlus className="size-4 text-primary shrink-0" />
         <p className="text-[11px] text-muted-foreground">
-          Personal cadastra aluno por e-mail e cria a senha inicial.
+          Cadastre por e-mail. Se deixar a senha em branco, o sistema gera uma e mostra pra você copiar.
         </p>
         <button onClick={() => setShowCreate((s) => !s)} className="shrink-0 rounded-xl bg-primary px-3 py-2 text-[10px] font-bold text-primary-foreground">
           {showCreate ? "FECHAR" : "NOVO"}
@@ -129,7 +133,7 @@ function AlunosPage() {
           <form onSubmit={addStudent} className="space-y-3">
             <Field label="Nome"><input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className={inputCls} required /></Field>
             <Field label="E-mail"><input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} required /></Field>
-            <Field label="Senha inicial"><input value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={inputCls} minLength={6} required /></Field>
+            <Field label="Senha inicial (opcional — gerada se vazia)"><input value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={inputCls} minLength={6} placeholder="deixe vazio para gerar" /></Field>
             <Field label="Telefone"><input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} /></Field>
             <Field label="Objetivo">
               <select value={form.objective} onChange={(e) => setForm({ ...form, objective: e.target.value as StudentObjective })} className={inputCls}>
@@ -176,31 +180,35 @@ function AlunosPage() {
         {filtered.map((p) => {
           const name = p.profiles?.full_name ?? "Sem nome";
           const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
+          const avatar = p.profiles?.avatar_url;
           return (
-            <li key={p.user_id} className="glass rounded-2xl p-3 flex items-center gap-3 hover:border-primary/40 transition">
-              <div className="size-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 grid place-items-center text-primary font-black text-sm shrink-0">
-                {initials || "?"}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-bold truncate">{name}</p>
-                  <span className={`shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase ${
-                    p.status === "ativo" ? "bg-success/20 text-success" : "bg-muted/30 text-muted-foreground"
-                  }`}>{p.status}</span>
+            <li key={p.user_id}>
+              <Link to="/alunos/$id" params={{ id: p.user_id }} className="glass rounded-2xl p-3 flex items-center gap-3 hover:border-primary/40 transition block">
+                <div className="size-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 grid place-items-center text-primary font-black text-sm shrink-0 overflow-hidden">
+                  {avatar ? <img src={avatar} alt="" className="w-full h-full object-cover" /> : (initials || "?")}
                 </div>
-                <div className="mt-0.5 flex flex-wrap gap-x-3 text-[10px] text-muted-foreground">
-                  {p.profiles?.email && <span className="flex items-center gap-1 truncate"><Mail className="size-2.5" />{p.profiles.email}</span>}
-                  {p.profiles?.phone && <span className="flex items-center gap-1"><Phone className="size-2.5" />{p.profiles.phone}</span>}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold truncate">{name}</p>
+                    <span className={`shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase ${
+                      p.status === "ativo" ? "bg-success/20 text-success" : "bg-muted/30 text-muted-foreground"
+                    }`}>{p.status}</span>
+                  </div>
+                  <div className="mt-0.5 flex flex-wrap gap-x-3 text-[10px] text-muted-foreground">
+                    {p.profiles?.email && <span className="flex items-center gap-1 truncate"><Mail className="size-2.5" />{p.profiles.email}</span>}
+                    {p.profiles?.phone && <span className="flex items-center gap-1"><Phone className="size-2.5" />{p.profiles.phone}</span>}
+                  </div>
+                  {p.objective && (
+                    <p className="text-[10px] text-primary/80 font-semibold mt-0.5">→ {p.objective}</p>
+                  )}
                 </div>
-                {p.objective && (
-                  <p className="text-[10px] text-primary/80 font-semibold mt-0.5">→ {p.objective}</p>
+                <ChevronRight className="size-4 text-muted-foreground shrink-0" />
+                {role === "dono" && (
+                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); remove(p.user_id); }} className="text-muted-foreground hover:text-destructive shrink-0 p-1.5">
+                    <Trash2 className="size-4" />
+                  </button>
                 )}
-              </div>
-              {role === "dono" && (
-                <button onClick={() => remove(p.user_id)} className="text-muted-foreground hover:text-destructive shrink-0 p-1.5">
-                  <Trash2 className="size-4" />
-                </button>
-              )}
+              </Link>
             </li>
           );
         })}
@@ -208,7 +216,7 @@ function AlunosPage() {
           <EmptyState
             icon={Users}
             title={q || filter !== "todos" ? "Nenhum aluno encontrado" : "Sem alunos ainda"}
-            hint={q ? "Ajuste a busca ou os filtros." : "Compartilhe a tela de cadastro com seus alunos."}
+            hint={q ? "Ajuste a busca ou os filtros." : "Toque em NOVO para cadastrar o primeiro."}
           />
         )}
       </ul>

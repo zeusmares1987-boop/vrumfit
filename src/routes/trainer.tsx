@@ -22,6 +22,8 @@ import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
 const tileProgresso = tileProgressoAsset.url;
 import tileBibliotecaAsset from "@/assets/tile-biblioteca.jpg.asset.json";
 const tileBiblioteca = tileBibliotecaAsset.url;
+import tileLojaAsset from "@/assets/tile-loja.jpg.asset.json";
+const tileLoja = tileLojaAsset.url;
 import tileArquivosAsset from "@/assets/tile-arquivos.jpg.asset.json";
 const tileArquivos = tileArquivosAsset.url;
 import tileAvisosAsset from "@/assets/tile-avisos.jpg.asset.json";
@@ -54,7 +56,7 @@ const smallTiles: Tile[] = [
   { icon: BookOpen, label: "Biblioteca", hint: "Exercícios VrumFit", to: "/biblioteca", bg: tileBiblioteca },
   { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos", bg: tileAvisos },
   { icon: Wallet, label: "Financeiro", hint: "Suas receitas", to: "/financeiro", bg: tileFinanceiro },
-  { icon: Store, label: "Minhas Ofertas", hint: "Vitrine na loja", to: "/loja-pro", bg: tileFinanceiro },
+  { icon: Store, label: "Minhas Ofertas", hint: "Vitrine na loja", to: "/loja-pro", bg: tileLoja },
 ];
 const wideTiles: Tile[] = [
   { icon: FolderOpen, label: "Arquivos", hint: "PDFs e documentos", to: "/arquivos", bg: tileArquivos },
