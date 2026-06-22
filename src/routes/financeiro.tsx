@@ -102,6 +102,7 @@ function Fin() {
       amount_cents: Math.round(parseFloat(form.amount) * 100),
       due_date: form.due_date,
       status: "pendente" as any,
+      personal_id: role === "personal" ? user?.id : undefined,
     });
     if (error) return toast.error(error.message);
     setForm({ student_id: "", plan_id: "", amount: "", due_date: "" });
@@ -126,7 +127,7 @@ function Fin() {
     setList(list.filter((x) => x.id !== id));
   };
 
-  const canEdit = role === "dono";
+  const canEdit = role === "dono" || role === "personal";
   const filtered = list.filter((i) => filter === "todos" || i.status === filter);
 
   return (

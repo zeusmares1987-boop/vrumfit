@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Dumbbell, Apple, TrendingUp, BookOpen, ShoppingBag, FolderOpen, Bell,
-  ClipboardCheck, ChevronRight, FileText, Crown, MessageCircle, LayoutGrid,
+  ClipboardCheck, ChevronRight, FileText, Crown, LayoutGrid,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -29,8 +29,6 @@ import tileAvisosAsset from "@/assets/tile-avisos.jpg.asset.json";
 const tileAvisos = tileAvisosAsset.url;
 import tileFinanceiroAsset from "@/assets/tile-financeiro.jpg.asset.json";
 const tileFinanceiro = tileFinanceiroAsset.url;
-import tileChatAsset from "@/assets/tile-chat.jpg.asset.json";
-const tileChat = tileChatAsset.url;
 import tileMaisAsset from "@/assets/tile-mais.jpg.asset.json";
 const tileMais = tileMaisAsset.url;
 
@@ -55,7 +53,6 @@ const smallTiles: Tile[] = [
   { icon: ClipboardCheck, label: "Avaliações", hint: "Histórico", to: "/avaliacoes", bg: tileAvaliacoes },
   { icon: BookOpen, label: "Biblioteca", hint: "Como executar", to: "/biblioteca", bg: tileBiblioteca },
   { icon: ShoppingBag, label: "Loja", hint: "Produtos", to: "/loja", bg: tileLoja },
-  { icon: MessageCircle, label: "Chat", hint: "Falar com personal", to: "/chat", bg: tileChat },
   { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos", bg: tileAvisos },
   { icon: FileText, label: "Faturas", hint: "Pagamentos", to: "/financeiro", bg: tileFinanceiro },
 ];

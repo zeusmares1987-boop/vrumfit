@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
-import { FileText, Upload, Trash2, Download, Loader2, FolderOpen, Shield } from "lucide-react";
+import { FileText, Upload, Trash2, Download, Loader2, FolderOpen, Shield, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
 type F = { name: string; size: number; updated_at: string; id: string };
+type StudentOption = { user_id: string; name: string };
 
 export const Route = createFileRoute("/arquivos")({
   head: () => ({ meta: [{ title: "Arquivos — VRUMFIT" }] }),
@@ -22,16 +23,20 @@ export const Route = createFileRoute("/arquivos")({
 const BUCKET = "vrumfit-files";
 
 function Files() {
-  const { session } = useAuth();
+  const { session, role } = useAuth();
   const uid = session?.user.id;
   const [list, setList] = useState<F[]>([]);
+  const [students, setStudents] = useState<StudentOption[]>([]);
+  const [folderUserId, setFolderUserId] = useState("");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
+  const activeFolder = role === "personal" ? folderUserId : uid;
+
   const refresh = async () => {
-    if (!uid) return;
+    if (!activeFolder) return;
     setLoading(true);
-    const { data, error } = await supabase.storage.from(BUCKET).list(uid, {
+    const { data, error } = await supabase.storage.from(BUCKET).list(activeFolder, {
       sortBy: { column: "updated_at", order: "desc" },
       limit: 100,
     });
@@ -51,13 +56,32 @@ function Files() {
   useEffect(() => {
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uid]);
+  }, [uid, activeFolder]);
+
+  useEffect(() => {
+    if (!uid || role !== "personal") return;
+    (async () => {
+      const { data: rows, error } = await supabase.from("students").select("user_id").eq("personal_id", uid).eq("status", "ativo");
+      if (error) return toast.error(error.message);
+      const ids = (rows ?? []).map((row) => row.user_id);
+      const { data: profiles } = ids.length
+        ? await supabase.from("profiles").select("id,full_name,email").in("id", ids)
+        : { data: [] };
+      const byId = new Map((profiles ?? []).map((profile) => [profile.id, profile]));
+      const options = ids.map((id) => {
+        const profile = byId.get(id);
+        return { user_id: id, name: profile?.full_name ?? profile?.email ?? id };
+      });
+      setStudents(options);
+      setFolderUserId((current) => current || options[0]?.user_id || "");
+    })();
+  }, [uid, role]);
 
   const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
-    if (!f || !uid) return;
+    if (!f || !activeFolder) return;
     setUploading(true);
-    const path = `${uid}/${Date.now()}-${f.name}`;
+    const path = `${activeFolder}/${Date.now()}-${f.name}`;
     const { error } = await supabase.storage.from(BUCKET).upload(path, f, { upsert: false });
     setUploading(false);
     e.target.value = "";
@@ -66,15 +90,15 @@ function Files() {
   };
 
   const remove = async (name: string) => {
-    if (!uid || !confirm("Remover arquivo?")) return;
-    const { error } = await supabase.storage.from(BUCKET).remove([`${uid}/${name}`]);
+    if (!activeFolder || !confirm("Remover arquivo?")) return;
+    const { error } = await supabase.storage.from(BUCKET).remove([`${activeFolder}/${name}`]);
     if (error) toast.error(error.message);
     else { setList((l) => l.filter((x) => x.name !== name)); toast.success("Removido"); }
   };
 
   const download = async (name: string) => {
-    if (!uid) return;
-    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(`${uid}/${name}`, 60);
+    if (!activeFolder) return;
+    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(`${activeFolder}/${name}`, 60);
     if (error || !data) return toast.error(error?.message ?? "Erro");
     window.open(data.signedUrl, "_blank");
   };
@@ -108,6 +132,16 @@ function Files() {
           Armazenamento privado — só você e sua equipe podem ver.
         </p>
       </div>
+
+      {role === "personal" && (
+        <div className="glass rounded-2xl p-3 flex items-center gap-2">
+          <Users className="size-4 text-primary shrink-0" />
+          <select value={folderUserId} onChange={(e) => setFolderUserId(e.target.value)} className="w-full bg-transparent text-sm font-semibold outline-none">
+            {students.length === 0 ? <option value="">Nenhum aluno ativo</option> : null}
+            {students.map((student) => <option key={student.user_id} value={student.user_id}>{student.name}</option>)}
+          </select>
+        </div>
+      )}
 
       {loading ? (
         <div className="grid place-items-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>
