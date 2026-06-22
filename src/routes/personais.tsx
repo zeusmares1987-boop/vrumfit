@@ -6,6 +6,7 @@ import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { createPersonalForOwner } from "@/lib/students.functions";
+import { CredentialsModal, type CredentialsInfo } from "@/components/Credentials";
 import { toast } from "sonner";
 import { UserCog, Search, Mail, Users as UsersIcon, UserPlus } from "lucide-react";
 
@@ -28,6 +29,7 @@ function Personais() {
   const [q, setQ] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [creds, setCreds] = useState<CredentialsInfo | null>(null);
   const [form, setForm] = useState({ fullName: "", email: "", password: "", phone: "" });
 
   const load = async () => {
@@ -58,8 +60,9 @@ function Personais() {
     e.preventDefault();
     setCreating(true);
     try {
-      await createPersonal({ data: form });
-      toast.success("Personal cadastrado. Envie e-mail e senha para ele.");
+      const result = await createPersonal({ data: form });
+      toast.success("Personal cadastrado.");
+      setCreds({ name: form.fullName, email: result.email, password: result.password });
       setForm({ fullName: "", email: "", password: "", phone: "" });
       setShowCreate(false);
       load();
