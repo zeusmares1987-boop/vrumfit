@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Pencil, X, Camera } from "lucide-react";
+import { ArrowLeft, Save, Pencil, X, Camera, Trash2 } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { VrumExercisePoster } from "@/components/VrumExercisePoster";
 import { StoredImage, toStoredImageRef } from "@/components/StoredImage";
@@ -20,11 +20,12 @@ export const Route = createFileRoute("/biblioteca/$id")({
 
 function DetailPage() {
   const { id } = useParams({ from: "/biblioteca/$id" });
+  const navigate = useNavigate();
   const { role } = useAuth();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingField, setUploadingField] = useState<"image_start" | "image_end" | null>(null);
-  const [form, setForm] = useState({ image_start: "", image_end: "", execution_steps: "" });
+  const [form, setForm] = useState({ name: "", target_muscle: "", default_sets: "", default_reps: "", default_rest: "", image_start: "", image_end: "", execution_steps: "" });
   const { data: ex, refetch } = useQuery({
     queryKey: ["exercise", id],
     queryFn: async () => {
@@ -39,6 +40,11 @@ function DetailPage() {
   useEffect(() => {
     if (!ex) return;
     setForm({
+      name: ex.name ?? "",
+      target_muscle: ex.target_muscle ?? "",
+      default_sets: ex.default_sets ?? "",
+      default_reps: ex.default_reps ?? "",
+      default_rest: ex.default_rest ?? "",
       image_start: ex.image_start ?? "",
       image_end: ex.image_end ?? "",
       execution_steps: ((ex.execution_steps as string[] | null) ?? []).join("\n"),
@@ -50,6 +56,11 @@ function DetailPage() {
     setSaving(true);
     const steps = form.execution_steps.split("\n").map((step) => step.trim()).filter(Boolean);
     await supabase.from("exercises").update({
+      name: form.name.trim() || ex.name,
+      target_muscle: form.target_muscle.trim() || null,
+      default_sets: form.default_sets.trim() || null,
+      default_reps: form.default_reps.trim() || null,
+      default_rest: form.default_rest.trim() || null,
       image_start: form.image_start.trim() || null,
       image_end: form.image_end.trim() || null,
       execution_steps: steps.length ? steps : null,
@@ -88,6 +99,15 @@ function DetailPage() {
     setForm((current) => ({ ...current, [field]: "" }));
     refetch();
     toast.success("Foto removida.");
+  }
+
+  async function deleteExercise() {
+    if (!ex || role !== "dono") return;
+    if (!confirm("Apagar este exercício da biblioteca?")) return;
+    const { error } = await supabase.from("exercises").delete().eq("id", ex.id);
+    if (error) return toast.error(error.message);
+    toast.success("Exercício apagado.");
+    navigate({ to: "/biblioteca" });
   }
 
   if (!ex) {
