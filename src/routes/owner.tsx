@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
+import { StoredImage } from "@/components/StoredImage";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import tileUsuariosAsset from "@/assets/tile-usuarios.jpg.asset.json";
@@ -146,7 +147,7 @@ function OwnerPage() {
       <section className="flex items-center gap-3 px-1 pt-1">
         <div className="size-12 rounded-full bg-white/[0.06] border border-white/10 overflow-hidden grid place-items-center shrink-0">
           {avatarUrl ? (
-            <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+            <StoredImage src={avatarUrl} alt="" className="w-full h-full object-cover" />
           ) : (
             <span className="text-[18px] font-bold text-primary">{initial}</span>
           )}
