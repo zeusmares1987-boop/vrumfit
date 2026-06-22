@@ -1,5 +1,5 @@
 import { BarChart2, BarChart3, Check, Clock, ListChecks, Target } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface VrumExercisePosterData {
   name: string;
@@ -28,14 +28,26 @@ const levelLabels: Record<string, string> = {
 export function VrumExercisePoster({ exercise, compact = false }: VrumExercisePosterProps) {
   const target = exercise.target_muscle ?? exercise.exercise_categories?.name ?? "GERAL";
   const steps = exercise.execution_steps?.filter(Boolean) ?? [];
+  const shellRef = useRef<HTMLElement | null>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    if (compact || !shellRef.current) return;
+    const element = shellRef.current;
+    const updateScale = () => setScale(Math.min(1, element.clientWidth / 691));
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [compact]);
 
   if (compact) {
     return <CompactPoster exercise={exercise} />;
   }
 
   return (
-    <article className="vrum-poster-shell relative mx-auto overflow-hidden rounded-[22px] border border-border bg-background text-foreground shadow-2xl">
-      <div className="vrum-poster-canvas relative flex flex-col bg-background px-6 py-8 font-display">
+    <article ref={shellRef} className="vrum-poster-shell relative mx-auto overflow-hidden rounded-[22px] border border-border bg-background text-foreground shadow-2xl">
+      <div className="vrum-poster-canvas relative flex flex-col bg-background px-6 py-8 font-display" style={{ transform: `scale(${scale})` }}>
         <PosterHeader name={exercise.name} />
         <PosterPhotos start={exercise.image_start} end={exercise.image_end ?? exercise.image_start} name={exercise.name} />
         <TargetBand target={target} />
