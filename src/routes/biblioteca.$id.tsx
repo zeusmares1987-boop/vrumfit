@@ -153,6 +153,11 @@ function PhotoUploadField({ label, value, loading, onFile, onRemove }: { label: 
         <div className="min-w-0 flex-1">
           <p className="text-[12px] font-black text-white">{loading ? "ENVIANDO..." : "ESCOLHER FOTO DA GALERIA"}</p>
           <p className="text-[10px] text-white/55">Toque aqui e selecione a imagem.</p>
+          {value && (
+            <button type="button" onClick={(e) => { e.preventDefault(); onRemove(); }} className="mt-2 rounded-lg border border-destructive/40 px-3 py-1.5 text-[10px] font-bold text-destructive">
+              REMOVER FOTO
+            </button>
+          )}
         </div>
         <input type="file" accept="image/*" className="sr-only" disabled={loading} onChange={(e) => {
           const file = e.target.files?.[0];
