@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Check, Target, BarChart3, Clock, BarChart2, Dumbbell, ListChecks } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Check, Target, BarChart3, Clock, BarChart2, Dumbbell, ListChecks, ImageOff, Save, Pencil, X } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import logoV from "@/assets/logo-v.png";
 
 export const Route = createFileRoute("/biblioteca/$id")({
@@ -16,7 +18,11 @@ export const Route = createFileRoute("/biblioteca/$id")({
 
 function DetailPage() {
   const { id } = useParams({ from: "/biblioteca/$id" });
-  const { data: ex } = useQuery({
+  const { role } = useAuth();
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ image_start: "", image_end: "", execution_steps: "" });
+  const { data: ex, refetch } = useQuery({
     queryKey: ["exercise", id],
     queryFn: async () => {
       const { data } = await supabase
@@ -27,6 +33,29 @@ function DetailPage() {
       return data;
     },
   });
+
+  useEffect(() => {
+    if (!ex) return;
+    setForm({
+      image_start: ex.image_start ?? "",
+      image_end: ex.image_end ?? "",
+      execution_steps: ((ex.execution_steps as string[] | null) ?? []).join("\n"),
+    });
+  }, [ex]);
+
+  async function saveExerciseMedia() {
+    if (!ex || role !== "dono") return;
+    setSaving(true);
+    const steps = form.execution_steps.split("\n").map((step) => step.trim()).filter(Boolean);
+    await supabase.from("exercises").update({
+      image_start: form.image_start.trim() || null,
+      image_end: form.image_end.trim() || null,
+      execution_steps: steps.length ? steps : null,
+    }).eq("id", ex.id);
+    setSaving(false);
+    setEditing(false);
+    refetch();
+  }
 
   if (!ex) {
     return (
@@ -70,6 +99,26 @@ function DetailPage() {
           <span className="h-[2px] w-5 bg-primary" />
           <span className="text-[11px] tracking-[0.4em] text-white/80 font-semibold">EXECUÇÃO</span>
         </div>
+
+        {role === "dono" && (
+          <button onClick={() => setEditing((v) => !v)} className="mt-4 w-full h-11 rounded-xl border border-primary/40 bg-primary/10 text-primary text-[12px] font-bold flex items-center justify-center gap-2">
+            {editing ? <X className="size-4" /> : <Pencil className="size-4" />} {editing ? "FECHAR EDIÇÃO" : "EDITAR FOTOS E PASSOS"}
+          </button>
+        )}
+
+        {editing && role === "dono" && (
+          <div className="mt-3 rounded-2xl border border-primary/30 bg-black/60 p-4 space-y-3">
+            <EditField label="URL da foto INÍCIO" value={form.image_start} onChange={(value) => setForm((f) => ({ ...f, image_start: value }))} />
+            <EditField label="URL da foto FIM" value={form.image_end} onChange={(value) => setForm((f) => ({ ...f, image_end: value }))} />
+            <div>
+              <p className="text-[10px] tracking-widest font-bold text-primary mb-1.5">PASSOS — UM POR LINHA</p>
+              <textarea value={form.execution_steps} onChange={(e) => setForm((f) => ({ ...f, execution_steps: e.target.value }))} className="min-h-28 w-full rounded-xl border border-white/10 bg-black/55 px-3 py-2 text-[12px] outline-none focus:border-primary/60" />
+            </div>
+            <button onClick={saveExerciseMedia} disabled={saving} className="w-full h-11 rounded-xl bg-primary text-primary-foreground text-[12px] font-black flex items-center justify-center gap-2 disabled:opacity-60">
+              <Save className="size-4" /> {saving ? "SALVANDO..." : "SALVAR EXERCÍCIO"}
+            </button>
+          </div>
+        )}
 
         {/* Início / Fim */}
         <div className="mt-4 grid grid-cols-2 gap-3">
@@ -148,13 +197,25 @@ function FrameCard({ label, image }: { label: string; image: string | null }) {
         {label}
       </div>
       {image ? (
-        <img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={image} alt={`Foto de ${label.toLowerCase()} do exercício`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
       ) : (
-        <div className="absolute inset-0 grid place-items-center text-white/30">
-          <Dumbbell className="size-14" />
+        <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_35%_25%,color-mix(in_oklab,var(--primary)_26%,transparent),transparent_36%),linear-gradient(135deg,color-mix(in_oklab,var(--surface)_92%,black),black)] text-white/55">
+          <div className="flex flex-col items-center gap-2 text-center px-4">
+            <ImageOff className="size-10 text-primary/75" />
+            <p className="text-[10px] font-bold tracking-wider text-white/70">FOTO REAL PENDENTE</p>
+          </div>
         </div>
       )}
     </div>
+  );
+}
+
+function EditField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+  return (
+    <label className="block">
+      <span className="text-[10px] tracking-widest font-bold text-primary mb-1.5 block">{label}</span>
+      <input value={value} onChange={(e) => onChange(e.target.value)} className="h-11 w-full rounded-xl border border-white/10 bg-black/55 px-3 text-[12px] outline-none focus:border-primary/60" placeholder="https://... ou /__l5e/assets-v1/..." />
+    </label>
   );
 }
 
