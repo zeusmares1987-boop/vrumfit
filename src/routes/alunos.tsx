@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
+import { StoredImage } from "@/components/StoredImage";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { createStudentForPersonal } from "@/lib/students.functions";
@@ -185,7 +186,7 @@ function AlunosPage() {
             <li key={p.user_id}>
               <Link to="/alunos/$id" params={{ id: p.user_id }} className="glass rounded-2xl p-3 flex items-center gap-3 hover:border-primary/40 transition block">
                 <div className="size-12 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 grid place-items-center text-primary font-black text-sm shrink-0 overflow-hidden">
-                  {avatar ? <img src={avatar} alt="" className="w-full h-full object-cover" /> : (initials || "?")}
+                  {avatar ? <StoredImage src={avatar} alt="" className="w-full h-full object-cover" /> : (initials || "?")}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
