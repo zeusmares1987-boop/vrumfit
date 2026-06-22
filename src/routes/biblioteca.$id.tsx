@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Save, Pencil, X } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { VrumExercisePoster } from "@/components/VrumExercisePoster";
+import { getExercisePosterUrl } from "@/lib/exercisePosters";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import logoVAsset from "@/assets/logo-v.webp.asset.json";
@@ -66,6 +67,8 @@ function DetailPage() {
     );
   }
 
+  const posterUrl = getExercisePosterUrl(ex.id);
+
   return (
     <div className="min-h-[100dvh] bg-black text-white font-display">
       {/* Header com botão voltar */}
@@ -106,7 +109,11 @@ function DetailPage() {
         )}
 
         <div>
-          <VrumExercisePoster exercise={ex} />
+          {posterUrl ? (
+            <img src={posterUrl} alt={`Pôster completo do exercício ${ex.name}`} className="mx-auto w-full max-w-[691px] rounded-[22px] border border-white/10 shadow-2xl" />
+          ) : (
+            <VrumExercisePoster exercise={ex} />
+          )}
         </div>
       </div>
     </div>
