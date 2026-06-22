@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Store, Tag, Dumbbell } from "lucide-react";
+import { Store, Tag, Dumbbell, Search } from "lucide-react";
 
 type Offer = {
   id: string;
