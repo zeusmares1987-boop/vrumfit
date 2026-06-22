@@ -26,12 +26,14 @@ function Avisos() {
   const [show, setShow] = useState(false);
 
   const load = async () => {
-    const { data, error } = await supabase
-      .from("notices").select("*").order("created_at", { ascending: false });
+    if (!user) return;
+    let q = supabase.from("notices").select("*").order("created_at", { ascending: false });
+    if (role === "personal") q = q.eq("created_by", user.id);
+    const { data, error } = await q;
     if (error) toast.error(error.message);
     else setList((data ?? []) as N[]);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [user?.id, role]);
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +50,9 @@ function Avisos() {
 
   const remove = async (id: string) => {
     if (!confirm("Remover aviso?")) return;
-    const { error } = await supabase.from("notices").delete().eq("id", id);
+    let q = supabase.from("notices").delete().eq("id", id);
+    if (role !== "dono" && user) q = q.eq("created_by", user.id);
+    const { error } = await q;
     if (error) return toast.error(error.message);
     setList(list.filter((x) => x.id !== id));
   };
