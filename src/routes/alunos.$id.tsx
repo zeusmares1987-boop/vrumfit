@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AppShell, Card } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
+import { StoredImage } from "@/components/StoredImage";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, Target, Dumbbell, Apple, ClipboardCheck, Activity, ArrowLeft, MessageCircle, CheckCircle2, FileText } from "lucide-react";
 
@@ -82,7 +83,7 @@ function AlunoDetail() {
       <Card className="p-4">
         <div className="flex items-center gap-3">
           <div className="size-16 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 grid place-items-center text-primary font-black text-xl overflow-hidden shrink-0">
-            {profile.avatar_url ? <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
+            {profile.avatar_url ? <StoredImage src={profile.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[16px] font-extrabold truncate">{name}</p>
