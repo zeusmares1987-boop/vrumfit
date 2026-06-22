@@ -134,7 +134,9 @@ function OwnerPage() {
   const filteredSmall = filterTiles(smallTiles);
   const filteredWide = filterTiles(wideTiles);
 
-  const firstName = profile?.full_name?.split(" ")[0] ?? "Proprietário";
+  const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Proprietário";
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
   const today = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
 
   return (
@@ -146,7 +148,7 @@ function OwnerPage() {
         <div className="relative p-5">
           <p className="text-[10px] uppercase tracking-[0.25em] text-primary/85 font-bold">{today}</p>
           <h1 className="mt-1 text-[26px] font-black leading-tight tracking-tight">
-            Bem-vindo, <span className="text-primary">{firstName}</span>
+            {greeting}, <span className="text-primary">{firstName}</span>
           </h1>
           <p className="mt-1 text-[12.5px] text-white/70">Controle total do seu negócio.</p>
           
