@@ -175,6 +175,18 @@ function ElitePage() {
 
   return (
     <AppShell title="Plano Elite Integrado" subtitle="Treino ↔ dieta sincronizados">
+      <PageHero
+        eyebrow="Plano Elite"
+        title="Treino + Dieta integrados"
+        subtitle="Macros, periodização e cardápio gerados juntos, com PDF final."
+        icon={Crown}
+        stats={[
+          { label: "Objetivo", value: goal },
+          { label: "Frequência", value: `${frequency}x` },
+          { label: "Refeições", value: meals },
+        ]}
+      />
+
       <div className="mb-3 flex gap-2">
         <Link to="/treinos" className="flex-1 h-10 px-3 rounded-xl glass text-[12px] font-semibold flex items-center justify-center gap-1.5">
           <Dumbbell className="size-3.5" /> Só treino
