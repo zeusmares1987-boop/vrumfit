@@ -198,7 +198,6 @@ function AuthPage() {
             </form>
           )}
 
-...
           <p className="mt-6 text-center text-[11px] text-white/40">
             © {new Date().getFullYear()} VRUMFIT PERSONAL · Todos os direitos reservados
           </p>
