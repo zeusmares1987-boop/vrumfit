@@ -98,3 +98,19 @@
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
+
+@layer components {
+  .vrum-poster-shell {
+    width: min(100%, 691px);
+    aspect-ratio: 691 / 1536;
+  }
+
+  .vrum-poster-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 691px;
+    height: 1536px;
+    transform-origin: top left;
+  }
+}

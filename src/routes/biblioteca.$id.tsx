@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Check, Target, BarChart3, Clock, BarChart2, Dumbbell, ListChecks, ImageOff, Save, Pencil, X } from "lucide-react";
+import { ArrowLeft, Save, Pencil, X } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
+import { VrumExercisePoster } from "@/components/VrumExercisePoster";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import logoVAsset from "@/assets/logo-v.webp.asset.json";
@@ -34,20 +35,6 @@ function DetailPage() {
       return data;
     },
   });
-  const { data: imageAudit } = useQuery({
-    queryKey: ["exercise-image-audit"],
-    queryFn: async () => (await supabase.from("exercises").select("image_start")).data ?? [],
-  });
-
-  const repeatedImages = new Set(
-    Object.entries(
-      (imageAudit ?? []).reduce<Record<string, number>>((acc, item: any) => {
-        if (item.image_start) acc[item.image_start] = (acc[item.image_start] ?? 0) + 1;
-        return acc;
-      }, {})
-    ).filter(([, count]) => count > 1).map(([url]) => url)
-  );
-
   useEffect(() => {
     if (!ex) return;
     setForm({
@@ -97,25 +84,9 @@ function DetailPage() {
         </div>
       </div>
 
-      <div className="px-5 pb-10 max-w-md mx-auto">
-        {/* Título */}
-        <h1 className="text-[34px] leading-[1] font-black tracking-tight uppercase">
-          {ex.name.split(" ").length > 1 ? (
-            <>
-              {ex.name.split(" ").slice(0, -1).join(" ")}{" "}
-              <span className="text-primary">{ex.name.split(" ").slice(-1)}</span>
-            </>
-          ) : (
-            <span className="text-primary">{ex.name}</span>
-          )}
-        </h1>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="h-[2px] w-5 bg-primary" />
-          <span className="text-[11px] tracking-[0.4em] text-white/80 font-semibold">EXECUÇÃO</span>
-        </div>
-
+      <div className="px-3 pb-10 max-w-[720px] mx-auto">
         {role === "dono" && (
-          <button onClick={() => setEditing((v) => !v)} className="mt-4 w-full h-11 rounded-xl border border-primary/40 bg-primary/10 text-primary text-[12px] font-bold flex items-center justify-center gap-2">
+          <button onClick={() => setEditing((v) => !v)} className="mb-3 w-full h-11 rounded-xl border border-primary/40 bg-primary/10 text-primary text-[12px] font-bold flex items-center justify-center gap-2">
             {editing ? <X className="size-4" /> : <Pencil className="size-4" />} {editing ? "FECHAR EDIÇÃO" : "EDITAR FOTOS E PASSOS"}
           </button>
         )}
@@ -134,92 +105,10 @@ function DetailPage() {
           </div>
         )}
 
-        {/* Início / Fim */}
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <FrameCard label="INÍCIO" image={ex.image_start && !repeatedImages.has(ex.image_start) ? ex.image_start : null} />
-          <FrameCard label="FIM" image={ex.image_end} />
-        </div>
-
-        {/* Músculo alvo */}
-        <div className="mt-4 rounded-2xl border border-primary/40 bg-black/60 p-4 flex items-center gap-3">
-          <div className="size-12 rounded-xl border border-primary/50 bg-primary/10 grid place-items-center text-primary">
-            <Target className="size-5" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[10px] tracking-widest font-bold text-primary">MÚSCULO ALVO</p>
-            <p className="text-[16px] font-extrabold mt-0.5">{ex.target_muscle ?? ex.exercise_categories?.name ?? "Geral"}</p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="mt-3 rounded-2xl border border-white/10 bg-black/50 p-3 grid grid-cols-4 gap-2">
-          <Stat icon={ListChecks} label="SÉRIES" value={ex.default_sets ?? "3 – 4"} />
-          <Stat icon={BarChart3} label="REPETIÇÕES" value={ex.default_reps ?? "8 – 15"} />
-          <Stat icon={Clock} label="DESCANSO" value={ex.default_rest ?? "60 – 90s"} />
-          <Stat icon={BarChart2} label="NÍVEL" value={({
-            iniciante: "Iniciante",
-            intermediario: "Intermediário",
-            avancado: "Avançado",
-          } as Record<string, string>)[ex.level] ?? "Todos"} />
-        </div>
-
-        {/* Execução */}
-        <div className="mt-4 rounded-2xl border border-white/10 bg-black/50 p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="size-7 rounded-lg border border-primary/40 grid place-items-center text-primary">
-              <Dumbbell className="size-3.5" />
-            </div>
-            <p className="text-[12px] font-bold tracking-widest text-primary">EXECUÇÃO</p>
-          </div>
-          {(ex.execution_steps ?? []).length === 0 ? (
-            <p className="text-[12px] text-white/55">Passos de execução serão adicionados em breve.</p>
-          ) : (
-            <ul className="space-y-3">
-              {(ex.execution_steps as string[]).map((step, i, arr) => (
-                <li key={i}>
-                  <div className="flex items-start gap-3">
-                    <div className="size-5 rounded-full border border-primary/60 grid place-items-center text-primary shrink-0 mt-0.5">
-                      <Check className="size-3" />
-                    </div>
-                    <p className="text-[12.5px] text-white/85 leading-snug flex-1">{step}</p>
-                  </div>
-                  {i < arr.length - 1 && <div className="h-px bg-white/8 mt-3" />}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* Footer slogan */}
-        <div className="mt-6 flex items-center justify-center gap-1.5 text-[11px] tracking-[0.18em] font-bold">
-          <span>DISCIPLINA</span>
-          <span className="text-primary">FOCO</span>
-          <span>RESULTADOS</span>
-        </div>
-        <div className="mt-1 text-center text-[9px] tracking-[0.4em] text-white/40">
-          VRUMFIT PERSONAL
+        <div>
+          <VrumExercisePoster exercise={ex} />
         </div>
       </div>
-    </div>
-  );
-}
-
-function FrameCard({ label, image }: { label: string; image: string | null }) {
-  return (
-    <div className="relative rounded-2xl border border-white/15 bg-black/40 overflow-hidden aspect-[4/5]">
-      <div className="absolute top-2 left-2 z-10 px-2.5 py-1 rounded-md border border-primary/50 bg-black/70 text-[10px] tracking-wider font-bold">
-        {label}
-      </div>
-      {image ? (
-        <img src={image} alt={`Foto de ${label.toLowerCase()} do exercício`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-      ) : (
-        <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_35%_25%,color-mix(in_oklab,var(--primary)_26%,transparent),transparent_36%),linear-gradient(135deg,color-mix(in_oklab,var(--surface)_92%,black),black)] text-white/55">
-          <div className="flex flex-col items-center gap-2 text-center px-4">
-            <ImageOff className="size-10 text-primary/75" />
-            <p className="text-[10px] font-bold tracking-wider text-white/70">FOTO REAL PENDENTE</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -233,14 +122,3 @@ function EditField({ label, value, onChange }: { label: string; value: string; o
   );
 }
 
-function Stat({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
-  return (
-    <div className="flex flex-col items-center gap-1 text-center">
-      <div className="size-9 rounded-xl border border-primary/40 grid place-items-center text-primary">
-        <Icon className="size-4" />
-      </div>
-      <p className="text-[9px] tracking-wider font-bold text-primary">{label}</p>
-      <p className="text-[11px] text-white/85 font-semibold leading-tight">{value}</p>
-    </div>
-  );
-}

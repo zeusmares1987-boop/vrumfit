@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Search, Plus, Dumbbell, ImageOff } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { VrumExercisePoster } from "@/components/VrumExercisePoster";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -24,7 +25,10 @@ function BibliotecaPage() {
   const { data: exercises } = useQuery({
     queryKey: ["exercises", q, catSlug],
     queryFn: async () => {
-      let qry = supabase.from("exercises").select("id,name,target_muscle,level,image_start,category_id,exercise_categories(slug,name)").order("name");
+      let qry = supabase
+        .from("exercises")
+        .select("id,name,target_muscle,level,default_sets,default_reps,default_rest,image_start,image_end,execution_steps,category_id,exercise_categories(slug,name)")
+        .order("name");
       if (catSlug && cats) {
         const cat = cats.find((c) => c.slug === catSlug);
         if (cat) qry = qry.eq("category_id", cat.id);
@@ -34,20 +38,6 @@ function BibliotecaPage() {
       return data ?? [];
     },
   });
-
-  const { data: imageAudit } = useQuery({
-    queryKey: ["exercise-image-audit"],
-    queryFn: async () => (await supabase.from("exercises").select("image_start")).data ?? [],
-  });
-
-  const repeatedImages = new Set(
-    Object.entries(
-      (imageAudit ?? []).reduce<Record<string, number>>((acc, e: any) => {
-        if (e.image_start) acc[e.image_start] = (acc[e.image_start] ?? 0) + 1;
-        return acc;
-      }, {})
-    ).filter(([, count]) => count > 1).map(([url]) => url)
-  );
 
   return (
     <AppShell title="Execução" subtitle="Biblioteca VrumFit">
@@ -72,27 +62,10 @@ function BibliotecaPage() {
 
       <section className="mt-3 grid grid-cols-2 gap-2.5 pb-4">
         {(exercises ?? []).map((e: any) => {
-          const hasUniquePhoto = Boolean(e.image_start && !repeatedImages.has(e.image_start));
           return (
-          <Link key={e.id} to="/biblioteca/$id" params={{ id: e.id }} className="rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 bg-black/40 transition group">
-            <div className="aspect-[4/3] bg-gradient-to-br from-white/5 to-black grid place-items-center relative">
-              {hasUniquePhoto ? (
-                <img src={e.image_start} alt={`Execução do exercício ${e.name}`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-              ) : (
-                <ExerciseMarker name={e.name} muscle={e.target_muscle ?? e.exercise_categories?.name ?? "Execução"} />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              {!hasUniquePhoto && (
-                <div className="absolute top-2 right-2 rounded-full border border-primary/40 bg-black/70 px-2 py-1 text-[9px] font-bold text-primary flex items-center gap-1">
-                  <ImageOff className="size-3" /> FOTO PENDENTE
-                </div>
-              )}
-              <div className="absolute bottom-2 left-2 right-2">
-                <p className="text-[12px] font-extrabold leading-tight truncate">{e.name}</p>
-                <p className="text-[10px] text-primary truncate">{e.target_muscle ?? e.exercise_categories?.name}</p>
-              </div>
-            </div>
-          </Link>
+            <Link key={e.id} to="/biblioteca/$id" params={{ id: e.id }} className="block overflow-hidden rounded-2xl border border-white/10 bg-background transition hover:border-primary/60">
+              <VrumExercisePoster exercise={e} compact />
+            </Link>
           );
         })}
         {exercises && exercises.length === 0 && (
@@ -102,20 +75,6 @@ function BibliotecaPage() {
         )}
       </section>
     </AppShell>
-  );
-}
-
-function ExerciseMarker({ name, muscle }: { name: string; muscle: string }) {
-  const initials = name.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
-  return (
-    <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_35%_25%,color-mix(in_oklab,var(--primary)_30%,transparent),transparent_36%),linear-gradient(135deg,color-mix(in_oklab,var(--surface)_92%,black),black)]">
-      <div className="flex flex-col items-center gap-2 text-center px-3">
-        <div className="size-14 rounded-2xl border border-primary/45 bg-primary/10 grid place-items-center text-primary font-black text-lg shadow-[0_0_24px_color-mix(in_oklab,var(--primary)_28%,transparent)]">
-          {initials || <Dumbbell className="size-7" />}
-        </div>
-        <div className="text-[9px] uppercase tracking-[0.18em] text-white/55 line-clamp-2">{muscle}</div>
-      </div>
-    </div>
   );
 }
 
