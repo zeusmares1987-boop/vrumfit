@@ -1,23 +1,17 @@
-import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Search, Plus, Dumbbell, ImageOff } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { RequireAuth } from "@/components/RequireAuth";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/biblioteca/")({
   head: () => ({ meta: [{ title: "Biblioteca VrumFit — Execução" }] }),
-  component: () => (
-    <RequireAuth>
-      <BibliotecaPage />
-    </RequireAuth>
-  ),
+  component: BibliotecaPage,
 });
 
 function BibliotecaPage() {
-  const location = useLocation();
   const { role } = useAuth();
   const [q, setQ] = useState("");
   const [catSlug, setCatSlug] = useState<string | null>(null);
@@ -54,8 +48,6 @@ function BibliotecaPage() {
       }, {})
     ).filter(([, count]) => count > 1).map(([url]) => url)
   );
-
-  if (location.pathname !== "/biblioteca") return <Outlet />;
 
   return (
     <AppShell title="Execução" subtitle="Biblioteca VrumFit">
