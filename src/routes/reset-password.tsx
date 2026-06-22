@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Lock, Eye, EyeOff, ShieldCheck, ArrowLeft } from "lucide-react";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
-const logoV = logoVAsset.url;
 import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
 const headerGym = headerGymAsset.url;
 

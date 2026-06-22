@@ -7,8 +7,6 @@ import { VrumExercisePoster } from "@/components/VrumExercisePoster";
 import { getExercisePosterUrl } from "@/lib/exercisePosters";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
-const logoV = logoVAsset.url;
 
 export const Route = createFileRoute("/biblioteca/$id")({
   head: () => ({ meta: [{ title: "Exercício — VRUMFIT" }] }),
@@ -76,14 +74,11 @@ function DetailPage() {
         <Link to="/biblioteca" className="size-10 rounded-full bg-white/5 border border-white/10 grid place-items-center text-white/80 hover:text-primary">
           <ArrowLeft className="size-4" />
         </Link>
-        <div className="flex items-center gap-2">
-          <img src={logoV} alt="" width={32} height={32} decoding="async" className="size-8" />
-          <div className="leading-tight">
-            <div className="text-[14px] font-extrabold tracking-tight">
-              <span className="text-white">Vrum</span><span className="text-primary">Fit</span>
-            </div>
-            <div className="text-[8px] font-bold tracking-[0.35em] text-primary/90">PERSONAL</div>
+        <div className="leading-tight">
+          <div className="text-[14px] font-extrabold tracking-tight">
+            <span className="text-white">Vrum</span><span className="text-primary">Fit</span>
           </div>
+          <div className="text-[8px] font-bold tracking-[0.35em] text-primary/90">PERSONAL</div>
         </div>
       </div>
 
