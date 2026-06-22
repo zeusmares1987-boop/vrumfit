@@ -26,7 +26,6 @@ import { Route as EvolucaoRouteImport } from './routes/evolucao'
 import { Route as EliteRouteImport } from './routes/elite'
 import { Route as DietaRouteImport } from './routes/dieta'
 import { Route as ConfigRouteImport } from './routes/config'
-import { Route as ChatRouteImport } from './routes/chat'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as AvisosRouteImport } from './routes/avisos'
 import { Route as AvaliacoesRouteImport } from './routes/avaliacoes'
@@ -124,11 +123,6 @@ const ConfigRoute = ConfigRouteImport.update({
   path: '/config',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BibliotecaRoute = BibliotecaRouteImport.update({
   id: '/biblioteca',
   path: '/biblioteca',
@@ -193,7 +187,6 @@ export interface FileRoutesByFullPath {
   '/avaliacoes': typeof AvaliacoesRoute
   '/avisos': typeof AvisosRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
-  '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
   '/elite': typeof EliteRoute
@@ -223,7 +216,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
   '/avisos': typeof AvisosRoute
-  '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
   '/elite': typeof EliteRoute
@@ -255,7 +247,6 @@ export interface FileRoutesById {
   '/avaliacoes': typeof AvaliacoesRoute
   '/avisos': typeof AvisosRoute
   '/biblioteca': typeof BibliotecaRouteWithChildren
-  '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
   '/elite': typeof EliteRoute
@@ -288,7 +279,6 @@ export interface FileRouteTypes {
     | '/avaliacoes'
     | '/avisos'
     | '/biblioteca'
-    | '/chat'
     | '/config'
     | '/dieta'
     | '/elite'
@@ -318,7 +308,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/avaliacoes'
     | '/avisos'
-    | '/chat'
     | '/config'
     | '/dieta'
     | '/elite'
@@ -349,7 +338,6 @@ export interface FileRouteTypes {
     | '/avaliacoes'
     | '/avisos'
     | '/biblioteca'
-    | '/chat'
     | '/config'
     | '/dieta'
     | '/elite'
@@ -381,7 +369,6 @@ export interface RootRouteChildren {
   AvaliacoesRoute: typeof AvaliacoesRoute
   AvisosRoute: typeof AvisosRoute
   BibliotecaRoute: typeof BibliotecaRouteWithChildren
-  ChatRoute: typeof ChatRoute
   ConfigRoute: typeof ConfigRoute
   DietaRoute: typeof DietaRoute
   EliteRoute: typeof EliteRoute
@@ -522,13 +509,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/biblioteca': {
       id: '/biblioteca'
       path: '/biblioteca'
@@ -652,7 +632,6 @@ const rootRouteChildren: RootRouteChildren = {
   AvaliacoesRoute: AvaliacoesRoute,
   AvisosRoute: AvisosRoute,
   BibliotecaRoute: BibliotecaRouteWithChildren,
-  ChatRoute: ChatRoute,
   ConfigRoute: ConfigRoute,
   DietaRoute: DietaRoute,
   EliteRoute: EliteRoute,
