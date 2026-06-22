@@ -206,7 +206,7 @@ function AlunosPage() {
                   <a
                     href={`https://wa.me/${p.profiles.phone.replace(/\D/g, "")}`}
                     target="_blank" rel="noopener noreferrer"
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(`https://wa.me/${p.profiles!.phone!.replace(/\D/g, "")}`, "_blank"); }}
+                    onClick={(e) => e.stopPropagation()}
                     className="shrink-0 size-9 rounded-xl bg-success/15 border border-success/40 grid place-items-center text-success"
                     aria-label={`WhatsApp de ${name}`}
                   >
