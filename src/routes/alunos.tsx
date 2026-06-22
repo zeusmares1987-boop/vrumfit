@@ -160,15 +160,15 @@ function AlunosPage() {
         />
       </div>
 
-      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+      <div className="inline-flex w-full p-1 rounded-2xl border border-white/10 bg-white/[0.04]">
         {(["todos", "ativo", "pausado"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`shrink-0 px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition ${
+            className={`flex-1 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition ${
               filter === f
-                ? "bg-primary text-primary-foreground"
-                : "glass text-muted-foreground hover:text-foreground"
+                ? "bg-primary text-primary-foreground shadow"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {f}
