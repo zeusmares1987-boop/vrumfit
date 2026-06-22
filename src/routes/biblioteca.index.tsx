@@ -66,13 +66,24 @@ function BibliotecaPage() {
           const posterUrl = getExercisePosterUrl(e.id);
           return (
             <Link key={e.id} to="/biblioteca/$id" params={{ id: e.id }} className="block overflow-hidden rounded-2xl border border-white/10 bg-background transition hover:border-primary/60">
-              {posterUrl ? (
-                <div className="aspect-[4/3] overflow-hidden bg-background">
-                  <img src={posterUrl} alt={`Pôster do exercício ${e.name}`} className="h-full w-full object-cover object-top" loading="lazy" />
-                </div>
-              ) : (
-                <VrumExercisePoster exercise={e} compact />
-              )}
+              <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
+                {posterUrl ? (
+                  <img
+                    src={posterUrl}
+                    alt={`Pôster do exercício ${e.name}`}
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="absolute inset-0">
+                    <VrumExercisePoster exercise={e} compact />
+                  </div>
+                )}
+              </div>
+              <div className="px-2.5 py-2">
+                <p className="text-[12px] font-semibold text-white truncate">{e.name}</p>
+                <p className="text-[10px] text-white/55 truncate uppercase tracking-wide">{e.target_muscle}</p>
+              </div>
             </Link>
           );
         })}
