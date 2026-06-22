@@ -51,6 +51,18 @@ function DietaPage() {
 
   return (
     <AppShell title="Gerador Elite de Dieta" subtitle="Mifflin/Katch · Macros científicos · TACO">
+      <PageHero
+        eyebrow="Nutrição Elite"
+        title="Gerador de Dieta"
+        subtitle="Macros calculados via Mifflin ou Katch, cardápio com TACO."
+        icon={Salad}
+        stats={[
+          { label: "Refeições", value: meals },
+          { label: "Objetivo", value: goal },
+          { label: "Orçamento", value: budget },
+        ]}
+      />
+
       <Card>
         <form onSubmit={submit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
