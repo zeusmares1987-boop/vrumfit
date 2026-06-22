@@ -112,6 +112,5 @@
     width: 691px;
     height: 1536px;
     transform-origin: top left;
-    transform: scale(calc(min(100%, 691px) / 691));
   }
 }
