@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
+import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap, Crown } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
 import type { WorkoutPDFData, DietPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateWorkoutPDFBlob, generateDietPDFBlob } from "@/lib/pdf-lazy";
