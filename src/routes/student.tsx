@@ -185,7 +185,7 @@ function StudentPage() {
         <img src={headerGym} alt="" className="absolute inset-0 w-full h-full object-cover opacity-55" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-br from-black via-black/80 to-primary/25" />
         <div className="relative p-5">
-          <p className="text-[10px] uppercase tracking-[0.25em] text-primary/85 font-bold">{today}</p>
+          <p className="text-[10px] uppercase tracking-[0.25em] text-primary/85 font-bold">{todayLabel}</p>
           <h1 className="mt-1 text-[26px] font-black leading-tight tracking-tight">
             Olá, <span className="text-primary">{firstName}</span>
           </h1>
@@ -223,6 +223,62 @@ function StudentPage() {
             <ChevronRight className="size-5 text-primary group-hover:translate-x-0.5 transition" />
           </div>
         </Link>
+
+        {/* Marcar treino feito hoje */}
+        <button
+          onClick={() => !sessionToday && markDone.mutate()}
+          disabled={markDone.isPending || !!sessionToday}
+          className={`group relative block w-full text-left rounded-2xl p-4 transition ${
+            sessionToday
+              ? "border border-success/50 bg-success/10"
+              : "border border-primary/40 bg-gradient-to-br from-primary/15 to-black/40 hover:border-primary/70"
+          } disabled:opacity-90`}
+        >
+          <div className="flex items-center gap-3">
+            <div className={`size-12 rounded-xl border grid place-items-center shrink-0 ${
+              sessionToday ? "bg-success/20 border-success/50 text-success" : "bg-primary/20 border-primary/50 text-primary"
+            }`}>
+              <CheckCircle2 className="size-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-bold" style={{ color: sessionToday ? "rgb(74 222 128)" : undefined }}>
+                {sessionToday ? "Treino feito hoje ✓" : "Marcar treino feito hoje"}
+              </p>
+              <p className="text-[12px] text-white/65 mt-0.5">
+                {sessionToday ? "Bom trabalho. Bora amanhã também." : "Toque ao terminar a sessão para registrar adesão."}
+              </p>
+            </div>
+          </div>
+        </button>
+
+        {/* Meu Personal */}
+        {myPersonal && (
+          <Link to="/config" className="group relative block rounded-2xl border border-white/12 bg-white/[0.035] p-4 hover:border-primary/45 transition">
+            <div className="flex items-center gap-3">
+              <div className="size-12 rounded-2xl border border-primary/40 bg-primary/10 grid place-items-center text-primary font-black overflow-hidden shrink-0">
+                {myPersonal.avatar_url
+                  ? <img src={myPersonal.avatar_url} alt="" className="w-full h-full object-cover" />
+                  : <UserCog className="size-5" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">Meu personal</p>
+                <p className="text-[14px] font-extrabold truncate mt-0.5">{myPersonal.full_name ?? "Personal"}</p>
+                {myPersonal.email && <p className="text-[10.5px] text-white/55 truncate">{myPersonal.email}</p>}
+              </div>
+              {myPersonal.phone && (
+                <a
+                  href={`https://wa.me/${myPersonal.phone.replace(/\D/g, "")}`}
+                  target="_blank" rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="shrink-0 size-10 rounded-xl bg-success/15 border border-success/40 grid place-items-center text-success"
+                  aria-label="WhatsApp do personal"
+                >
+                  <MessageCircle className="size-4" />
+                </a>
+              )}
+            </div>
+          </Link>
+        )}
       </div>
 
       {/* Section header */}
