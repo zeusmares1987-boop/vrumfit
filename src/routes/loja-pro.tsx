@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Plus, Trash2, Pause, Play, Edit3, Eye, AlertCircle, Settings } from "lucide-react";
+import { Plus, Trash2, Pause, Play, Edit3, Eye, AlertCircle, Settings, Store } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
@@ -182,6 +183,18 @@ function Panel() {
         </Link>
       }
     >
+      <PageHero
+        eyebrow="Profissional"
+        title="Minhas Ofertas"
+        subtitle="Publique até 5 anúncios e receba contatos direto no seu WhatsApp."
+        icon={Store}
+        stats={[
+          { label: "Ativas", value: `${ativos}/${limite || "—"}` },
+          { label: "Total", value: list.length },
+          { label: "Cliques", value: totalClicks },
+        ]}
+      />
+
       {!plan && (
         <Card className="p-3 flex items-start gap-3 border-amber-500/40">
           <AlertCircle className="size-4 text-amber-400 shrink-0 mt-0.5" />
@@ -258,7 +271,9 @@ function Panel() {
             </div>
           </Card>
         ))}
-        {list.length === 0 && <p className="text-center text-xs text-white/50 py-6">Sem ofertas ainda.</p>}
+        {list.length === 0 && (
+          <EmptyState icon={Store} title="Sem ofertas ainda" hint="Clique em NOVA OFERTA para publicar a primeira." />
+        )}
       </div>
     </AppShell>
   );

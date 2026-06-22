@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Store, Tag, Dumbbell } from "lucide-react";
+import { Store, Tag, Dumbbell, Search } from "lucide-react";
 
 type Offer = {
   id: string;
@@ -39,6 +40,8 @@ export const Route = createFileRoute("/loja")({
 function Loja() {
   const [list, setList] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
+  const [type, setType] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -52,19 +55,60 @@ function Loja() {
     })();
   }, []);
 
+  const types = Array.from(new Set(list.map((o) => o.offer_type))).filter(Boolean);
+  const filtered = list.filter(
+    (o) =>
+      (!type || o.offer_type === type) &&
+      (!q || o.title.toLowerCase().includes(q.toLowerCase()))
+  );
+  const minPrice = list.length ? Math.min(...list.map((o) => o.price_cents)) / 100 : 0;
+
   return (
     <AppShell title="Loja" subtitle="Vitrine de ofertas">
-      <Card className="p-3 flex items-center gap-3">
-        <div className="size-10 rounded-xl bg-primary/15 border border-primary/25 grid place-items-center">
-          <Store className="size-5 text-primary" />
+      <PageHero
+        eyebrow="Marketplace"
+        title="Loja VRUMFIT"
+        subtitle="Vitrine de ofertas. Negociação direto com o vendedor via WhatsApp."
+        icon={Store}
+        stats={[
+          { label: "Ofertas", value: list.length },
+          { label: "Categorias", value: types.length },
+          { label: "A partir de", value: list.length ? `R$${minPrice.toFixed(0)}` : "—" },
+        ]}
+      />
+
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-[18px] text-white/55" />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscar oferta..."
+          className="w-full h-12 rounded-2xl bg-black/60 border border-white/10 pl-12 pr-4 text-[13px] outline-none placeholder:text-white/45 focus:border-primary/60 transition"
+        />
+      </div>
+
+      {types.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
+          <button
+            onClick={() => setType(null)}
+            className={`shrink-0 h-9 px-3.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition ${!type ? "bg-primary/15 border border-primary text-primary" : "bg-transparent border border-white/12 text-white/75"}`}
+          >
+            Todas
+          </button>
+          {types.map((t) => (
+            <button
+              key={t}
+              onClick={() => setType(t)}
+              className={`shrink-0 h-9 px-3.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition ${type === t ? "bg-primary/15 border border-primary text-primary" : "bg-transparent border border-white/12 text-white/75"}`}
+            >
+              {OFFER_LABEL[t] ?? t}
+            </button>
+          ))}
         </div>
-        <p className="text-[11px] text-muted-foreground leading-snug">
-          Vitrine apenas. Negociação, pagamento e entrega são entre comprador e vendedor — via WhatsApp.
-        </p>
-      </Card>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
-        {list.map((p) => (
+        {filtered.map((p) => (
           <Link
             key={p.id}
             to="/loja/$id"
@@ -89,10 +133,24 @@ function Loja() {
             </div>
           </Link>
         ))}
-        {!loading && list.length === 0 && (
-          <p className="col-span-2 text-center text-xs text-white/50 py-6">Nenhuma oferta publicada.</p>
-        )}
       </div>
+
+      {!loading && filtered.length === 0 && (
+        <EmptyState
+          icon={Store}
+          title={list.length === 0 ? "Nenhuma oferta publicada" : "Nada encontrado"}
+          hint={list.length === 0 ? "Volte em breve para conferir novidades." : "Tente outra busca ou categoria."}
+        />
+      )}
+
+      <Card className="p-3 flex items-center gap-3">
+        <div className="size-10 rounded-xl bg-primary/15 border border-primary/25 grid place-items-center">
+          <Store className="size-5 text-primary" />
+        </div>
+        <p className="text-[11px] text-muted-foreground leading-snug">
+          Vitrine apenas. Pagamento e entrega são entre comprador e vendedor — via WhatsApp.
+        </p>
+      </Card>
     </AppShell>
   );
 }
