@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Flame, Beef, Wheat, Droplet, Download, FileDown, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react";
+import { Flame, Beef, Wheat, Droplet, Download, FileDown, ShoppingCart, ChevronDown, ChevronUp, Salad } from "lucide-react";
 import type { DietPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateDietPDFBlob } from "@/lib/pdf-lazy";
 import {
@@ -50,6 +51,18 @@ function DietaPage() {
 
   return (
     <AppShell title="Gerador Elite de Dieta" subtitle="Mifflin/Katch · Macros científicos · TACO">
+      <PageHero
+        eyebrow="Nutrição Elite"
+        title="Gerador de Dieta"
+        subtitle="Macros calculados via Mifflin ou Katch, cardápio com TACO."
+        icon={Salad}
+        stats={[
+          { label: "Refeições", value: meals },
+          { label: "Objetivo", value: goal },
+          { label: "Orçamento", value: budget },
+        ]}
+      />
+
       <Card>
         <form onSubmit={submit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">

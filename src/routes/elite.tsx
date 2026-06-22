@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
+import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap, Crown } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
 import type { WorkoutPDFData, DietPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateWorkoutPDFBlob, generateDietPDFBlob } from "@/lib/pdf-lazy";
@@ -174,6 +175,18 @@ function ElitePage() {
 
   return (
     <AppShell title="Plano Elite Integrado" subtitle="Treino ↔ dieta sincronizados">
+      <PageHero
+        eyebrow="Plano Elite"
+        title="Treino + Dieta integrados"
+        subtitle="Macros, periodização e cardápio gerados juntos, com PDF final."
+        icon={Crown}
+        stats={[
+          { label: "Objetivo", value: goal },
+          { label: "Frequência", value: `${frequency}x` },
+          { label: "Refeições", value: meals },
+        ]}
+      />
+
       <div className="mb-3 flex gap-2">
         <Link to="/treinos" className="flex-1 h-10 px-3 rounded-xl glass text-[12px] font-semibold flex items-center justify-center gap-1.5">
           <Dumbbell className="size-3.5" /> Só treino
