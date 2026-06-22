@@ -59,7 +59,6 @@ export function AppShell({
             </button>
           )}
           <Link to={home} className="flex items-center gap-2 shrink-0">
-            <img src={logoV} alt="" width={32} height={32} decoding="async" className="size-8" />
             <div className="leading-tight">
               <div className="text-[15px] font-extrabold tracking-tight">
                 <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
