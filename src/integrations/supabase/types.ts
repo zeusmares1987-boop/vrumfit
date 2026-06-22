@@ -480,6 +480,7 @@ export type Database = {
           created_by: string
           id: string
           message: string
+          personal_id: string | null
           status: Database["public"]["Enums"]["publish_status"]
           target_user_id: string | null
           title: string
@@ -490,6 +491,7 @@ export type Database = {
           created_by: string
           id?: string
           message: string
+          personal_id?: string | null
           status?: Database["public"]["Enums"]["publish_status"]
           target_user_id?: string | null
           title: string
@@ -500,6 +502,7 @@ export type Database = {
           created_by?: string
           id?: string
           message?: string
+          personal_id?: string | null
           status?: Database["public"]["Enums"]["publish_status"]
           target_user_id?: string | null
           title?: string
