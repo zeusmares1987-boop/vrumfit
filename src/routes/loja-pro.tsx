@@ -248,26 +248,39 @@ function Panel() {
 
       <div className="space-y-2">
         {list.map((o) => (
-          <Card key={o.id} className="p-3 flex items-center gap-3">
-            {o.cover_url ? (
-              <img src={o.cover_url} alt="" className="size-14 rounded-xl object-cover border border-white/10" />
-            ) : (
-              <div className="size-14 rounded-xl bg-primary/15 border border-primary/25" />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">{o.title}</p>
-              <p className="text-[11px] text-muted-foreground flex items-center gap-2">
-                <span className={`px-1.5 py-0.5 rounded ${o.status === "ativo" ? "bg-emerald-500/20 text-emerald-300" : "bg-white/10 text-white/60"}`}>{o.status}</span>
-                <span>R$ {(o.price_cents / 100).toFixed(2)}</span>
-                <span className="inline-flex items-center gap-0.5"><Eye className="size-2.5" />{o.wa_clicks ?? 0}</span>
-              </p>
+          <Card key={o.id} className="p-3 space-y-3">
+            <div className="flex items-center gap-3">
+              {o.cover_url ? (
+                <img src={o.cover_url} alt="" className="size-14 rounded-xl object-cover border border-white/10" />
+              ) : (
+                <div className="size-14 rounded-xl bg-primary/15 border border-primary/25" />
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold truncate">{o.title}</p>
+                <p className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
+                  <span className={`px-1.5 py-0.5 rounded ${o.status === "ativo" ? "bg-emerald-500/20 text-emerald-300" : "bg-white/10 text-white/60"}`}>{o.status}</span>
+                  <span>R$ {(o.price_cents / 100).toFixed(2)}</span>
+                  <span className="inline-flex items-center gap-0.5"><Eye className="size-2.5" />{o.wa_clicks ?? 0}</span>
+                </p>
+              </div>
             </div>
-            <div className="flex gap-1">
-              <button onClick={() => edit(o)} className="size-8 grid place-items-center rounded-lg glass" aria-label="Editar"><Edit3 className="size-3.5" /></button>
-              <button onClick={() => toggle(o)} className="size-8 grid place-items-center rounded-lg glass" aria-label="Pausar/Ativar">
-                {o.status === "ativo" ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
+            <div className="grid grid-cols-4 gap-1.5">
+              <Link
+                to="/loja/$id"
+                params={{ id: o.id }}
+                className="h-9 rounded-lg glass text-[10px] font-bold flex items-center justify-center gap-1"
+              >
+                <Eye className="size-3.5" /> VER
+              </Link>
+              <button onClick={() => edit(o)} className="h-9 rounded-lg glass text-[10px] font-bold flex items-center justify-center gap-1">
+                <Edit3 className="size-3.5" /> EDITAR
               </button>
-              <button onClick={() => remove(o.id)} className="size-8 grid place-items-center rounded-lg glass text-destructive" aria-label="Excluir"><Trash2 className="size-3.5" /></button>
+              <button onClick={() => toggle(o)} className="h-9 rounded-lg glass text-[10px] font-bold flex items-center justify-center gap-1">
+                {o.status === "ativo" ? <><Pause className="size-3.5" /> PAUSAR</> : <><Play className="size-3.5" /> ATIVAR</>}
+              </button>
+              <button onClick={() => remove(o.id)} className="h-9 rounded-lg glass text-[10px] font-bold text-destructive flex items-center justify-center gap-1">
+                <Trash2 className="size-3.5" /> EXCLUIR
+              </button>
             </div>
           </Card>
         ))}
