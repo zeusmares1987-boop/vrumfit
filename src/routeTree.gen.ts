@@ -33,6 +33,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArquivosRouteImport } from './routes/arquivos'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BibliotecaIndexRouteImport } from './routes/biblioteca.index'
 import { Route as LojaIdRouteImport } from './routes/loja.$id'
 import { Route as LojaProConfigRouteImport } from './routes/loja-pro.config'
 import { Route as BibliotecaIdRouteImport } from './routes/biblioteca.$id'
@@ -157,6 +158,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BibliotecaIndexRoute = BibliotecaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BibliotecaRoute,
+} as any)
 const LojaIdRoute = LojaIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -201,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/biblioteca/$id': typeof BibliotecaIdRoute
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
+  '/biblioteca/': typeof BibliotecaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -209,7 +216,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
   '/avisos': typeof AvisosRoute
-  '/biblioteca': typeof BibliotecaRouteWithChildren
   '/chat': typeof ChatRoute
   '/config': typeof ConfigRoute
   '/dieta': typeof DietaRoute
@@ -230,6 +236,7 @@ export interface FileRoutesByTo {
   '/biblioteca/$id': typeof BibliotecaIdRoute
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
+  '/biblioteca': typeof BibliotecaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -260,6 +267,7 @@ export interface FileRoutesById {
   '/biblioteca/$id': typeof BibliotecaIdRoute
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
+  '/biblioteca/': typeof BibliotecaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -291,6 +299,7 @@ export interface FileRouteTypes {
     | '/biblioteca/$id'
     | '/loja-pro/config'
     | '/loja/$id'
+    | '/biblioteca/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -299,7 +308,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/avaliacoes'
     | '/avisos'
-    | '/biblioteca'
     | '/chat'
     | '/config'
     | '/dieta'
@@ -320,6 +328,7 @@ export interface FileRouteTypes {
     | '/biblioteca/$id'
     | '/loja-pro/config'
     | '/loja/$id'
+    | '/biblioteca'
   id:
     | '__root__'
     | '/'
@@ -349,6 +358,7 @@ export interface FileRouteTypes {
     | '/biblioteca/$id'
     | '/loja-pro/config'
     | '/loja/$id'
+    | '/biblioteca/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -548,6 +558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/biblioteca/': {
+      id: '/biblioteca/'
+      path: '/'
+      fullPath: '/biblioteca/'
+      preLoaderRoute: typeof BibliotecaIndexRouteImport
+      parentRoute: typeof BibliotecaRoute
+    }
     '/loja/$id': {
       id: '/loja/$id'
       path: '/$id'
@@ -574,10 +591,12 @@ declare module '@tanstack/react-router' {
 
 interface BibliotecaRouteChildren {
   BibliotecaIdRoute: typeof BibliotecaIdRoute
+  BibliotecaIndexRoute: typeof BibliotecaIndexRoute
 }
 
 const BibliotecaRouteChildren: BibliotecaRouteChildren = {
   BibliotecaIdRoute: BibliotecaIdRoute,
+  BibliotecaIndexRoute: BibliotecaIndexRoute,
 }
 
 const BibliotecaRouteWithChildren = BibliotecaRoute._addFileChildren(

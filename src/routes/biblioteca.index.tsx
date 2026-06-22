@@ -7,7 +7,7 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/biblioteca")({
+export const Route = createFileRoute("/biblioteca/")({
   head: () => ({ meta: [{ title: "Biblioteca VrumFit — Execução" }] }),
   component: () => (
     <RequireAuth>
