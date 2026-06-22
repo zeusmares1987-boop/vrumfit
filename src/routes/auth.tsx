@@ -249,10 +249,9 @@ function PrimaryButton({ children, disabled, type }: { children: React.ReactNode
     <button
       type={type ?? "button"}
       disabled={disabled}
-      className="mt-4 h-[58px] w-full rounded-2xl font-extrabold text-[17px] tracking-wide text-white uppercase transition active:scale-[0.99] relative overflow-hidden disabled:opacity-60"
+      className="mt-4 h-[56px] w-full rounded-2xl font-extrabold text-[17px] tracking-wide text-white uppercase transition active:scale-[0.99] disabled:opacity-60"
       style={{
-        background: "linear-gradient(180deg, #ffb060 0%, #ff7a18 45%, #c0470a 100%)",
-        boxShadow: "0 18px 45px -10px rgba(255,120,30,0.7), inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 0 rgba(0,0,0,0.25)",
+        background: "linear-gradient(180deg, #ff8a3d 0%, #ff6b1a 100%)",
       }}
     >
       {children}
