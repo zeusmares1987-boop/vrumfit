@@ -71,7 +71,8 @@ function DetailPage() {
       return toast.error(uploadError.message);
     }
     const imageRef = toStoredImageRef(path);
-    const { error } = await supabase.from("exercises").update({ [field]: imageRef }).eq("id", ex.id);
+    const payload = field === "image_start" ? { image_start: imageRef } : { image_end: imageRef };
+    const { error } = await supabase.from("exercises").update(payload).eq("id", ex.id);
     setUploadingField(null);
     if (error) return toast.error(error.message);
     setForm((current) => ({ ...current, [field]: imageRef }));
