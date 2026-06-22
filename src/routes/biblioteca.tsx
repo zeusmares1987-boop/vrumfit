@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Search, Plus, Dumbbell, ImageOff } from "lucide-react";
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/biblioteca")({
 });
 
 function BibliotecaPage() {
+  const location = useLocation();
   const { role } = useAuth();
   const [q, setQ] = useState("");
   const [catSlug, setCatSlug] = useState<string | null>(null);
@@ -53,6 +54,8 @@ function BibliotecaPage() {
       }, {})
     ).filter(([, count]) => count > 1).map(([url]) => url)
   );
+
+  if (location.pathname !== "/biblioteca") return <Outlet />;
 
   return (
     <AppShell title="Execução" subtitle="Biblioteca VrumFit">
