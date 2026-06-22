@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, Plus } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { VrumExercisePoster } from "@/components/VrumExercisePoster";
+import { getExercisePosterUrl } from "@/lib/exercisePosters";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -62,9 +63,16 @@ function BibliotecaPage() {
 
       <section className="mt-3 grid grid-cols-2 gap-2.5 pb-4">
         {(exercises ?? []).map((e: any) => {
+          const posterUrl = getExercisePosterUrl(e.id);
           return (
             <Link key={e.id} to="/biblioteca/$id" params={{ id: e.id }} className="block overflow-hidden rounded-2xl border border-white/10 bg-background transition hover:border-primary/60">
-              <VrumExercisePoster exercise={e} compact />
+              {posterUrl ? (
+                <div className="aspect-[4/3] overflow-hidden bg-background">
+                  <img src={posterUrl} alt={`Pôster do exercício ${e.name}`} className="h-full w-full object-cover object-top" loading="lazy" />
+                </div>
+              ) : (
+                <VrumExercisePoster exercise={e} compact />
+              )}
             </Link>
           );
         })}
