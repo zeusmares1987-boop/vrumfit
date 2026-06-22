@@ -3,8 +3,9 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
+import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Download, BookOpen, FileDown, Zap, Clock, Flame, ChevronDown, ChevronUp, Play } from "lucide-react";
+import { Download, BookOpen, FileDown, Zap, Clock, Flame, ChevronDown, ChevronUp, Play, Dumbbell } from "lucide-react";
 import type { WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateWorkoutPDFBlob } from "@/lib/pdf-lazy";
 import {
