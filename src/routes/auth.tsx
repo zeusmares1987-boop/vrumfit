@@ -195,7 +195,9 @@ function AuthPage() {
 
           <div className="mt-5 text-center text-[13px] text-white/60">
             {mode === "login" ? (
-              <span>Aluno recebe acesso do personal. Personal recebe acesso do dono.</span>
+              <button type="button" onClick={() => setMode("signup")} className="font-medium text-white/70 hover:text-white">
+                Não tem conta? <span className="text-primary">Criar conta</span>
+              </button>
             ) : (
               <button type="button" onClick={() => setMode("login")} className="inline-flex items-center gap-1.5 font-medium text-white/70 hover:text-white">
                 <ArrowLeft className="size-3.5" /> Voltar ao login
