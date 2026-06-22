@@ -10,8 +10,6 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
-const headerGym = headerGymAsset.url;
 import tileUsuariosAsset from "@/assets/tile-usuarios.jpg.asset.json";
 const tileUsuarios = tileUsuariosAsset.url;
 import tileProfessoresAsset from "@/assets/tile-professores.jpg.asset.json";
@@ -137,21 +135,27 @@ function OwnerPage() {
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Proprietário";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
-  const today = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" });
+  
+
+  const avatarUrl = (profile as { avatar_url?: string } | undefined)?.avatar_url;
+  const initial = firstName.charAt(0).toUpperCase();
 
   return (
     <AppShell>
-      {/* Welcome hero */}
-      <section className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-30px_rgba(255,120,30,0.45)]">
-        <img src={headerGym} alt="" className="absolute inset-0 w-full h-full object-cover opacity-55" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-black/80 to-primary/25" />
-        <div className="relative p-5">
-          <p className="text-[10px] uppercase tracking-[0.25em] text-primary/85 font-bold">{today}</p>
-          <h1 className="mt-1 text-[26px] font-black leading-tight tracking-tight">
-            {greeting}, <span className="text-primary">{firstName}</span>
+      {/* Welcome — estilo MFit: saudação pequena + nome grande + avatar */}
+      <section className="flex items-center gap-3 px-1 pt-1">
+        <div className="size-12 rounded-full bg-white/[0.06] border border-white/10 overflow-hidden grid place-items-center shrink-0">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-[18px] font-bold text-primary">{initial}</span>
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] text-white/55 leading-tight">{greeting},</p>
+          <h1 className="truncate text-[22px] font-extrabold leading-tight tracking-tight text-white">
+            {firstName}
           </h1>
-          <p className="mt-1 text-[12.5px] text-white/70">Controle total do seu negócio.</p>
-          
         </div>
       </section>
 
