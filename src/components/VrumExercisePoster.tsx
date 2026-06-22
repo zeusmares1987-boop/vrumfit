@@ -1,5 +1,6 @@
 import { BarChart2, BarChart3, Check, Clock, ListChecks, Target } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { StoredImage } from "@/components/StoredImage";
 
 export interface VrumExercisePosterData {
   name: string;
@@ -156,7 +157,7 @@ function SafeImage({ src, alt, className, size }: { src: string; alt: string; cl
     );
   }
 
-  return <img src={src} alt={alt} className={className} loading="lazy" onError={() => setFailed(true)} />;
+  return <StoredImage src={src} alt={alt} className={className} loading="lazy" onError={() => setFailed(true)} />;
 }
 
 function TargetBand({ target }: { target: string }) {

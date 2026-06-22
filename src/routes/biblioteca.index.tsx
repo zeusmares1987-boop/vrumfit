@@ -5,7 +5,6 @@ import { Search, Plus, Dumbbell, BookOpen } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { VrumExercisePoster } from "@/components/VrumExercisePoster";
-import { getExercisePosterUrl } from "@/lib/exercisePosters";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -77,22 +76,12 @@ function BibliotecaPage() {
 
       <section className="mt-3 grid grid-cols-2 gap-2.5 pb-4">
         {(exercises ?? []).map((e: any) => {
-          const posterUrl = getExercisePosterUrl(e.id);
           return (
             <Link key={e.id} to="/biblioteca/$id" params={{ id: e.id }} className="block overflow-hidden rounded-2xl border border-white/10 bg-background transition hover:border-primary/60">
               <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
-                {posterUrl ? (
-                  <img
-                    src={posterUrl}
-                    alt={`Pôster do exercício ${e.name}`}
-                    className="absolute inset-0 h-full w-full object-cover object-center"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="absolute inset-0">
-                    <VrumExercisePoster exercise={e} compact />
-                  </div>
-                )}
+                <div className="absolute inset-0">
+                  <VrumExercisePoster exercise={e} compact />
+                </div>
               </div>
               <div className="px-2.5 py-2">
                 <p className="text-[12px] font-semibold text-white truncate">{e.name}</p>

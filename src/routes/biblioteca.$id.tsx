@@ -1,12 +1,13 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Pencil, X } from "lucide-react";
+import { ArrowLeft, Save, Pencil, X, Camera, Trash2 } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { VrumExercisePoster } from "@/components/VrumExercisePoster";
-import { getExercisePosterUrl } from "@/lib/exercisePosters";
+import { StoredImage, toStoredImageRef } from "@/components/StoredImage";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/biblioteca/$id")({
   head: () => ({ meta: [{ title: "Exercício — VRUMFIT" }] }),
@@ -19,10 +20,12 @@ export const Route = createFileRoute("/biblioteca/$id")({
 
 function DetailPage() {
   const { id } = useParams({ from: "/biblioteca/$id" });
+  const navigate = useNavigate();
   const { role } = useAuth();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ image_start: "", image_end: "", execution_steps: "" });
+  const [uploadingField, setUploadingField] = useState<"image_start" | "image_end" | null>(null);
+  const [form, setForm] = useState({ name: "", target_muscle: "", default_sets: "", default_reps: "", default_rest: "", image_start: "", image_end: "", execution_steps: "" });
   const { data: ex, refetch } = useQuery({
     queryKey: ["exercise", id],
     queryFn: async () => {
@@ -37,6 +40,11 @@ function DetailPage() {
   useEffect(() => {
     if (!ex) return;
     setForm({
+      name: ex.name ?? "",
+      target_muscle: ex.target_muscle ?? "",
+      default_sets: ex.default_sets ?? "",
+      default_reps: ex.default_reps ?? "",
+      default_rest: ex.default_rest ?? "",
       image_start: ex.image_start ?? "",
       image_end: ex.image_end ?? "",
       execution_steps: ((ex.execution_steps as string[] | null) ?? []).join("\n"),
@@ -48,6 +56,11 @@ function DetailPage() {
     setSaving(true);
     const steps = form.execution_steps.split("\n").map((step) => step.trim()).filter(Boolean);
     await supabase.from("exercises").update({
+      name: form.name.trim() || ex.name,
+      target_muscle: form.target_muscle.trim() || null,
+      default_sets: form.default_sets.trim() || null,
+      default_reps: form.default_reps.trim() || null,
+      default_rest: form.default_rest.trim() || null,
       image_start: form.image_start.trim() || null,
       image_end: form.image_end.trim() || null,
       execution_steps: steps.length ? steps : null,
@@ -57,6 +70,46 @@ function DetailPage() {
     refetch();
   }
 
+  async function uploadExercisePhoto(file: File, field: "image_start" | "image_end") {
+    if (!ex || role !== "dono") return;
+    if (!file.type.startsWith("image/")) return toast.error("Escolha uma imagem.");
+    setUploadingField(field);
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const path = `library/${ex.id}-${field}-${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage.from("vrumfit-files").upload(path, file, { contentType: file.type });
+    if (uploadError) {
+      setUploadingField(null);
+      return toast.error(uploadError.message);
+    }
+    const imageRef = toStoredImageRef(path);
+    const payload = field === "image_start" ? { image_start: imageRef } : { image_end: imageRef };
+    const { error } = await supabase.from("exercises").update(payload).eq("id", ex.id);
+    setUploadingField(null);
+    if (error) return toast.error(error.message);
+    setForm((current) => ({ ...current, [field]: imageRef }));
+    refetch();
+    toast.success("Foto atualizada!");
+  }
+
+  async function removeExercisePhoto(field: "image_start" | "image_end") {
+    if (!ex || role !== "dono") return;
+    const payload = field === "image_start" ? { image_start: null } : { image_end: null };
+    const { error } = await supabase.from("exercises").update(payload).eq("id", ex.id);
+    if (error) return toast.error(error.message);
+    setForm((current) => ({ ...current, [field]: "" }));
+    refetch();
+    toast.success("Foto removida.");
+  }
+
+  async function deleteExercise() {
+    if (!ex || role !== "dono") return;
+    if (!confirm("Apagar este exercício da biblioteca?")) return;
+    const { error } = await supabase.from("exercises").delete().eq("id", ex.id);
+    if (error) return toast.error(error.message);
+    toast.success("Exercício apagado.");
+    navigate({ to: "/biblioteca" });
+  }
+
   if (!ex) {
     return (
       <div className="min-h-[100dvh] grid place-items-center bg-background text-white/60">
@@ -64,8 +117,6 @@ function DetailPage() {
       </div>
     );
   }
-
-  const posterUrl = getExercisePosterUrl(ex.id);
 
   return (
     <div className="min-h-[100dvh] bg-black text-white font-display">
@@ -91,8 +142,15 @@ function DetailPage() {
 
         {editing && role === "dono" && (
           <div className="mt-3 rounded-2xl border border-primary/30 bg-black/60 p-4 space-y-3">
-            <EditField label="URL da foto INÍCIO" value={form.image_start} onChange={(value) => setForm((f) => ({ ...f, image_start: value }))} />
-            <EditField label="URL da foto FIM" value={form.image_end} onChange={(value) => setForm((f) => ({ ...f, image_end: value }))} />
+            <EditTextField label="NOME DO EXERCÍCIO" value={form.name} onChange={(value) => setForm((f) => ({ ...f, name: value }))} />
+            <EditTextField label="MÚSCULO ALVO" value={form.target_muscle} onChange={(value) => setForm((f) => ({ ...f, target_muscle: value }))} />
+            <div className="grid grid-cols-3 gap-2">
+              <EditTextField label="SÉRIES" value={form.default_sets} onChange={(value) => setForm((f) => ({ ...f, default_sets: value }))} />
+              <EditTextField label="REPS" value={form.default_reps} onChange={(value) => setForm((f) => ({ ...f, default_reps: value }))} />
+              <EditTextField label="DESCANSO" value={form.default_rest} onChange={(value) => setForm((f) => ({ ...f, default_rest: value }))} />
+            </div>
+            <PhotoUploadField label="FOTO INÍCIO" value={form.image_start} loading={uploadingField === "image_start"} onFile={(file) => uploadExercisePhoto(file, "image_start")} onRemove={() => removeExercisePhoto("image_start")} />
+            <PhotoUploadField label="FOTO FIM" value={form.image_end} loading={uploadingField === "image_end"} onFile={(file) => uploadExercisePhoto(file, "image_end")} onRemove={() => removeExercisePhoto("image_end")} />
             <div>
               <p className="text-[10px] tracking-widest font-bold text-primary mb-1.5">PASSOS — UM POR LINHA</p>
               <textarea value={form.execution_steps} onChange={(e) => setForm((f) => ({ ...f, execution_steps: e.target.value }))} className="min-h-28 w-full rounded-xl border border-white/10 bg-black/55 px-3 py-2 text-[12px] outline-none focus:border-primary/60" />
@@ -100,27 +158,53 @@ function DetailPage() {
             <button onClick={saveExerciseMedia} disabled={saving} className="w-full h-11 rounded-xl bg-primary text-primary-foreground text-[12px] font-black flex items-center justify-center gap-2 disabled:opacity-60">
               <Save className="size-4" /> {saving ? "SALVANDO..." : "SALVAR EXERCÍCIO"}
             </button>
+            <button onClick={deleteExercise} className="w-full h-11 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive text-[12px] font-black flex items-center justify-center gap-2">
+              <Trash2 className="size-4" /> APAGAR EXERCÍCIO
+            </button>
           </div>
         )}
 
         <div>
-          {posterUrl ? (
-            <img src={posterUrl} alt={`Pôster completo do exercício ${ex.name}`} className="mx-auto w-full max-w-[691px] rounded-[22px] border border-white/10 shadow-2xl" />
-          ) : (
-            <VrumExercisePoster exercise={ex} />
-          )}
+          <VrumExercisePoster exercise={ex} />
         </div>
       </div>
     </div>
   );
 }
 
-function EditField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+function EditTextField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return (
     <label className="block">
-      <span className="text-[10px] tracking-widest font-bold text-primary mb-1.5 block">{label}</span>
-      <input value={value} onChange={(e) => onChange(e.target.value)} className="h-11 w-full rounded-xl border border-white/10 bg-black/55 px-3 text-[12px] outline-none focus:border-primary/60" placeholder="https://... ou /__l5e/assets-v1/..." />
+      <span className="mb-1.5 block text-[10px] font-bold tracking-widest text-primary">{label}</span>
+      <input value={value} onChange={(e) => onChange(e.target.value)} className="h-11 w-full rounded-xl border border-white/10 bg-black/55 px-3 text-[12px] outline-none focus:border-primary/60" />
     </label>
+  );
+}
+
+function PhotoUploadField({ label, value, loading, onFile, onRemove }: { label: string; value: string; loading: boolean; onFile: (file: File) => void; onRemove: () => void }) {
+  return (
+    <div>
+      <p className="text-[10px] tracking-widest font-bold text-primary mb-1.5">{label}</p>
+      <label className="flex min-h-24 cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-black/55 p-3 transition hover:border-primary/60">
+        <div className="size-20 rounded-lg border border-primary/30 bg-primary/10 grid place-items-center overflow-hidden text-primary shrink-0">
+          {value ? <StoredImage src={value} alt={label} className="size-full object-cover" /> : <Camera className="size-6" />}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] font-black text-white">{loading ? "ENVIANDO..." : "ESCOLHER FOTO DA GALERIA"}</p>
+          <p className="text-[10px] text-white/55">Toque aqui e selecione a imagem.</p>
+          {value && (
+            <button type="button" onClick={(e) => { e.preventDefault(); onRemove(); }} className="mt-2 rounded-lg border border-destructive/40 px-3 py-1.5 text-[10px] font-bold text-destructive">
+              REMOVER FOTO
+            </button>
+          )}
+        </div>
+        <input type="file" accept="image/*" className="sr-only" disabled={loading} onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onFile(file);
+          e.currentTarget.value = "";
+        }} />
+      </label>
+    </div>
   );
 }
 
