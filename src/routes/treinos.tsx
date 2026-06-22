@@ -5,8 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { Download, BookOpen, FileDown, Zap, Clock, Flame, ChevronDown, ChevronUp, Play } from "lucide-react";
-import { pdf } from "@react-pdf/renderer";
-import { WorkoutPDF, type WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
+import type { WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
+import { generateWorkoutPDFBlob } from "@/lib/pdf-lazy";
 import {
   generateWorkoutPlan,
   type Goal, type Level, type Equip, type Sex, type WeekPlan, type WorkoutPlanInput,
@@ -363,7 +363,7 @@ async function exportPdf(week: WeekPlan, goal: string) {
         ],
       })),
     };
-    const blob = await pdf(<WorkoutPDF data={data} />).toBlob();
+    const blob = await generateWorkoutPDFBlob(data);
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

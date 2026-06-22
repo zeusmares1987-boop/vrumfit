@@ -3,9 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { Flame, Dumbbell, Apple, Droplet, FileDown, Zap } from "lucide-react";
-import { pdf } from "@react-pdf/renderer";
 import { PDFDocument } from "pdf-lib";
-import { WorkoutPDF, DietPDF, type WorkoutPDFData, type DietPDFData } from "@/components/pdfs/VrumPDFs";
+import type { WorkoutPDFData, DietPDFData } from "@/components/pdfs/VrumPDFs";
+import { generateWorkoutPDFBlob, generateDietPDFBlob } from "@/lib/pdf-lazy";
 import { generateElitePlan, type ElitePlan } from "@/lib/integration-engine";
 import type { Goal, Level, Equip, Sex } from "@/lib/workout-engine";
 import type { GoalDiet, DietRestriction, Budget } from "@/lib/diet-engine";
@@ -132,7 +132,7 @@ function ElitePage() {
             ],
           })),
         };
-        const blob = await pdf(<WorkoutPDF data={data} />).toBlob();
+        const blob = await generateWorkoutPDFBlob(data);
         const bytes = new Uint8Array(await blob.arrayBuffer());
         const doc = await PDFDocument.load(bytes);
         const pages = await merged.copyPages(doc, doc.getPageIndices());
@@ -155,7 +155,7 @@ function ElitePage() {
             observation: label.includes("TREINO") ? "Carbo extra para performance." : "Recuperação ativa — priorize proteína e gordura boa.",
           })),
         };
-        const blob = await pdf(<DietPDF data={data} />).toBlob();
+        const blob = await generateDietPDFBlob(data);
         const bytes = new Uint8Array(await blob.arrayBuffer());
         const doc = await PDFDocument.load(bytes);
         const pages = await merged.copyPages(doc, doc.getPageIndices());

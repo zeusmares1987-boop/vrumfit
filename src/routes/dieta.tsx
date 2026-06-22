@@ -3,8 +3,8 @@ import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { Flame, Beef, Wheat, Droplet, Download, FileDown, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react";
-import { pdf } from "@react-pdf/renderer";
-import { DietPDF, type DietPDFData } from "@/components/pdfs/VrumPDFs";
+import type { DietPDFData } from "@/components/pdfs/VrumPDFs";
+import { generateDietPDFBlob } from "@/lib/pdf-lazy";
 import {
   generateDietPlan,
   type DietInput, type GoalDiet, type DietRestriction, type Sex, type Budget, type DietPlan,
@@ -271,7 +271,7 @@ async function exportPdf(plan: DietPlan, goal: string) {
       observation: "Hidrate-se ao longo da refeição.",
     })),
   };
-  const blob = await pdf(<DietPDF data={data} />).toBlob();
+  const blob = await generateDietPDFBlob(data);
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
