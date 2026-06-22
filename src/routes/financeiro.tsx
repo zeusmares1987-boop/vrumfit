@@ -156,6 +156,22 @@ function Fin() {
         ) : undefined}
       />
 
+      <Card className="p-4 border-primary/30">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-primary font-bold">Pix — pagamento rápido</p>
+            <p className="text-xs text-muted-foreground">CNPJ · {PIX_HOLDER}</p>
+          </div>
+          <button
+            onClick={() => { navigator.clipboard.writeText(PIX_KEY); toast.success("Chave Pix copiada"); }}
+            className="shrink-0 px-3 py-2 rounded-xl bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 hover:scale-105 transition"
+          >
+            <Copy className="size-3.5" /> Copiar
+          </button>
+        </div>
+        <p className="font-mono text-lg font-extrabold tracking-wider break-all">{PIX_KEY}</p>
+      </Card>
+
       {show && (
         <Card className="p-4">
           <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-3">Nova fatura</p>
