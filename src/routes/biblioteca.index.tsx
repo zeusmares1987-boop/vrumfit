@@ -102,8 +102,8 @@ function BibliotecaPage() {
           );
         })}
         {exercises && exercises.length === 0 && (
-          <div className="col-span-2 text-center py-10 text-white/50 text-sm">
-            Nenhum exercício cadastrado ainda.
+          <div className="col-span-2">
+            <EmptyState icon={Dumbbell} title="Nenhum exercício encontrado" hint="Ajuste a busca ou troque a categoria." />
           </div>
         )}
       </section>
