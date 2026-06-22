@@ -22,7 +22,7 @@ export const Route = createFileRoute("/avisos")({
 function Avisos() {
   const { user, role } = useAuth();
   const [list, setList] = useState<N[]>([]);
-  const [form, setForm] = useState({ title: "", message: "", audience: "todos" });
+  const [form, setForm] = useState({ title: "", message: "", audience: role === "personal" ? "alunos" : "todos" });
   const [show, setShow] = useState(false);
 
   const load = async () => {
@@ -41,7 +41,7 @@ function Avisos() {
       created_by: user.id, status: "publicado" as any,
     });
     if (error) return toast.error(error.message);
-    setForm({ title: "", message: "", audience: "todos" });
+    setForm({ title: "", message: "", audience: role === "personal" ? "alunos" : "todos" });
     setShow(false);
     load();
   };
@@ -81,10 +81,10 @@ function Avisos() {
           <form onSubmit={add} className="space-y-2">
             <input placeholder="Título" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputCls} />
             <textarea placeholder="Mensagem" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${inputCls} min-h-[100px] py-2`} />
-            <select value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} className={inputCls}>
-              <option value="todos">Todos</option>
-              <option value="alunos">Alunos</option>
-              <option value="personais">Personais</option>
+            <select value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} className={inputCls} disabled={role === "personal"}>
+              {role === "dono" && <option value="todos">Todos</option>}
+              <option value="alunos">{role === "personal" ? "Meus alunos" : "Alunos"}</option>
+              {role === "dono" && <option value="personais">Personais</option>}
             </select>
             <button className={btnPrimary}>PUBLICAR</button>
           </form>
