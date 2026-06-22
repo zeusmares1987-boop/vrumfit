@@ -5,7 +5,10 @@ import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Plus, TrendingUp, TrendingDown, Trash2, X, Wallet, CheckCircle2, AlertCircle } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown, Trash2, X, Wallet, CheckCircle2, AlertCircle, Copy } from "lucide-react";
+
+const PIX_KEY = "54050522000127";
+const PIX_HOLDER = "VRUMFIT";
 import { toast } from "sonner";
 
 type Invoice = {
