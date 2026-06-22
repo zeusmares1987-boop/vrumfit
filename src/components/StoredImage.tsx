@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ImgHTMLAttributes } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-interface StoredImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface StoredImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   src: string;
 }
 
