@@ -40,9 +40,14 @@ function BibliotecaPage() {
     },
   });
 
+  const { data: imageAudit } = useQuery({
+    queryKey: ["exercise-image-audit"],
+    queryFn: async () => (await supabase.from("exercises").select("image_start")).data ?? [],
+  });
+
   const repeatedImages = new Set(
     Object.entries(
-      (exercises ?? []).reduce<Record<string, number>>((acc, e: any) => {
+      (imageAudit ?? []).reduce<Record<string, number>>((acc, e: any) => {
         if (e.image_start) acc[e.image_start] = (acc[e.image_start] ?? 0) + 1;
         return acc;
       }, {})
@@ -84,7 +89,7 @@ function BibliotecaPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               {!hasUniquePhoto && (
                 <div className="absolute top-2 right-2 rounded-full border border-primary/40 bg-black/70 px-2 py-1 text-[9px] font-bold text-primary flex items-center gap-1">
-                  <ImageOff className="size-3" /> FOTO REAL
+                  <ImageOff className="size-3" /> FOTO PENDENTE
                 </div>
               )}
               <div className="absolute bottom-2 left-2 right-2">
