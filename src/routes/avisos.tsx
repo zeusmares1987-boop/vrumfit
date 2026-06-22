@@ -40,7 +40,9 @@ function Avisos() {
     if (!form.title || !user) return;
     const { error } = await supabase.from("notices").insert({
       title: form.title, message: form.message, audience: form.audience as any,
-      created_by: user.id, status: "publicado" as any,
+      created_by: user.id,
+      personal_id: role === "personal" ? user.id : null,
+      status: "publicado" as any,
     });
     if (error) return toast.error(error.message);
     setForm({ title: "", message: "", audience: role === "personal" ? "alunos" : "todos" });
