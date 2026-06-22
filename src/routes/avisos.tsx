@@ -41,7 +41,7 @@ function Avisos() {
       created_by: user.id, status: "publicado" as any,
     });
     if (error) return toast.error(error.message);
-    setForm({ title: "", message: "", audience: "todos" });
+    setForm({ title: "", message: "", audience: role === "personal" ? "alunos" : "todos" });
     setShow(false);
     load();
   };
