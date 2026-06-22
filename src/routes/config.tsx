@@ -120,8 +120,11 @@ function Cfg() {
             <Field label="Nome completo">
               <input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} className={inputCls} />
             </Field>
+            <Field label="E-mail">
+              <input value={form.email} readOnly className={inputCls + " opacity-70 cursor-not-allowed"} />
+            </Field>
             <Field label="Telefone">
-              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} />
+              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="(11) 99999-9999" />
             </Field>
             <button disabled={saving} className={btnPrimary}>{saving ? "SALVANDO…" : "SALVAR PERFIL"}</button>
           </form>
