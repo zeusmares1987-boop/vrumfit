@@ -50,7 +50,9 @@ function Avisos() {
 
   const remove = async (id: string) => {
     if (!confirm("Remover aviso?")) return;
-    const { error } = await supabase.from("notices").delete().eq("id", id);
+    let q = supabase.from("notices").delete().eq("id", id);
+    if (role !== "dono" && user) q = q.eq("created_by", user.id);
+    const { error } = await q;
     if (error) return toast.error(error.message);
     setList(list.filter((x) => x.id !== id));
   };
