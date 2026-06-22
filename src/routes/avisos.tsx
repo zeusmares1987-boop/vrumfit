@@ -81,10 +81,10 @@ function Avisos() {
           <form onSubmit={add} className="space-y-2">
             <input placeholder="Título" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputCls} />
             <textarea placeholder="Mensagem" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${inputCls} min-h-[100px] py-2`} />
-            <select value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} className={inputCls}>
-              <option value="todos">Todos</option>
-              <option value="alunos">Alunos</option>
-              <option value="personais">Personais</option>
+            <select value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} className={inputCls} disabled={role === "personal"}>
+              {role === "dono" && <option value="todos">Todos</option>}
+              <option value="alunos">{role === "personal" ? "Meus alunos" : "Alunos"}</option>
+              {role === "dono" && <option value="personais">Personais</option>}
             </select>
             <button className={btnPrimary}>PUBLICAR</button>
           </form>
