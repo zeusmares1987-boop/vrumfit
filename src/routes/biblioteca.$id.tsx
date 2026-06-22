@@ -142,6 +142,13 @@ function DetailPage() {
 
         {editing && role === "dono" && (
           <div className="mt-3 rounded-2xl border border-primary/30 bg-black/60 p-4 space-y-3">
+            <EditTextField label="NOME DO EXERCÍCIO" value={form.name} onChange={(value) => setForm((f) => ({ ...f, name: value }))} />
+            <EditTextField label="MÚSCULO ALVO" value={form.target_muscle} onChange={(value) => setForm((f) => ({ ...f, target_muscle: value }))} />
+            <div className="grid grid-cols-3 gap-2">
+              <EditTextField label="SÉRIES" value={form.default_sets} onChange={(value) => setForm((f) => ({ ...f, default_sets: value }))} />
+              <EditTextField label="REPS" value={form.default_reps} onChange={(value) => setForm((f) => ({ ...f, default_reps: value }))} />
+              <EditTextField label="DESCANSO" value={form.default_rest} onChange={(value) => setForm((f) => ({ ...f, default_rest: value }))} />
+            </div>
             <PhotoUploadField label="FOTO INÍCIO" value={form.image_start} loading={uploadingField === "image_start"} onFile={(file) => uploadExercisePhoto(file, "image_start")} onRemove={() => removeExercisePhoto("image_start")} />
             <PhotoUploadField label="FOTO FIM" value={form.image_end} loading={uploadingField === "image_end"} onFile={(file) => uploadExercisePhoto(file, "image_end")} onRemove={() => removeExercisePhoto("image_end")} />
             <div>
@@ -151,6 +158,9 @@ function DetailPage() {
             <button onClick={saveExerciseMedia} disabled={saving} className="w-full h-11 rounded-xl bg-primary text-primary-foreground text-[12px] font-black flex items-center justify-center gap-2 disabled:opacity-60">
               <Save className="size-4" /> {saving ? "SALVANDO..." : "SALVAR EXERCÍCIO"}
             </button>
+            <button onClick={deleteExercise} className="w-full h-11 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive text-[12px] font-black flex items-center justify-center gap-2">
+              <Trash2 className="size-4" /> APAGAR EXERCÍCIO
+            </button>
           </div>
         )}
 
@@ -159,6 +169,15 @@ function DetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function EditTextField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[10px] font-bold tracking-widest text-primary">{label}</span>
+      <input value={value} onChange={(e) => onChange(e.target.value)} className="h-11 w-full rounded-xl border border-white/10 bg-black/55 px-3 text-[12px] outline-none focus:border-primary/60" />
+    </label>
   );
 }
 
