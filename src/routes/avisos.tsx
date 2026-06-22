@@ -42,7 +42,7 @@ function Avisos() {
       title: form.title, message: form.message, audience: form.audience as any,
       created_by: user.id,
       personal_id: role === "personal" ? user.id : null,
-      status: "publicado" as any,
+      status: "ativo" as any,
     });
     if (error) return toast.error(error.message);
     setForm({ title: "", message: "", audience: role === "personal" ? "alunos" : "todos" });
@@ -90,7 +90,7 @@ function Avisos() {
             <select value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} className={inputCls} disabled={role === "personal"}>
               {role === "dono" && <option value="todos">Todos</option>}
               <option value="alunos">{role === "personal" ? "Meus alunos" : "Alunos"}</option>
-              {role === "dono" && <option value="personais">Personais</option>}
+              {role === "dono" && <option value="professores">Personais</option>}
             </select>
             <button className={btnPrimary}>PUBLICAR</button>
           </form>
