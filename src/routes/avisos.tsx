@@ -26,12 +26,14 @@ function Avisos() {
   const [show, setShow] = useState(false);
 
   const load = async () => {
-    const { data, error } = await supabase
-      .from("notices").select("*").order("created_at", { ascending: false });
+    if (!user) return;
+    let q = supabase.from("notices").select("*").order("created_at", { ascending: false });
+    if (role === "personal") q = q.eq("created_by", user.id);
+    const { data, error } = await q;
     if (error) toast.error(error.message);
     else setList((data ?? []) as N[]);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [user?.id, role]);
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
