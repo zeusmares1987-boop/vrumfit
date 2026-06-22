@@ -202,6 +202,17 @@ function AlunosPage() {
                     <p className="text-[10px] text-primary/80 font-semibold mt-0.5">→ {p.objective}</p>
                   )}
                 </div>
+                {p.profiles?.phone && (
+                  <a
+                    href={`https://wa.me/${p.profiles.phone.replace(/\D/g, "")}`}
+                    target="_blank" rel="noopener noreferrer"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(`https://wa.me/${p.profiles!.phone!.replace(/\D/g, "")}`, "_blank"); }}
+                    className="shrink-0 size-9 rounded-xl bg-success/15 border border-success/40 grid place-items-center text-success"
+                    aria-label={`WhatsApp de ${name}`}
+                  >
+                    <MessageCircle className="size-4" />
+                  </a>
+                )}
                 <ChevronRight className="size-4 text-muted-foreground shrink-0" />
                 {role === "dono" && (
                   <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); remove(p.user_id); }} className="text-muted-foreground hover:text-destructive shrink-0 p-1.5">
