@@ -27,7 +27,7 @@ function AlunoDetail() {
         supabase.from("students").select("objective,status,personal_id,created_at").eq("user_id", id).maybeSingle(),
         supabase.from("workouts").select("id,name,objective,status,created_at").eq("student_id", id).eq("status", "ativo").order("created_at", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("diets").select("id,name,objective,status").eq("student_id", id).eq("status", "ativo").order("created_at", { ascending: false }).limit(1).maybeSingle(),
-        supabase.from("assessments").select("id,assessed_at,weight_kg,body_fat_pct").eq("student_id", id).order("assessed_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("assessments").select("id,date,weight_kg").eq("student_id", id).order("date", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("workout_sessions").select("id,session_date,duration_min,notes").eq("student_id", id).order("session_date", { ascending: false }).limit(8),
         supabase.from("invoices").select("id,amount_cents,status,due_date").eq("student_id", id).order("due_date", { ascending: false }).limit(5),
       ]);
@@ -75,7 +75,7 @@ function AlunoDetail() {
         stats={[
           { label: "Treinos 30d", value: adherence30 },
           { label: "Peso", value: assess?.weight_kg ? `${assess.weight_kg}kg` : "—" },
-          { label: "%G", value: assess?.body_fat_pct ? `${assess.body_fat_pct}%` : "—" },
+          { label: "Avaliações", value: assess ? "✓" : "—" },
         ]}
       />
 
@@ -112,7 +112,7 @@ function AlunoDetail() {
       <div className="grid grid-cols-1 gap-2">
         <DetailRow icon={Dumbbell} title="Treino ativo" value={workout?.name ?? "Nenhum"} hint={workout?.objective ?? "Sem prescrição"} to="/treinos" />
         <DetailRow icon={Apple} title="Dieta ativa" value={diet?.name ?? "Nenhuma"} hint={diet?.objective ?? "Sem prescrição"} to="/dieta" />
-        <DetailRow icon={ClipboardCheck} title="Última avaliação" value={assess?.assessed_at ? new Date(assess.assessed_at).toLocaleDateString("pt-BR") : "—"} hint={assess?.weight_kg ? `${assess.weight_kg}kg · ${assess.body_fat_pct ?? "—"}%G` : "Sem registros"} to="/avaliacoes" />
+        <DetailRow icon={ClipboardCheck} title="Última avaliação" value={assess?.date ? new Date(assess.date).toLocaleDateString("pt-BR") : "—"} hint={assess?.weight_kg ? `${assess.weight_kg}kg` : "Sem registros"} to="/avaliacoes" />
       </div>
 
       <Card className="p-4">
@@ -150,7 +150,7 @@ function AlunoDetail() {
                   <p className="text-[10px] text-muted-foreground">Vence {new Date(i.due_date).toLocaleDateString("pt-BR")}</p>
                 </div>
                 <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                  i.status === "pago" ? "bg-success/20 text-success" : i.status === "vencido" ? "bg-destructive/20 text-destructive" : "bg-muted/30 text-muted-foreground"
+                  i.status === "pago" ? "bg-success/20 text-success" : i.status === "atrasado" ? "bg-destructive/20 text-destructive" : "bg-muted/30 text-muted-foreground"
                 }`}>{i.status}</span>
               </li>
             ))}

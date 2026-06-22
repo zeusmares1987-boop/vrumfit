@@ -22,6 +22,8 @@ import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
 const tileProgresso = tileProgressoAsset.url;
 import tileBibliotecaAsset from "@/assets/tile-biblioteca.jpg.asset.json";
 const tileBiblioteca = tileBibliotecaAsset.url;
+import tileLojaAsset from "@/assets/tile-loja.jpg.asset.json";
+const tileLoja = tileLojaAsset.url;
 import tileArquivosAsset from "@/assets/tile-arquivos.jpg.asset.json";
 const tileArquivos = tileArquivosAsset.url;
 import tileAvisosAsset from "@/assets/tile-avisos.jpg.asset.json";
