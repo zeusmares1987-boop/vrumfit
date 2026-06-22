@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
-import { Download, BookOpen, FileDown, Dumbbell, Zap, Clock, Flame, ChevronDown, ChevronUp, Play } from "lucide-react";
+import { Download, BookOpen, FileDown, Zap, Clock, Flame, ChevronDown, ChevronUp, Play } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import { WorkoutPDF, type WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
 import {
@@ -34,6 +34,11 @@ function TreinosPage() {
       return data ?? [];
     },
   });
+  const repeatedExerciseImages = useMemo(() => {
+    const counts = new Map<string, number>();
+    (exLib ?? []).forEach((e) => e.image_start && counts.set(e.image_start, (counts.get(e.image_start) ?? 0) + 1));
+    return new Set([...counts.entries()].filter(([, count]) => count > 1).map(([url]) => url));
+  }, [exLib]);
   const exMap = useMemo(() => {
     const m = new Map<string, { id: string; image_start: string | null }>();
     (exLib ?? []).forEach((e) => m.set(normalize(e.name), { id: e.id, image_start: e.image_start }));
@@ -243,13 +248,17 @@ function TreinosPage() {
                       <ul className="space-y-2">
                         {d.exercises.map((ex, j) => {
                           const hit = lookup(ex.name);
+                          const hasUniquePhoto = Boolean(hit?.image_start && !repeatedExerciseImages.has(hit.image_start));
+                          const exercisePhoto = hasUniquePhoto ? hit?.image_start ?? undefined : undefined;
                           const content = (
                             <>
                               <div className="relative size-16 shrink-0 rounded-lg overflow-hidden border border-primary/30 bg-black">
-                                {hit?.image_start ? (
-                                  <img src={hit.image_start} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                                {exercisePhoto ? (
+                                  <img src={exercisePhoto} alt={`Execução do exercício ${ex.name}`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                                 ) : (
-                                  <Dumbbell className="absolute inset-0 m-auto size-5 text-primary/60" />
+                                  <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_35%_25%,color-mix(in_oklab,var(--primary)_30%,transparent),transparent_36%),linear-gradient(135deg,color-mix(in_oklab,var(--surface)_92%,black),black)]">
+                                    <span className="text-[13px] font-black text-primary">{ex.name.split(/\s+/).slice(0, 2).map((p) => p[0]).join("").toUpperCase()}</span>
+                                  </div>
                                 )}
                                 {hit && (
                                   <div className="absolute inset-0 bg-black/30 grid place-items-center opacity-0 group-hover:opacity-100 transition">
@@ -268,7 +277,7 @@ function TreinosPage() {
                                   {ex.loadHint && <span>carga <span className="text-primary font-mono">{ex.loadHint}</span></span>}
                                 </div>
                                 {hit ? (
-                                  <p className="mt-1 text-[10px] text-primary font-semibold">Toque para ver execução →</p>
+                                  <p className="mt-1 text-[10px] text-primary font-semibold">Toque para ver execução{!hasUniquePhoto ? " · foto pendente" : ""} →</p>
                                 ) : ex.substitutes.length > 0 && (
                                   <p className="mt-1 text-[10px] text-muted-foreground">
                                     <span className="text-primary font-semibold">Subst.:</span> {ex.substitutes.slice(0, 2).join(" · ")}
