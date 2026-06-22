@@ -132,9 +132,8 @@ function AuthPage() {
       <div aria-hidden className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full" style={{ background: "radial-gradient(closest-side, rgba(255,120,30,0.28), transparent 70%)" }} />
 
       <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),2rem)] pb-[max(env(safe-area-inset-bottom),1.25rem)]">
-        <div className="mt-[6vh] flex flex-col items-center">
-          <img src={logoV} alt="VRUMFIT" width={120} height={120} className="size-[96px] drop-shadow-[0_10px_36px_rgba(255,140,40,0.55)]" />
-          <h1 className="mt-3 text-[34px] leading-none font-extrabold tracking-tight">
+        <div className="mt-[10vh] flex flex-col items-center">
+          <h1 className="text-[40px] leading-none font-extrabold tracking-tight">
             <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
           </h1>
           <div className="mt-2 flex items-center gap-3">
