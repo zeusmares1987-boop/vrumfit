@@ -123,32 +123,29 @@ function AuthPage() {
 
   return (
     <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground">
-      <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-center scale-105" />
-      <div className="absolute inset-0" style={{ background: "radial-gradient(120% 60% at 50% 0%, transparent 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.96) 100%)" }} />
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/90 to-transparent" />
-      <div aria-hidden className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full" style={{ background: "radial-gradient(closest-side, rgba(255,120,30,0.28), transparent 70%)" }} />
+      <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-top" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black" />
 
-      <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),2rem)] pb-[max(env(safe-area-inset-bottom),1.25rem)]">
-        <div className="mt-[10vh] flex flex-col items-center">
-          <h1 className="text-[40px] leading-none font-extrabold tracking-tight">
+      <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),1.5rem)] pb-[max(env(safe-area-inset-bottom),1rem)]">
+        <div className="flex flex-col items-center">
+          <h1 className="text-[34px] leading-none font-extrabold tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
             <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
           </h1>
-          <div className="mt-2 flex items-center gap-3">
-            <span className="h-px w-6 bg-primary/70" />
-            <span className="text-[11px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
-            <span className="h-px w-6 bg-primary/70" />
+          <div className="mt-1.5 flex items-center gap-2">
+            <span className="h-px w-5 bg-primary/70" />
+            <span className="text-[10px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
+            <span className="h-px w-5 bg-primary/70" />
           </div>
-          <p className="mt-5 text-[13px] text-white/70 text-center max-w-[260px] leading-snug">{subtitle}</p>
         </div>
 
         <div className="mt-auto w-full max-w-md mx-auto">
           <div
-            className="rounded-3xl border border-white/10 bg-black/55 backdrop-blur-xl px-6 py-7 sm:px-7"
-            style={{ boxShadow: "0 30px 80px -30px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05)" }}
+            className="rounded-3xl border border-white/10 bg-black/75 backdrop-blur-xl px-6 py-6 sm:px-7"
+            style={{ boxShadow: "0 30px 80px -30px rgba(0,0,0,0.9)" }}
           >
-            <div className="mb-5">
-              <h2 className="text-[19px] font-semibold text-white tracking-tight">{title}</h2>
-              <p className="mt-1 text-[12px] text-white/55">
+            <div className="mb-4">
+              <h2 className="text-[18px] font-semibold text-white tracking-tight">{title}</h2>
+              <p className="mt-0.5 text-[12px] text-white/55">
                 {mode === "login" ? "Entre com seu e-mail e senha." : mode === "signup" ? "Preencha seus dados abaixo." : "Informe seu e-mail cadastrado."}
               </p>
             </div>
