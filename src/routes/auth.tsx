@@ -122,11 +122,11 @@ function AuthPage() {
   const subtitle = mode === "login" ? "Treinos, dieta e evolução em um só lugar." : mode === "signup" ? "Comece em menos de um minuto." : "Enviaremos um link seguro para seu e-mail.";
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground">
-      <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-top" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black" />
+    <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black">
+      <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-[center_30%]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/10 to-black" />
 
-      <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),1.5rem)] pb-[max(env(safe-area-inset-bottom),1rem)]">
+      <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),3rem)] pb-[max(env(safe-area-inset-bottom),1rem)]">
         <div className="flex flex-col items-center">
           <h1 className="text-[34px] leading-none font-extrabold tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
             <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
