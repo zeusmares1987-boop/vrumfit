@@ -122,75 +122,78 @@ function AuthPage() {
   const subtitle = mode === "login" ? "Treinos, dieta e evolução em um só lugar." : mode === "signup" ? "Comece em menos de um minuto." : "Enviaremos um link seguro para seu e-mail.";
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black">
-      <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-[center_85%]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/10 to-black" />
+    <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black flex flex-col">
+      {/* HERO — top half, fixed proportion */}
+      <div className="relative w-full h-[42dvh] min-h-[280px] shrink-0">
+        <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-[center_30%]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black" />
+      </div>
 
-      <div className="relative z-10 flex min-h-[100dvh] flex-col px-6 pt-[max(env(safe-area-inset-top),3rem)] pb-[max(env(safe-area-inset-bottom),1rem)]">
-        <div className="absolute left-6 top-[36dvh] flex flex-col items-start sm:static sm:items-center">
-          <h1 className="text-[34px] leading-none font-extrabold tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
-            <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
-          </h1>
-          <div className="mt-1.5 flex items-center gap-2">
-            <span className="h-px w-5 bg-primary/70" />
-            <span className="text-[10px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
-            <span className="h-px w-5 bg-primary/70" />
-          </div>
+      {/* BRAND — sits in the transition between image and form */}
+      <div className="relative z-10 -mt-10 flex flex-col items-center">
+        <h1 className="text-[34px] leading-none font-extrabold tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+          <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
+        </h1>
+        <div className="mt-1.5 flex items-center gap-2">
+          <span className="h-px w-5 bg-primary/70" />
+          <span className="text-[10px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
+          <span className="h-px w-5 bg-primary/70" />
         </div>
+      </div>
 
-        <div className="mt-auto w-full max-w-md mx-auto">
-          <div className="px-1 py-2">
-            <div className="mb-4">
-              <h2 className="text-[18px] font-semibold text-white tracking-tight">{title}</h2>
-              <p className="mt-0.5 text-[12px] text-white/55">
-                {mode === "login" ? "Entre com seu e-mail e senha." : mode === "signup" ? "Preencha seus dados abaixo." : "Informe seu e-mail cadastrado."}
-              </p>
-            </div>
-
-            {mode === "login" && (
-              <form onSubmit={onLogin} className="flex flex-col">
-                <div className="flex flex-col gap-2.5">
-                  <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
-                  <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha" value={password} onChange={setPassword}
-                    rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
-                </div>
-
-                <button type="button" onClick={() => setMode("forgot")} className="self-end mt-2.5 text-[12px] font-medium text-white/60 hover:text-primary transition">
-                  Esqueci minha senha
-                </button>
-
-                <PrimaryButton disabled={busy} type="submit">{busy ? "Entrando..." : "Entrar"}</PrimaryButton>
-
-                <div className="my-4 flex items-center gap-3 text-[10px] tracking-[0.3em] text-white/35">
-                  <span className="h-px flex-1 bg-white/10" /> OU <span className="h-px flex-1 bg-white/10" />
-                </div>
-
-                <button type="button" onClick={onGoogle} disabled={busy} className="h-12 rounded-xl border border-white/15 bg-white/[0.04] flex items-center justify-center gap-3 text-[13px] font-medium text-white/90 hover:bg-white/[0.08] hover:border-white/25 transition">
-                  <GoogleIcon /> Continuar com Google
-                </button>
-              </form>
-            )}
-
-            {mode === "signup" && (
-              <form onSubmit={onSignup} className="flex flex-col gap-2.5">
-                <Field icon={User} type="text" placeholder="Nome completo" value={fullName} onChange={setFullName} />
-                <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
-                <Field icon={Phone} type="tel" placeholder="Telefone (opcional)" value={phone} onChange={setPhone} />
-                <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha (mín. 6)" value={password} onChange={setPassword}
-                  rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
-                <PrimaryButton disabled={busy} type="submit">{busy ? "Criando..." : "Criar conta"}</PrimaryButton>
-              </form>
-            )}
-
-            {mode === "forgot" && (
-              <form onSubmit={onForgot} className="flex flex-col gap-3">
-                <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
-                <PrimaryButton disabled={busy} type="submit">{busy ? "Enviando..." : "Enviar link"}</PrimaryButton>
-              </form>
-            )}
+      {/* FORM — clean section, generous spacing */}
+      <div className="relative z-10 flex-1 flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),1.25rem)]">
+        <div className="w-full max-w-md mx-auto flex-1 flex flex-col">
+          <div className="mb-5 text-center">
+            <h2 className="text-[18px] font-semibold text-white tracking-tight">{title}</h2>
+            <p className="mt-1 text-[12px] text-white/55">
+              {mode === "login" ? "Entre com seu e-mail e senha." : mode === "signup" ? "Preencha seus dados abaixo." : "Informe seu e-mail cadastrado."}
+            </p>
           </div>
 
-          <div className="mt-5 text-center text-[13px] text-white/60">
+          {mode === "login" && (
+            <form onSubmit={onLogin} className="flex flex-col">
+              <div className="flex flex-col gap-3">
+                <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
+                <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha" value={password} onChange={setPassword}
+                  rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
+              </div>
+
+              <button type="button" onClick={() => setMode("forgot")} className="self-end mt-3 text-[12px] font-medium text-white/60 hover:text-primary transition">
+                Esqueci minha senha
+              </button>
+
+              <PrimaryButton disabled={busy} type="submit">{busy ? "Entrando..." : "Entrar"}</PrimaryButton>
+
+              <div className="my-5 flex items-center gap-3 text-[10px] tracking-[0.3em] text-white/35">
+                <span className="h-px flex-1 bg-white/10" /> OU <span className="h-px flex-1 bg-white/10" />
+              </div>
+
+              <button type="button" onClick={onGoogle} disabled={busy} className="h-12 rounded-xl border border-white/15 bg-white/[0.04] flex items-center justify-center gap-3 text-[13px] font-medium text-white/90 hover:bg-white/[0.08] hover:border-white/25 transition">
+                <GoogleIcon /> Continuar com Google
+              </button>
+            </form>
+          )}
+
+          {mode === "signup" && (
+            <form onSubmit={onSignup} className="flex flex-col gap-3">
+              <Field icon={User} type="text" placeholder="Nome completo" value={fullName} onChange={setFullName} />
+              <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
+              <Field icon={Phone} type="tel" placeholder="Telefone (opcional)" value={phone} onChange={setPhone} />
+              <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha (mín. 6)" value={password} onChange={setPassword}
+                rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
+              <PrimaryButton disabled={busy} type="submit">{busy ? "Criando..." : "Criar conta"}</PrimaryButton>
+            </form>
+          )}
+
+          {mode === "forgot" && (
+            <form onSubmit={onForgot} className="flex flex-col gap-3">
+              <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
+              <PrimaryButton disabled={busy} type="submit">{busy ? "Enviando..." : "Enviar link"}</PrimaryButton>
+            </form>
+          )}
+
+          <div className="mt-6 text-center text-[13px] text-white/60">
             {mode === "login" ? (
               <button type="button" onClick={() => setMode("signup")} className="font-medium text-white/70 hover:text-white">
                 Não tem conta? <span className="text-primary">Criar conta</span>
@@ -202,7 +205,7 @@ function AuthPage() {
             )}
           </div>
 
-          <p className="mt-4 text-center text-[10px] tracking-wider text-white/35">
+          <p className="mt-auto pt-6 text-center text-[10px] tracking-wider text-white/35">
             © {new Date().getFullYear()} VRUMFIT PERSONAL
           </p>
         </div>
