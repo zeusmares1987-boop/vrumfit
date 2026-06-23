@@ -12,7 +12,7 @@ import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
 
 
 const heroLogin = heroLoginAsset.url;
-const logoV = logoVAsset.url;
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
