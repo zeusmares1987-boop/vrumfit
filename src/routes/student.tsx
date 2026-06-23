@@ -10,6 +10,7 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { SimpleHeader } from "@/components/SimpleHeader";
 import { BigCardGrid, type BigCardItem } from "@/components/BigCard";
+import { WeekFrequency } from "@/components/WeekFrequency";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -119,9 +120,14 @@ function StudentPage() {
         </Link>
       )}
 
-      <div className="mt-5">
+      <div className="mt-4">
+        <WeekFrequency done={[0]} missed={[1]} />
+      </div>
+
+      <div className="mt-4">
         <BigCardGrid items={tiles} />
       </div>
     </AppShell>
   );
 }
+
