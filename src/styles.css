@@ -99,6 +99,30 @@
   &::-webkit-scrollbar { display: none; }
 }
 
+@utility neon-ring {
+  width: 78px;
+  height: 78px;
+  border-radius: 9999px;
+  background:
+    radial-gradient(closest-side, color-mix(in oklab, var(--brand) 18%, transparent), transparent 72%),
+    radial-gradient(closest-side, #0a0a0a, #050505);
+  border: 1.5px solid color-mix(in oklab, var(--brand) 80%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--brand) 25%, transparent),
+    0 0 18px -2px color-mix(in oklab, var(--brand) 70%, transparent),
+    0 0 42px -6px color-mix(in oklab, var(--brand) 55%, transparent),
+    inset 0 0 14px color-mix(in oklab, var(--brand) 22%, transparent);
+  transition: transform .2s ease, box-shadow .25s ease;
+  &:hover, .group:hover & {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--brand) 45%, transparent),
+      0 0 26px -2px color-mix(in oklab, var(--brand) 85%, transparent),
+      0 0 60px -6px color-mix(in oklab, var(--brand) 75%, transparent),
+      inset 0 0 18px color-mix(in oklab, var(--brand) 30%, transparent);
+  }
+}
+
 @layer components {
   .vrum-poster-shell {
     width: min(100%, 691px);
