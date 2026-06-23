@@ -123,49 +123,61 @@ function AuthPage() {
 
   return (
     <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black flex flex-col">
-      {/* HERO — top half, fixed proportion */}
-      <div className="relative w-full h-[42dvh] min-h-[280px] shrink-0">
+      {/* HERO */}
+      <div className="relative w-full h-[44dvh] min-h-[300px] shrink-0">
         <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-[center_top]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/45 to-black" />
       </div>
 
-      {/* BRAND — sits in the transition between image and form */}
-      <div className="relative z-10 -mt-10 flex flex-col items-center">
-        <h1 className="text-[34px] leading-none font-extrabold tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
-          <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
+      {/* MARCA */}
+      <div className="relative z-10 -mt-12 flex flex-col items-center">
+        <h1 className="text-[44px] leading-none font-black tracking-tight drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)]">
+          <span className="text-white">Vrum</span><span className="text-primary">Fit</span>
         </h1>
-        <div className="mt-1.5 flex items-center gap-2">
-          <span className="h-px w-5 bg-primary/70" />
-          <span className="text-[10px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
-          <span className="h-px w-5 bg-primary/70" />
+        <div className="mt-2 flex items-center gap-2">
+          <span className="h-px w-6 bg-primary/70" />
+          <span className="text-[10px] tracking-[0.55em] text-white/85 font-semibold">PERSONAL</span>
+          <span className="h-px w-6 bg-primary/70" />
         </div>
+        <p className="mt-3 text-[14px] text-white/85">
+          Seu treino. <span className="text-primary font-semibold">Sua evolução.</span>
+        </p>
       </div>
 
-      {/* FORM — clean section, generous spacing */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 pt-6 pb-[max(env(safe-area-inset-bottom),1.25rem)]">
+      {/* FORM */}
+      <div className="relative z-10 flex-1 flex flex-col px-6 pt-5 pb-[max(env(safe-area-inset-bottom),1.25rem)]">
         <div className="w-full max-w-md mx-auto flex-1 flex flex-col">
-          <div className="mb-5 text-center">
-            <h2 className="text-[18px] font-semibold text-white tracking-tight">{title}</h2>
-            <p className="mt-1 text-[12px] text-white/55">
-              {mode === "login" ? "Entre com seu e-mail e senha." : mode === "signup" ? "Preencha seus dados abaixo." : "Informe seu e-mail cadastrado."}
-            </p>
-          </div>
-
           {mode === "login" && (
             <form onSubmit={onLogin} className="flex flex-col">
               <div className="flex flex-col gap-3">
-                <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
+                <Field icon={Mail} type="email" placeholder="E-mail ou usuário" value={email} onChange={setEmail} />
                 <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha" value={password} onChange={setPassword}
                   rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
               </div>
 
-              <button type="button" onClick={() => setMode("forgot")} className="self-end mt-3 text-[12px] font-medium text-white/60 hover:text-primary transition">
+              <PrimaryButton disabled={busy} type="submit">{busy ? "Entrando..." : "Entrar"}</PrimaryButton>
+
+              <button type="button" onClick={() => setMode("signup")}
+                className="mt-3 h-12 w-full rounded-2xl border border-primary/50 text-primary font-bold tracking-wide uppercase text-[14px] hover:bg-primary/10 transition">
+                Criar conta
+              </button>
+
+              <button type="button" onClick={() => setMode("forgot")} className="self-center mt-3 text-[12px] font-medium text-white/55 hover:text-primary transition">
                 Esqueci minha senha
               </button>
 
-              <PrimaryButton disabled={busy} type="submit">{busy ? "Entrando..." : "Entrar"}</PrimaryButton>
+              {/* Acesso rápido */}
+              <div className="mt-5">
+                <div className="flex items-center gap-3 text-[10px] tracking-[0.35em] text-primary/80">
+                  <span className="h-px flex-1 bg-primary/25" /> ACESSO RÁPIDO <span className="h-px flex-1 bg-primary/25" />
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  <QuickCard icon={User} title="ALUNO" desc="Treine, evolua e alcance seus objetivos." />
+                  <QuickCard icon={Dumbbell} title="PERSONAL" desc="Gerencie alunos e transforme resultados." />
+                </div>
+              </div>
 
-              <div className="my-5 flex items-center gap-3 text-[10px] tracking-[0.3em] text-white/35">
+              <div className="my-4 flex items-center gap-3 text-[10px] tracking-[0.3em] text-white/35">
                 <span className="h-px flex-1 bg-white/10" /> OU <span className="h-px flex-1 bg-white/10" />
               </div>
 
@@ -183,6 +195,9 @@ function AuthPage() {
               <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha (mín. 6)" value={password} onChange={setPassword}
                 rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
               <PrimaryButton disabled={busy} type="submit">{busy ? "Criando..." : "Criar conta"}</PrimaryButton>
+              <button type="button" onClick={() => setMode("login")} className="self-center mt-2 inline-flex items-center gap-1.5 text-[12px] text-white/60 hover:text-white">
+                <ArrowLeft className="size-3.5" /> Voltar ao login
+              </button>
             </form>
           )}
 
@@ -190,20 +205,11 @@ function AuthPage() {
             <form onSubmit={onForgot} className="flex flex-col gap-3">
               <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
               <PrimaryButton disabled={busy} type="submit">{busy ? "Enviando..." : "Enviar link"}</PrimaryButton>
-            </form>
-          )}
-
-          <div className="mt-6 text-center text-[13px] text-white/60">
-            {mode === "login" ? (
-              <button type="button" onClick={() => setMode("signup")} className="font-medium text-white/70 hover:text-white">
-                Não tem conta? <span className="text-primary">Criar conta</span>
-              </button>
-            ) : (
-              <button type="button" onClick={() => setMode("login")} className="inline-flex items-center gap-1.5 font-medium text-white/70 hover:text-white">
+              <button type="button" onClick={() => setMode("login")} className="self-center mt-2 inline-flex items-center gap-1.5 text-[12px] text-white/60 hover:text-white">
                 <ArrowLeft className="size-3.5" /> Voltar ao login
               </button>
-            )}
-          </div>
+            </form>
+          )}
 
           <p className="mt-auto pt-6 text-center text-[10px] tracking-wider text-white/35">
             © {new Date().getFullYear()} VRUMFIT PERSONAL
@@ -211,6 +217,18 @@ function AuthPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+function QuickCard({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-center">
+      <div className="mx-auto size-10 rounded-full border border-primary/50 grid place-items-center text-primary">
+        <Icon className="size-5" />
+      </div>
+      <p className="mt-2 text-[12px] font-extrabold tracking-wider text-white">{title}</p>
+      <p className="mt-1 text-[10.5px] text-white/55 leading-snug">{desc}</p>
+    </div>
   );
 }
 
