@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { User, Lock, Eye, EyeOff, ChevronRight, Mail, Phone, ArrowLeft } from "lucide-react";
+import { User, Lock, Eye, EyeOff, Mail, Phone, ArrowLeft, Dumbbell } from "lucide-react";
 import { toast } from "sonner";
 import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
 const heroLogin = heroLoginAsset.url;
