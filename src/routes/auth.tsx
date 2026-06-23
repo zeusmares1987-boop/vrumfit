@@ -3,8 +3,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { User, Lock, Eye, EyeOff, Mail, Phone, ArrowLeft, Dumbbell } from "lucide-react";
 import { toast } from "sonner";
-import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
-const heroLogin = heroLoginAsset.url;
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";
@@ -121,26 +119,31 @@ function AuthPage() {
 
   return (
     <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black flex flex-col">
-      {/* HERO */}
-      <div className="relative w-full h-[44dvh] min-h-[300px] shrink-0">
-        <img src={heroLogin} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover object-[center_top]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/45 to-black" />
+      {/* Glow laranja lateral, sem foto */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-24 top-10 h-[60%] w-[2px] bg-primary blur-[2px] opacity-70 rotate-[18deg]" />
+        <div className="absolute -right-24 top-20 h-[55%] w-[2px] bg-primary blur-[2px] opacity-60 -rotate-[18deg]" />
+        <div className="absolute inset-x-0 top-0 h-[55%] bg-gradient-to-b from-primary/15 via-transparent to-transparent" />
       </div>
 
-      {/* MARCA */}
-      <div className="relative z-10 -mt-12 flex flex-col items-center">
-        <h1 className="text-[44px] leading-none font-black tracking-tight drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)]">
+      {/* MARCA centralizada */}
+      <div className="relative z-10 flex flex-col items-center pt-12">
+        <div className="size-20 rounded-2xl bg-primary/15 border border-primary/40 grid place-items-center shadow-[0_0_30px_rgba(255,120,30,0.35)]">
+          <span className="text-[34px] font-black leading-none text-primary">V</span>
+        </div>
+        <h1 className="mt-4 text-[36px] leading-none font-black tracking-tight">
           <span className="text-white">Vrum</span><span className="text-primary">Fit</span>
         </h1>
         <div className="mt-2 flex items-center gap-2">
-          <span className="h-px w-6 bg-primary/70" />
-          <span className="text-[10px] tracking-[0.55em] text-white/85 font-semibold">PERSONAL</span>
-          <span className="h-px w-6 bg-primary/70" />
+          <span className="h-px w-5 bg-primary/70" />
+          <span className="text-[10px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
+          <span className="h-px w-5 bg-primary/70" />
         </div>
-        <p className="mt-3 text-[14px] text-white/85">
+        <p className="mt-3 text-[13px] text-white/75">
           Seu treino. <span className="text-primary font-semibold">Sua evolução.</span>
         </p>
       </div>
+
 
       {/* FORM */}
       <div className="relative z-10 flex-1 flex flex-col px-6 pt-5 pb-[max(env(safe-area-inset-bottom),1.25rem)]">

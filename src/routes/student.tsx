@@ -1,20 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
 import {
   Dumbbell, Apple, Target, Camera, CalendarDays, TrendingUp,
-  CheckCircle2, Store, FolderOpen, Bell, User, LayoutGrid,
+  CheckCircle2, Store, FolderOpen, Bell, User, Settings,
   ChevronRight, Crown, ClipboardList,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
-import { HomeHero } from "@/components/HomeHero";
-import { NeonGrid, type NeonTileItem } from "@/components/NeonTile";
+import { SimpleHeader } from "@/components/SimpleHeader";
+import { BigCardGrid, type BigCardItem } from "@/components/BigCard";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
-const headerGym = headerGymAsset.url;
 
 export const Route = createFileRoute("/student")({
   head: () => ({ meta: [{ title: "Meu treino — VRUMFIT PERSONAL" }] }),
@@ -25,25 +22,23 @@ export const Route = createFileRoute("/student")({
   ),
 });
 
-const tiles: NeonTileItem[] = [
-  { icon: Dumbbell, label: "Meu Treino", hint: "Séries e exercícios", to: "/treinos" },
-  { icon: Apple, label: "Dieta", hint: "Refeições e água", to: "/dieta" },
-  { icon: Target, label: "Execução", hint: "Como fazer certo", to: "/biblioteca" },
-  { icon: Camera, label: "Avaliação", hint: "Fotos e resultados", to: "/avaliacoes" },
-  { icon: CalendarDays, label: "Agenda", hint: "Aulas e horários", to: "/agenda" },
-  { icon: TrendingUp, label: "Progresso", hint: "Sua evolução", to: "/evolucao" },
-  { icon: CheckCircle2, label: "Check-in", hint: "Registrar presença", to: "/historico" },
-  { icon: Store, label: "Loja", hint: "Produtos e serviços", to: "/loja" },
-  { icon: FolderOpen, label: "Arquivos", hint: "PDFs e materiais", to: "/arquivos" },
-  { icon: Bell, label: "Avisos", hint: "Recados e novidades", to: "/avisos" },
-  { icon: User, label: "Perfil", hint: "Seus dados", to: "/config" },
-  { icon: LayoutGrid, label: "Mais", hint: "Configurações e suporte", to: "/config" },
+const tiles: BigCardItem[] = [
+  { icon: Dumbbell, label: "Meu Treino", to: "/treinos" },
+  { icon: Apple, label: "Dieta", to: "/dieta" },
+  { icon: Target, label: "Execução", to: "/biblioteca" },
+  { icon: Camera, label: "Avaliação", to: "/avaliacoes" },
+  { icon: CalendarDays, label: "Agenda", to: "/agenda" },
+  { icon: TrendingUp, label: "Progresso", to: "/evolucao" },
+  { icon: CheckCircle2, label: "Histórico", to: "/historico" },
+  { icon: Store, label: "Loja", to: "/loja" },
+  { icon: FolderOpen, label: "Arquivos", to: "/arquivos" },
+  { icon: Bell, label: "Avisos", to: "/avisos" },
+  { icon: User, label: "Perfil", to: "/config" },
+  { icon: Settings, label: "Configurações", to: "/config" },
 ];
 
 function StudentPage() {
   const { user } = useAuth();
-  const [query, setQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ["my-profile", user?.id],
@@ -92,23 +87,10 @@ function StudentPage() {
   });
 
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Aluno";
-  const q = query.toLowerCase();
-  const filtered = tiles.filter((t) => (t.label + " " + t.hint).toLowerCase().includes(q));
 
   return (
     <AppShell hideHeader>
-      <HomeHero
-        photo={headerGym}
-        eyebrow="Bem-vindo,"
-        name={firstName}
-        tagline="Acompanhe seu treino e sua evolução"
-        searchValue={query}
-        onSearchChange={setQuery}
-        searchPlaceholder="Buscar treino, dieta, exercícios..."
-        onFilters={() => setShowFilters((v) => !v)}
-        filtersActive={showFilters}
-        notifCount={3}
-      />
+      <SimpleHeader greeting={`Bem-vindo, ${firstName}!`} subtitle="Seu treino e sua evolução" notifCount={3} />
 
       {hasOwner === false && (
         <button onClick={() => claim.mutate()} disabled={claim.isPending}
@@ -116,11 +98,11 @@ function StudentPage() {
           <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
             <Crown className="size-5" />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-primary">Sou o Dono deste app</p>
             <p className="text-[11px] text-white/70">Toque para virar Proprietário (só funciona uma vez).</p>
           </div>
-          <ChevronRight className="size-4 text-primary" />
+          <ChevronRight className="size-4 text-primary shrink-0" />
         </button>
       )}
 
@@ -129,20 +111,16 @@ function StudentPage() {
           <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
             <ClipboardList className="size-5" />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-primary">Preencha sua anamnese</p>
             <p className="text-[11px] text-white/70">Ajuda seu personal a montar o melhor treino.</p>
           </div>
-          <ChevronRight className="size-4 text-primary" />
+          <ChevronRight className="size-4 text-primary shrink-0" />
         </Link>
       )}
 
-      <div className="mt-6">
-        {filtered.length > 0 ? (
-          <NeonGrid items={filtered} />
-        ) : (
-          <p className="text-center py-10 text-white/50 text-sm">Nenhum módulo encontrado.</p>
-        )}
+      <div className="mt-5">
+        <BigCardGrid items={tiles} />
       </div>
     </AppShell>
   );
