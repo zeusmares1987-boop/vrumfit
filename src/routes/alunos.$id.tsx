@@ -235,3 +235,12 @@ function DetailRow({ icon: Icon, title, value, hint, to }: { icon: React.Compone
     </Link>
   );
 }
+
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex gap-2">
+      <span className="text-muted-foreground shrink-0">{label}:</span>
+      <span className="font-semibold break-words">{value}</span>
+    </div>
+  );
+}
