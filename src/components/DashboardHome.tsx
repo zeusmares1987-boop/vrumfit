@@ -107,42 +107,50 @@ function DashboardHero({
   onQueryChange: (value: string) => void;
 }) {
   return (
-    <section className="relative -mx-4 overflow-hidden bg-background px-4 pb-4 pt-4">
+    <section className="relative -mx-4 overflow-hidden bg-background px-4 pb-4 pt-3">
       <div className="absolute inset-0">
-        <img src={heroImageUrl} alt="" className="size-full object-cover opacity-30" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/55" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
+        <img src={heroImageUrl} alt="" className="size-full object-cover opacity-25" loading="eager" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
       </div>
 
-      <div className="relative flex items-center justify-between gap-3">
+      {/* Linha 1: marca + ações */}
+      <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <Brand />
+        <div className="flex shrink-0 items-center gap-2">
+          <button aria-label="Notificações" className="relative grid size-10 place-items-center rounded-full border border-border bg-card/80 text-muted-foreground backdrop-blur transition hover:text-primary">
+            <Bell className="size-[18px]" />
+            {notifCount > 0 && <span className="absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-primary px-1 text-[10px] font-black text-primary-foreground">{notifCount}</span>}
+          </button>
+          <img src={avatarUrl} alt="" className="size-10 rounded-full border-2 border-primary object-cover shadow-[0_0_18px_-6px_var(--color-primary)]" />
+        </div>
+      </header>
+
+      {/* Linha 2: boas-vindas */}
+      <div className="relative mt-5 rounded-3xl border border-border bg-card/40 p-4 backdrop-blur-sm">
         <div className="flex items-center gap-2">
-          <ProfileChip avatarUrl={avatarUrl} roleLabel={roleLabel} modeLabel={modeLabel} />
-          <button aria-label="Notificações" className="relative grid size-9 place-items-center rounded-full border border-border bg-card/70 text-muted-foreground backdrop-blur transition hover:text-primary">
-            <Bell className="size-4" />
-            {notifCount > 0 && <span className="absolute -right-1 -top-1 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] font-black text-primary-foreground">{notifCount}</span>}
+          <span className="inline-flex items-center rounded-full border border-primary/50 bg-primary/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">{roleLabel}</span>
+          <button className="inline-flex items-center gap-1 rounded-full border border-border bg-card/70 px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+            {modeLabel} <ChevronDown className="size-3" />
           </button>
         </div>
-      </div>
-
-      <div className="relative mt-7 rounded-3xl border border-border bg-card/35 p-4 backdrop-blur-sm">
-        <h1 className="text-3xl font-black leading-none tracking-tight text-foreground">
+        <h1 className="mt-2 text-[26px] font-black leading-tight tracking-tight text-foreground">
           Bem-vindo, <span className="text-primary">{name}</span>
         </h1>
-        <p className="mt-2 text-[12px] leading-snug text-muted-foreground">{subtitle}</p>
+        <p className="mt-1 text-[12px] leading-snug text-muted-foreground">{subtitle}</p>
       </div>
 
-      <div className="relative mt-4 flex gap-2">
+      {/* Linha 3: busca */}
+      <div className="relative mt-3 flex gap-2">
         <label className="relative flex-1">
           <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
             placeholder={searchPlaceholder}
-            className="h-12 w-full rounded-full border border-border bg-card/80 pl-11 pr-4 text-[13px] text-foreground outline-none backdrop-blur placeholder:text-muted-foreground focus:border-primary/70"
+            className="h-11 w-full rounded-full border border-border bg-card/80 pl-11 pr-4 text-[13px] text-foreground outline-none backdrop-blur placeholder:text-muted-foreground focus:border-primary/70"
           />
         </label>
-        <button className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-primary/45 bg-card/80 px-4 text-[12px] font-bold text-primary backdrop-blur transition hover:border-primary/60">
+        <button className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-primary/45 bg-card/80 px-4 text-[12px] font-bold text-primary backdrop-blur transition hover:border-primary/60">
           <SlidersHorizontal className="size-4" /> Filtros
         </button>
       </div>
@@ -152,25 +160,11 @@ function DashboardHero({
 
 function Brand() {
   return (
-    <div className="flex items-center gap-2">
-      <img src={logoV} alt="VrumFit" className="size-10 object-contain drop-shadow-[0_0_14px_var(--color-primary)]" />
-      <div className="leading-none">
-        <div className="text-xl font-black italic tracking-tight text-foreground">Vrum<span className="text-primary">Fit</span></div>
-        <div className="mt-1 text-[8px] font-bold tracking-[0.35em] text-muted-foreground">PERSONAL</div>
-      </div>
-    </div>
-  );
-}
-
-function ProfileChip({ avatarUrl, roleLabel, modeLabel }: { avatarUrl: string; roleLabel: string; modeLabel: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <img src={avatarUrl} alt="" className="size-9 rounded-full border border-primary object-cover shadow-[0_0_18px_-6px_var(--color-primary)]" />
-      <div className="leading-tight">
-        <p className="max-w-20 truncate text-[12px] font-semibold text-foreground">{roleLabel}</p>
-        <button className="mt-0.5 inline-flex max-w-24 items-center gap-1 truncate text-[10px] font-medium text-primary underline underline-offset-4">
-          {modeLabel} <ChevronDown className="size-3" />
-        </button>
+    <div className="flex min-w-0 items-center gap-2">
+      <img src={logoV} alt="VrumFit" className="size-9 shrink-0 object-contain drop-shadow-[0_0_14px_var(--color-primary)]" />
+      <div className="min-w-0 leading-none">
+        <div className="truncate text-lg font-black italic tracking-tight text-foreground">Vrum<span className="text-primary">Fit</span></div>
+        <div className="mt-0.5 text-[8px] font-bold tracking-[0.35em] text-muted-foreground">PERSONAL</div>
       </div>
     </div>
   );
