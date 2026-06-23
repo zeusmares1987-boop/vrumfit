@@ -23,16 +23,18 @@ function AlunoDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["aluno-detail", id],
     queryFn: async () => {
-      const [{ data: profile }, { data: student }, { data: workout }, { data: diet }, { data: assess }, { data: sessions }, { data: invoices }] = await Promise.all([
+      const [{ data: profile }, { data: student }, { data: workout }, { data: diet }, { data: assess }, { data: sessions }, { data: invoices }, { data: anamnese }, { data: appts }] = await Promise.all([
         supabase.from("profiles").select("full_name,email,phone,avatar_url").eq("id", id).maybeSingle(),
         supabase.from("students").select("objective,status,personal_id,created_at").eq("user_id", id).maybeSingle(),
         supabase.from("workouts").select("id,name,objective,status,created_at").eq("student_id", id).eq("status", "ativo").order("created_at", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("diets").select("id,name,objective,status").eq("student_id", id).eq("status", "ativo").order("created_at", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("assessments").select("id,date,weight_kg").eq("student_id", id).order("date", { ascending: false }).limit(1).maybeSingle(),
-        supabase.from("workout_sessions").select("id,session_date,duration_min,notes").eq("student_id", id).order("session_date", { ascending: false }).limit(8),
+        supabase.from("workout_sessions").select("id,session_date,duration_min,notes,rating,rpe,feedback").eq("student_id", id).order("session_date", { ascending: false }).limit(8),
         supabase.from("invoices").select("id,amount_cents,status,due_date").eq("student_id", id).order("due_date", { ascending: false }).limit(5),
+        supabase.from("anamneses").select("*").eq("user_id", id).maybeSingle(),
+        supabase.from("appointments").select("id,starts_at,duration_min,title,status").eq("student_id", id).gte("starts_at", new Date(Date.now() - 86400000).toISOString()).order("starts_at", { ascending: true }).limit(5),
       ]);
-      return { profile, student, workout, diet, assess, sessions: sessions ?? [], invoices: invoices ?? [] };
+      return { profile, student, workout, diet, assess, sessions: sessions ?? [], invoices: invoices ?? [], anamnese, appts: appts ?? [] };
     },
   });
 
