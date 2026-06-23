@@ -14,6 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
+      anamneses: {
+        Row: {
+          activity_history: string | null
+          allergies: string | null
+          completed_at: string | null
+          created_at: string
+          doctor_clearance: boolean | null
+          drinks: boolean | null
+          emergency_contact: string | null
+          goal: string | null
+          has_health_issues: boolean | null
+          health_issues: string | null
+          injuries: string | null
+          medications: string | null
+          notes: string | null
+          personal_id: string | null
+          sleep_hours: number | null
+          smokes: boolean | null
+          stress_level: number | null
+          surgeries: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_history?: string | null
+          allergies?: string | null
+          completed_at?: string | null
+          created_at?: string
+          doctor_clearance?: boolean | null
+          drinks?: boolean | null
+          emergency_contact?: string | null
+          goal?: string | null
+          has_health_issues?: boolean | null
+          health_issues?: string | null
+          injuries?: string | null
+          medications?: string | null
+          notes?: string | null
+          personal_id?: string | null
+          sleep_hours?: number | null
+          smokes?: boolean | null
+          stress_level?: number | null
+          surgeries?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_history?: string | null
+          allergies?: string | null
+          completed_at?: string | null
+          created_at?: string
+          doctor_clearance?: boolean | null
+          drinks?: boolean | null
+          emergency_contact?: string | null
+          goal?: string | null
+          has_health_issues?: boolean | null
+          health_issues?: string | null
+          injuries?: string | null
+          medications?: string | null
+          notes?: string | null
+          personal_id?: string | null
+          sleep_hours?: number | null
+          smokes?: boolean | null
+          stress_level?: number | null
+          surgeries?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      appointments: {
+        Row: {
+          created_at: string
+          duration_min: number
+          id: string
+          location: string | null
+          notes: string | null
+          personal_id: string
+          starts_at: string
+          status: string
+          student_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          duration_min?: number
+          id?: string
+          location?: string | null
+          notes?: string | null
+          personal_id: string
+          starts_at: string
+          status?: string
+          student_id: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          duration_min?: number
+          id?: string
+          location?: string | null
+          notes?: string | null
+          personal_id?: string
+          starts_at?: string
+          status?: string
+          student_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       assessments: {
         Row: {
           abdomen_cm: number | null
@@ -973,8 +1084,11 @@ export type Database = {
         Row: {
           created_at: string
           duration_min: number | null
+          feedback: string | null
           id: string
           notes: string | null
+          rating: number | null
+          rpe: number | null
           session_date: string
           student_id: string
           updated_at: string
@@ -983,8 +1097,11 @@ export type Database = {
         Insert: {
           created_at?: string
           duration_min?: number | null
+          feedback?: string | null
           id?: string
           notes?: string | null
+          rating?: number | null
+          rpe?: number | null
           session_date?: string
           student_id: string
           updated_at?: string
@@ -993,8 +1110,11 @@ export type Database = {
         Update: {
           created_at?: string
           duration_min?: number | null
+          feedback?: string | null
           id?: string
           notes?: string | null
+          rating?: number | null
+          rpe?: number | null
           session_date?: string
           student_id?: string
           updated_at?: string

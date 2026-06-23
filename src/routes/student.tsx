@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   Dumbbell, Apple, TrendingUp, BookOpen, ShoppingBag, FolderOpen, Bell,
   ClipboardCheck, ChevronRight, FileText, Crown, LayoutGrid, UserCog, MessageCircle, CheckCircle2,
+  ClipboardList, CalendarDays, X, Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -52,6 +54,8 @@ const smallTiles: Tile[] = [
   { icon: Apple, label: "Dieta", hint: "Minha dieta", to: "/dieta", bg: tileDieta },
   { icon: TrendingUp, label: "Progresso", hint: "Peso e medidas", to: "/evolucao", bg: tileProgresso },
   { icon: ClipboardCheck, label: "Avaliações", hint: "Histórico", to: "/avaliacoes", bg: tileAvaliacoes },
+  { icon: CalendarDays, label: "Agenda", hint: "Meus horários", to: "/agenda", bg: tileAvaliacoes },
+  { icon: ClipboardList, label: "Anamnese", hint: "Saúde", to: "/anamnese", bg: tileMais },
   { icon: BookOpen, label: "Biblioteca", hint: "Como executar", to: "/biblioteca", bg: tileBiblioteca },
   { icon: ShoppingBag, label: "Loja", hint: "Produtos", to: "/loja", bg: tileLoja },
   { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos", bg: tileAvisos },
@@ -65,6 +69,7 @@ const wideTiles: Tile[] = [
 function StudentPage() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const [fbOpen, setFbOpen] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ["my-profile", user?.id],
@@ -122,18 +127,30 @@ function StudentPage() {
   const markDone = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("not logged");
-      const { error } = await supabase.from("workout_sessions").insert({
+      const { data, error } = await supabase.from("workout_sessions").insert({
         student_id: user.id,
         workout_id: currentWorkout?.id ?? null,
         session_date: today,
-      });
+      }).select("id").single();
       if (error) throw error;
+      return data.id as string;
     },
     onSuccess: () => {
       toast.success("Treino marcado! 💪");
       qc.invalidateQueries({ queryKey: ["my-session-today"] });
+      setFbOpen(true);
     },
     onError: (e: any) => toast.error(e.message ?? "Falha"),
+  });
+
+  const { data: anamnese } = useQuery({
+    queryKey: ["my-anamnese", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("anamneses").select("completed_at").eq("user_id", user.id).maybeSingle();
+      return data;
+    },
+    enabled: !!user,
   });
 
   const { data: hasOwner, refetch: refetchHasOwner } = useQuery({
@@ -179,6 +196,19 @@ function StudentPage() {
           </div>
           <ChevronRight className="size-4 text-primary" />
         </button>
+      )}
+
+      {anamnese !== undefined && !anamnese?.completed_at && (
+        <Link to="/anamnese" className="w-full mb-3 rounded-2xl border border-warning/40 bg-warning/10 p-3 flex items-center gap-3 hover:bg-warning/15 transition" style={{ borderColor: "rgba(255,180,40,0.4)", background: "rgba(255,180,40,0.10)" }}>
+          <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
+            <ClipboardList className="size-5" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-bold text-primary">Preencha sua anamnese</p>
+            <p className="text-[11px] text-white/70">Ajuda seu personal a montar o melhor treino.</p>
+          </div>
+          <ChevronRight className="size-4 text-primary" />
+        </Link>
       )}
 
       {/* Welcome hero */}
@@ -305,7 +335,70 @@ function StudentPage() {
           <MessageCircle className="size-4" /> Falar com meu personal
         </a>
       )}
+      {fbOpen && <FeedbackModal onClose={() => setFbOpen(false)} />}
     </AppShell>
+  );
+}
+
+function FeedbackModal({ onClose }: { onClose: () => void }) {
+  const { user } = useAuth();
+  const today = new Date().toISOString().slice(0, 10);
+  const [rating, setRating] = useState<number | null>(null);
+  const [rpe, setRpe] = useState<number | null>(null);
+  const [feedback, setFeedback] = useState("");
+
+  const save = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("not logged");
+      const { error } = await supabase.from("workout_sessions")
+        .update({ rating, rpe, feedback: feedback || null })
+        .eq("student_id", user.id).eq("session_date", today);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Feedback enviado!"); onClose(); },
+    onError: (e: any) => toast.error(e.message ?? "Falha"),
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm grid place-items-end sm:place-items-center" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-t-3xl sm:rounded-3xl bg-card border border-white/10 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-extrabold">Como foi o treino?</h3>
+          <button onClick={onClose}><X className="size-5" /></button>
+        </div>
+        <p className="text-[12px] text-white/70 mb-2">Sua nota (1 a 5)</p>
+        <div className="flex gap-1.5 mb-4">
+          {[1,2,3,4,5].map((n) => (
+            <button key={n} onClick={() => setRating(n)}
+              className={`flex-1 h-12 rounded-xl border flex items-center justify-center ${rating === n ? "bg-primary text-primary-foreground border-primary" : "bg-black/30 border-white/10 text-white/70"}`}>
+              <Star className={`size-5 ${rating && n <= rating ? "fill-current" : ""}`} />
+            </button>
+          ))}
+        </div>
+        <p className="text-[12px] text-white/70 mb-2">Esforço percebido (1 leve · 10 máximo)</p>
+        <div className="grid grid-cols-10 gap-1 mb-4">
+          {Array.from({length:10},(_,i)=>i+1).map((n) => (
+            <button key={n} onClick={() => setRpe(n)}
+              className={`h-10 rounded-lg border text-[12px] font-bold ${rpe === n ? "bg-primary text-primary-foreground border-primary" : "bg-black/30 border-white/10 text-white/70"}`}>
+              {n}
+            </button>
+          ))}
+        </div>
+        <label className="block mb-4">
+          <span className="text-[12px] text-white/70">Comentário (opcional)</span>
+          <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} rows={3}
+            placeholder="Como você se sentiu? Dores? Dificuldades?"
+            className="mt-1 w-full rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-sm focus:border-primary outline-none resize-y" />
+        </label>
+        <div className="flex gap-2">
+          <button onClick={onClose} className="flex-1 h-11 rounded-xl bg-white/5 border border-white/10 font-bold text-sm">Pular</button>
+          <button onClick={() => save.mutate()} disabled={save.isPending || !rating}
+            className="flex-1 h-11 rounded-xl bg-primary text-primary-foreground font-extrabold text-sm disabled:opacity-60">
+            {save.isPending ? "Enviando…" : "Enviar"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
