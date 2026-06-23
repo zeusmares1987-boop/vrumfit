@@ -198,6 +198,19 @@ function StudentPage() {
         </button>
       )}
 
+      {anamnese && !anamnese.completed_at || !anamnese ? (
+        <Link to="/anamnese" className="w-full mb-3 rounded-2xl border border-warning/40 bg-warning/10 p-3 flex items-center gap-3 hover:bg-warning/15 transition" style={{ borderColor: "rgba(255,180,40,0.4)", background: "rgba(255,180,40,0.10)" }}>
+          <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
+            <ClipboardList className="size-5" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-bold text-primary">Preencha sua anamnese</p>
+            <p className="text-[11px] text-white/70">Ajuda seu personal a montar o melhor treino.</p>
+          </div>
+          <ChevronRight className="size-4 text-primary" />
+        </Link>
+      ) : null}
+
       {/* Welcome hero */}
       <section className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-30px_rgba(255,120,30,0.45)]">
         <img src={headerGym} alt="" className="absolute inset-0 w-full h-full object-cover opacity-55" loading="lazy" />
