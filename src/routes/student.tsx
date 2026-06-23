@@ -69,6 +69,7 @@ const wideTiles: Tile[] = [
 function StudentPage() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const [fbOpen, setFbOpen] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ["my-profile", user?.id],
