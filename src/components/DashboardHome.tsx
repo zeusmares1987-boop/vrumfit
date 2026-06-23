@@ -1,10 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, ChevronDown, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
 import { cn } from "@/lib/utils";
-
-const logoV = logoVAsset.url;
 
 export type DashboardModule = {
   icon: ComponentType<{ className?: string }>;
