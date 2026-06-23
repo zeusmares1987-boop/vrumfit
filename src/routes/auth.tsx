@@ -275,13 +275,8 @@ function PrimaryButton({ children, disabled, type }: { children: React.ReactNode
   );
 }
 
-function BackBtn({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button type="button" onClick={onClick} className="self-start flex items-center gap-1.5 text-xs text-white/70 hover:text-white">
-      <ArrowLeft className="size-3.5" /> {children}
-    </button>
-  );
-}
+
+
 
 function GoogleIcon() {
   return (
