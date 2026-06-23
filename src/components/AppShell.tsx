@@ -1,6 +1,7 @@
 import { Link, Navigate, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut, ChevronLeft } from "lucide-react";
 import { useAuth, roleHomePath } from "@/lib/auth";
+import { useRealtimePush } from "@/hooks/useRealtimePush";
 import type { ReactNode, InputHTMLAttributes } from "react";
 
 export function AppShell({
