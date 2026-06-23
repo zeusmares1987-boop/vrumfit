@@ -31,7 +31,9 @@ import { Route as AvisosRouteImport } from './routes/avisos'
 import { Route as AvaliacoesRouteImport } from './routes/avaliacoes'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArquivosRouteImport } from './routes/arquivos'
+import { Route as AnamneseRouteImport } from './routes/anamnese'
 import { Route as AlunosRouteImport } from './routes/alunos'
+import { Route as AgendaRouteImport } from './routes/agenda'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BibliotecaIndexRouteImport } from './routes/biblioteca.index'
 import { Route as LojaIdRouteImport } from './routes/loja.$id'
@@ -149,9 +151,19 @@ const ArquivosRoute = ArquivosRouteImport.update({
   path: '/arquivos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnamneseRoute = AnamneseRouteImport.update({
+  id: '/anamnese',
+  path: '/anamnese',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AlunosRoute = AlunosRouteImport.update({
   id: '/alunos',
   path: '/alunos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgendaRoute = AgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -187,7 +199,9 @@ const AlunosIdRoute = AlunosIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agenda': typeof AgendaRoute
   '/alunos': typeof AlunosRouteWithChildren
+  '/anamnese': typeof AnamneseRoute
   '/arquivos': typeof ArquivosRoute
   '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
@@ -218,7 +232,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agenda': typeof AgendaRoute
   '/alunos': typeof AlunosRouteWithChildren
+  '/anamnese': typeof AnamneseRoute
   '/arquivos': typeof ArquivosRoute
   '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
@@ -249,7 +265,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agenda': typeof AgendaRoute
   '/alunos': typeof AlunosRouteWithChildren
+  '/anamnese': typeof AnamneseRoute
   '/arquivos': typeof ArquivosRoute
   '/auth': typeof AuthRoute
   '/avaliacoes': typeof AvaliacoesRoute
@@ -282,7 +300,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/agenda'
     | '/alunos'
+    | '/anamnese'
     | '/arquivos'
     | '/auth'
     | '/avaliacoes'
@@ -313,7 +333,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/agenda'
     | '/alunos'
+    | '/anamnese'
     | '/arquivos'
     | '/auth'
     | '/avaliacoes'
@@ -343,7 +365,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/agenda'
     | '/alunos'
+    | '/anamnese'
     | '/arquivos'
     | '/auth'
     | '/avaliacoes'
@@ -375,7 +399,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgendaRoute: typeof AgendaRoute
   AlunosRoute: typeof AlunosRouteWithChildren
+  AnamneseRoute: typeof AnamneseRoute
   ArquivosRoute: typeof ArquivosRoute
   AuthRoute: typeof AuthRoute
   AvaliacoesRoute: typeof AvaliacoesRoute
@@ -556,11 +582,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArquivosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/anamnese': {
+      id: '/anamnese'
+      path: '/anamnese'
+      fullPath: '/anamnese'
+      preLoaderRoute: typeof AnamneseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/alunos': {
       id: '/alunos'
       path: '/alunos'
       fullPath: '/alunos'
       preLoaderRoute: typeof AlunosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agenda': {
+      id: '/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AgendaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -656,7 +696,9 @@ const LojaProRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgendaRoute: AgendaRoute,
   AlunosRoute: AlunosRouteWithChildren,
+  AnamneseRoute: AnamneseRoute,
   ArquivosRoute: ArquivosRoute,
   AuthRoute: AuthRoute,
   AvaliacoesRoute: AvaliacoesRoute,
