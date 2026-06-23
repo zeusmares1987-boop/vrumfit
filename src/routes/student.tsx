@@ -8,11 +8,20 @@ import {
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
-import { SimpleHeader } from "@/components/SimpleHeader";
-import { BigCardGrid, type BigCardItem } from "@/components/BigCard";
+import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
 import { WeekFrequency } from "@/components/WeekFrequency";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
+import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
+import tileTreinosAsset from "@/assets/tile-treinos.jpg.asset.json";
+import tileDietaAsset from "@/assets/tile-dieta.jpg.asset.json";
+import tileExecucaoAsset from "@/assets/tile-execucao.jpg.asset.json";
+import tileAvaliacoesAsset from "@/assets/tile-avaliacoes.jpg.asset.json";
+import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
+import tileLojaAsset from "@/assets/tile-loja.jpg.asset.json";
+import tileArquivosAsset from "@/assets/tile-arquivos.jpg.asset.json";
+import tileAvisosAsset from "@/assets/tile-avisos.jpg.asset.json";
 
 export const Route = createFileRoute("/student")({
   head: () => ({ meta: [{ title: "Meu treino — VRUMFIT PERSONAL" }] }),
@@ -23,19 +32,25 @@ export const Route = createFileRoute("/student")({
   ),
 });
 
-const tiles: BigCardItem[] = [
-  { icon: Dumbbell, label: "Meu Treino", to: "/treinos" },
-  { icon: Apple, label: "Dieta", to: "/dieta" },
-  { icon: Target, label: "Execução", to: "/biblioteca" },
-  { icon: Camera, label: "Avaliação", to: "/avaliacoes" },
-  { icon: CalendarDays, label: "Agenda", to: "/agenda" },
-  { icon: TrendingUp, label: "Progresso", to: "/evolucao" },
-  { icon: CheckCircle2, label: "Histórico", to: "/historico" },
-  { icon: Store, label: "Loja", to: "/loja" },
-  { icon: FolderOpen, label: "Arquivos", to: "/arquivos" },
-  { icon: Bell, label: "Avisos", to: "/avisos" },
-  { icon: User, label: "Perfil", to: "/config" },
-  { icon: Settings, label: "Configurações", to: "/config" },
+const studentModules: DashboardModule[] = [
+  { icon: Dumbbell, title: "Meu Treino", description: "Veja séries, cargas e descanso", to: "/treinos", image: tileTreinosAsset.url },
+  { icon: Apple, title: "Dieta", description: "Plano alimentar do dia", to: "/dieta", image: tileDietaAsset.url },
+  { icon: Target, title: "Execução", description: "Aprenda o movimento certo", to: "/biblioteca", image: tileExecucaoAsset.url },
+  { icon: Camera, title: "Avaliação", description: "Fotos, medidas e histórico", to: "/avaliacoes", image: tileAvaliacoesAsset.url },
+  { icon: CalendarDays, title: "Agenda", description: "Seus horários de treino", to: "/agenda", image: headerGymAsset.url },
+  { icon: TrendingUp, title: "Progresso", description: "Sua evolução em gráficos", to: "/evolucao", image: tileProgressoAsset.url },
+  { icon: CheckCircle2, title: "Histórico", description: "Treinos concluídos", to: "/historico", image: headerGymAsset.url },
+  { icon: Store, title: "Loja", description: "Produtos e planos", to: "/loja", image: tileLojaAsset.url },
+  { icon: FolderOpen, title: "Arquivos", description: "Materiais do personal", to: "/arquivos", image: tileArquivosAsset.url },
+  { icon: Bell, title: "Avisos", description: "Recados importantes", to: "/avisos", image: tileAvisosAsset.url },
+  { icon: User, title: "Perfil", description: "Seus dados e preferências", to: "/config", image: headerGymAsset.url },
+  { icon: Settings, title: "Configurações", description: "Ajustes da conta", to: "/config", image: headerGymAsset.url },
+];
+
+const studentStats: DashboardStat[] = [
+  { icon: Dumbbell, label: "Treinos", value: "4", hint: "Nesta semana", trend: "↑ 2" },
+  { icon: CheckCircle2, label: "Concluídos", value: "18", hint: "No mês", trend: "↑ 9%" },
+  { icon: TrendingUp, label: "Progresso", value: "82%", hint: "Meta atual", trend: "↑ 6%" },
 ];
 
 function StudentPage() {
@@ -84,49 +99,58 @@ function StudentPage() {
         toast.error("Já existe um dono cadastrado.");
       }
     },
-    onError: (e: any) => toast.error(e.message ?? "Falha ao reivindicar."),
+    onError: (error: Error) => toast.error(error.message || "Falha ao reivindicar."),
   });
 
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Aluno";
 
   return (
     <AppShell hideHeader>
-      <SimpleHeader greeting={`Bem-vindo, ${firstName}!`} subtitle="Seu treino e sua evolução" notifCount={3} />
+      <DashboardHome
+        name={firstName}
+        roleLabel="Aluno"
+        modeLabel="Modo treino"
+        subtitle="Seu treino, sua dieta e sua evolução"
+        avatarUrl={avatarOwnerAsset.url}
+        heroImageUrl={headerGymAsset.url}
+        searchPlaceholder="Buscar treino, dieta, execução..."
+        filters={["Visão geral", "Hoje", "Semana", "Treino", "Dieta"]}
+        stats={studentStats}
+        modules={studentModules}
+        notifCount={3}
+        alerts={(
+          <div className="space-y-3">
+            {hasOwner === false && (
+              <button onClick={() => claim.mutate()} disabled={claim.isPending}
+                className="flex w-full items-center gap-3 rounded-2xl border border-primary/50 bg-primary/10 p-3 text-left transition hover:bg-primary/15 disabled:opacity-60">
+                <div className="grid size-10 place-items-center rounded-xl border border-primary/50 bg-primary/20 text-primary">
+                  <Crown className="size-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-bold text-primary">Sou o Dono deste app</p>
+                  <p className="text-[11px] text-muted-foreground">Toque para virar Proprietário.</p>
+                </div>
+                <ChevronRight className="size-4 shrink-0 text-primary" />
+              </button>
+            )}
 
-      {hasOwner === false && (
-        <button onClick={() => claim.mutate()} disabled={claim.isPending}
-          className="w-full mt-4 rounded-2xl border border-primary/50 bg-primary/10 hover:bg-primary/15 p-3 flex items-center gap-3 text-left transition disabled:opacity-60">
-          <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
-            <Crown className="size-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-primary">Sou o Dono deste app</p>
-            <p className="text-[11px] text-white/70">Toque para virar Proprietário (só funciona uma vez).</p>
-          </div>
-          <ChevronRight className="size-4 text-primary shrink-0" />
-        </button>
-      )}
+            {anamnese !== undefined && !anamnese?.completed_at && (
+              <Link to="/anamnese" className="flex w-full items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 p-3 transition hover:bg-primary/15">
+                <div className="grid size-10 place-items-center rounded-xl border border-primary/50 bg-primary/20 text-primary">
+                  <ClipboardList className="size-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-bold text-primary">Preencha sua anamnese</p>
+                  <p className="text-[11px] text-muted-foreground">Ajuda seu personal a montar o melhor treino.</p>
+                </div>
+                <ChevronRight className="size-4 shrink-0 text-primary" />
+              </Link>
+            )}
 
-      {anamnese !== undefined && !anamnese?.completed_at && (
-        <Link to="/anamnese" className="w-full mt-3 rounded-2xl border border-primary/40 bg-primary/10 p-3 flex items-center gap-3 hover:bg-primary/15 transition">
-          <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
-            <ClipboardList className="size-5" />
+            <WeekFrequency done={[0]} missed={[1]} />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-primary">Preencha sua anamnese</p>
-            <p className="text-[11px] text-white/70">Ajuda seu personal a montar o melhor treino.</p>
-          </div>
-          <ChevronRight className="size-4 text-primary shrink-0" />
-        </Link>
-      )}
-
-      <div className="mt-4">
-        <WeekFrequency done={[0]} missed={[1]} />
-      </div>
-
-      <div className="mt-4">
-        <BigCardGrid items={tiles} />
-      </div>
+        )}
+      />
     </AppShell>
   );
 }

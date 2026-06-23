@@ -7,6 +7,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import { bootstrapMasterOwner } from "@/lib/master-owner.functions";
+import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
+import logoVAsset from "@/assets/logo-v.webp.asset.json";
+
+const heroLogin = heroLoginAsset.url;
+const logoV = logoVAsset.url;
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -53,9 +58,9 @@ function AuthPage() {
         await bootstrapMasterOwnerFn({ data: { email: cleanEmail, password } });
         const { error: masterLoginError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
         if (masterLoginError) throw masterLoginError;
-      } catch (claimError: any) {
+      } catch (claimError: unknown) {
         setBusy(false);
-        return toast.error(claimError.message ?? "Falha ao ativar o e-mail mestre.");
+        return toast.error(errorMessage(claimError, "Falha ao ativar o e-mail mestre."));
       }
       setBusy(false);
       toast.success("E-mail mestre ativado.");
@@ -66,8 +71,8 @@ function AuthPage() {
     if (error) return toast.error(error.message);
     try {
       await finishMasterOwnership(cleanEmail);
-    } catch (claimError: any) {
-      return toast.error(claimError.message ?? "Falha ao ativar dono.");
+    } catch (claimError: unknown) {
+      return toast.error(errorMessage(claimError, "Falha ao ativar dono."));
     }
     toast.success("Bem-vindo!");
   };
@@ -118,36 +123,31 @@ function AuthPage() {
 
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black flex flex-col">
-      {/* Glow laranja lateral, sem foto */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-10 h-[60%] w-[2px] bg-primary blur-[2px] opacity-70 rotate-[18deg]" />
-        <div className="absolute -right-24 top-20 h-[55%] w-[2px] bg-primary blur-[2px] opacity-60 -rotate-[18deg]" />
-        <div className="absolute inset-x-0 top-0 h-[55%] bg-gradient-to-b from-primary/15 via-transparent to-transparent" />
-      </div>
-
-      {/* MARCA centralizada */}
-      <div className="relative z-10 flex flex-col items-center pt-12">
-        <div className="size-20 rounded-2xl bg-primary/15 border border-primary/40 grid place-items-center shadow-[0_0_30px_rgba(255,120,30,0.35)]">
-          <span className="text-[34px] font-black leading-none text-primary">V</span>
+    <main className="relative flex min-h-[100dvh] w-full flex-col overflow-hidden bg-background font-display text-foreground lg:grid lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="relative min-h-[46dvh] overflow-hidden lg:min-h-[100dvh]">
+        <img src={heroLogin} alt="" className="absolute inset-0 size-full object-cover" loading="eager" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/5 via-background/20 to-background lg:bg-gradient-to-r lg:from-background/5 lg:via-background/25 lg:to-background" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-background to-transparent" />
+        <div className="relative z-10 flex h-full min-h-[46dvh] flex-col items-center justify-end px-6 pb-10 text-center lg:min-h-[100dvh] lg:justify-center">
+          <img src={logoV} alt="VrumFit" className="size-28 object-contain drop-shadow-[0_0_28px_var(--color-primary)]" />
+          <h1 className="mt-3 text-5xl font-black italic leading-none tracking-tight md:text-6xl">
+            Vrum<span className="text-primary">Fit</span>
+          </h1>
+          <div className="mt-3 flex items-center gap-3">
+            <span className="h-px w-12 bg-primary/80" />
+            <span className="text-xs font-bold tracking-[0.55em] text-primary">PERSONAL</span>
+            <span className="h-px w-12 bg-primary/80" />
+          </div>
         </div>
-        <h1 className="mt-4 text-[36px] leading-none font-black tracking-tight">
-          <span className="text-white">Vrum</span><span className="text-primary">Fit</span>
-        </h1>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="h-px w-5 bg-primary/70" />
-          <span className="text-[10px] tracking-[0.5em] text-primary font-semibold">PERSONAL</span>
-          <span className="h-px w-5 bg-primary/70" />
-        </div>
-        <p className="mt-3 text-[13px] text-white/75">
-          Seu treino. <span className="text-primary font-semibold">Sua evolução.</span>
-        </p>
-      </div>
+      </section>
 
-
-      {/* FORM */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 pt-5 pb-[max(env(safe-area-inset-bottom),1.25rem)]">
-        <div className="w-full max-w-md mx-auto flex-1 flex flex-col">
+      <section className="relative z-10 flex flex-1 flex-col px-6 pb-[max(env(safe-area-inset-bottom),1.25rem)] pt-2 lg:justify-center lg:pt-10">
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col lg:flex-none">
+          <div className="mb-5">
+            <p className="text-sm font-bold uppercase tracking-[0.35em] text-primary">Acesso</p>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-foreground">Entre na sua conta</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Aluno, personal e proprietário no mesmo padrão visual.</p>
+          </div>
           {mode === "login" && (
             <form onSubmit={onLogin} className="flex flex-col">
               <div className="flex flex-col gap-3">
@@ -163,7 +163,7 @@ function AuthPage() {
                 Criar conta
               </button>
 
-              <button type="button" onClick={() => setMode("forgot")} className="self-center mt-3 text-[12px] font-medium text-white/55 hover:text-primary transition">
+              <button type="button" onClick={() => setMode("forgot")} className="self-center mt-3 text-[12px] font-medium text-muted-foreground hover:text-primary transition">
                 Esqueci minha senha
               </button>
 
@@ -178,11 +178,11 @@ function AuthPage() {
                 </div>
               </div>
 
-              <div className="my-4 flex items-center gap-3 text-[10px] tracking-[0.3em] text-white/35">
-                <span className="h-px flex-1 bg-white/10" /> OU <span className="h-px flex-1 bg-white/10" />
+              <div className="my-4 flex items-center gap-3 text-[10px] tracking-[0.3em] text-muted-foreground">
+                <span className="h-px flex-1 bg-border" /> OU <span className="h-px flex-1 bg-border" />
               </div>
 
-              <button type="button" onClick={onGoogle} disabled={busy} className="h-12 rounded-xl border border-white/15 bg-white/[0.04] flex items-center justify-center gap-3 text-[13px] font-medium text-white/90 hover:bg-white/[0.08] hover:border-white/25 transition">
+              <button type="button" onClick={onGoogle} disabled={busy} className="h-12 rounded-xl border border-border bg-card flex items-center justify-center gap-3 text-[13px] font-medium text-foreground hover:bg-accent hover:border-primary/40 transition">
                 <GoogleIcon /> Continuar com Google
               </button>
             </form>
@@ -196,7 +196,7 @@ function AuthPage() {
               <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Senha (mín. 6)" value={password} onChange={setPassword}
                 rightIcon={showPwd ? EyeOff : Eye} onRightClick={() => setShowPwd(!showPwd)} />
               <PrimaryButton disabled={busy} type="submit">{busy ? "Criando..." : "Criar conta"}</PrimaryButton>
-              <button type="button" onClick={() => setMode("login")} className="self-center mt-2 inline-flex items-center gap-1.5 text-[12px] text-white/60 hover:text-white">
+              <button type="button" onClick={() => setMode("login")} className="self-center mt-2 inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="size-3.5" /> Voltar ao login
               </button>
             </form>
@@ -206,29 +206,29 @@ function AuthPage() {
             <form onSubmit={onForgot} className="flex flex-col gap-3">
               <Field icon={Mail} type="email" placeholder="E-mail" value={email} onChange={setEmail} />
               <PrimaryButton disabled={busy} type="submit">{busy ? "Enviando..." : "Enviar link"}</PrimaryButton>
-              <button type="button" onClick={() => setMode("login")} className="self-center mt-2 inline-flex items-center gap-1.5 text-[12px] text-white/60 hover:text-white">
+              <button type="button" onClick={() => setMode("login")} className="self-center mt-2 inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="size-3.5" /> Voltar ao login
               </button>
             </form>
           )}
 
-          <p className="mt-auto pt-6 text-center text-[10px] tracking-wider text-white/35">
+          <p className="mt-auto pt-6 text-center text-[10px] tracking-wider text-muted-foreground">
             © {new Date().getFullYear()} VRUMFIT PERSONAL
           </p>
         </div>
-      </div>
+      </section>
     </main>
   );
 }
 
 function QuickCard({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-center">
+    <div className="rounded-2xl border border-border bg-card p-3 text-center">
       <div className="mx-auto size-10 rounded-full border border-primary/50 grid place-items-center text-primary">
         <Icon className="size-5" />
       </div>
-      <p className="mt-2 text-[12px] font-extrabold tracking-wider text-white">{title}</p>
-      <p className="mt-1 text-[10.5px] text-white/55 leading-snug">{desc}</p>
+      <p className="mt-2 text-[12px] font-extrabold tracking-wider text-foreground">{title}</p>
+      <p className="mt-1 text-[10.5px] text-muted-foreground leading-snug">{desc}</p>
     </div>
   );
 }
@@ -246,16 +246,16 @@ function Field({
 }) {
   return (
     <div className="relative">
-      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 size-[16px] text-white/40 pointer-events-none" />
+      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 size-[16px] text-muted-foreground pointer-events-none" />
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full h-12 rounded-xl bg-white/[0.05] pl-11 pr-11 text-[14px] text-white outline-none placeholder:text-white/40 focus:bg-white/[0.08] transition"
+        className="w-full h-12 rounded-xl border border-border bg-card pl-11 pr-11 text-[14px] text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/60 focus:bg-accent transition"
       />
       {RightIcon && (
-        <button type="button" onClick={onRightClick} className="absolute right-2 top-1/2 -translate-y-1/2 size-8 grid place-items-center text-white/40 hover:text-white/80">
+        <button type="button" onClick={onRightClick} className="absolute right-2 top-1/2 -translate-y-1/2 size-8 grid place-items-center text-muted-foreground hover:text-foreground">
           <RightIcon className="size-[16px]" />
         </button>
       )}
@@ -268,14 +268,20 @@ function PrimaryButton({ children, disabled, type }: { children: React.ReactNode
     <button
       type={type ?? "button"}
       disabled={disabled}
-      className="mt-4 h-[56px] w-full rounded-2xl font-extrabold text-[17px] tracking-wide text-white uppercase transition active:scale-[0.99] disabled:opacity-60"
-      style={{
-        background: "linear-gradient(180deg, #ff8a3d 0%, #ff6b1a 100%)",
-      }}
+      className="mt-4 h-[56px] w-full rounded-2xl bg-primary font-extrabold text-[17px] tracking-wide text-primary-foreground uppercase transition hover:bg-primary/90 active:scale-[0.99] disabled:opacity-60"
     >
       {children}
     </button>
   );
+}
+
+function errorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "object" && error && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string") return message;
+  }
+  return fallback;
 }
 
 
