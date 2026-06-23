@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   Dumbbell, Apple, TrendingUp, BookOpen, ShoppingBag, FolderOpen, Bell,
   ClipboardCheck, ChevronRight, FileText, Crown, LayoutGrid, UserCog, MessageCircle, CheckCircle2,
+  ClipboardList, CalendarDays, X, Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
