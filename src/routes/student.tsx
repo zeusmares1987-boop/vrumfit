@@ -54,6 +54,8 @@ const smallTiles: Tile[] = [
   { icon: Apple, label: "Dieta", hint: "Minha dieta", to: "/dieta", bg: tileDieta },
   { icon: TrendingUp, label: "Progresso", hint: "Peso e medidas", to: "/evolucao", bg: tileProgresso },
   { icon: ClipboardCheck, label: "Avaliações", hint: "Histórico", to: "/avaliacoes", bg: tileAvaliacoes },
+  { icon: CalendarDays, label: "Agenda", hint: "Meus horários", to: "/agenda", bg: tileAvaliacoes },
+  { icon: ClipboardList, label: "Anamnese", hint: "Saúde", to: "/anamnese", bg: tileMais },
   { icon: BookOpen, label: "Biblioteca", hint: "Como executar", to: "/biblioteca", bg: tileBiblioteca },
   { icon: ShoppingBag, label: "Loja", hint: "Produtos", to: "/loja", bg: tileLoja },
   { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos", bg: tileAvisos },
