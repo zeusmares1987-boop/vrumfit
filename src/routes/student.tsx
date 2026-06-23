@@ -127,18 +127,30 @@ function StudentPage() {
   const markDone = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("not logged");
-      const { error } = await supabase.from("workout_sessions").insert({
+      const { data, error } = await supabase.from("workout_sessions").insert({
         student_id: user.id,
         workout_id: currentWorkout?.id ?? null,
         session_date: today,
-      });
+      }).select("id").single();
       if (error) throw error;
+      return data.id as string;
     },
     onSuccess: () => {
       toast.success("Treino marcado! 💪");
       qc.invalidateQueries({ queryKey: ["my-session-today"] });
+      setFbOpen(true);
     },
     onError: (e: any) => toast.error(e.message ?? "Falha"),
+  });
+
+  const { data: anamnese } = useQuery({
+    queryKey: ["my-anamnese", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("anamneses").select("completed_at").eq("user_id", user.id).maybeSingle();
+      return data;
+    },
+    enabled: !!user,
   });
 
   const { data: hasOwner, refetch: refetchHasOwner } = useQuery({
