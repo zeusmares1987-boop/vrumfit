@@ -51,6 +51,7 @@ type Tile = {
 
 const smallTiles: Tile[] = [
   { icon: Dumbbell, label: "Treinos", hint: "Meu plano atual", to: "/treinos", bg: tileTreinos },
+  { icon: CalendarDays, label: "Histórico", hint: "Dias treinados", to: "/historico", bg: tileTreinos },
   { icon: Apple, label: "Dieta", hint: "Minha dieta", to: "/dieta", bg: tileDieta },
   { icon: TrendingUp, label: "Progresso", hint: "Peso e medidas", to: "/evolucao", bg: tileProgresso },
   { icon: ClipboardCheck, label: "Avaliações", hint: "Histórico", to: "/avaliacoes", bg: tileAvaliacoes },
