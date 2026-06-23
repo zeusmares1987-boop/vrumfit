@@ -21,6 +21,7 @@ import { Route as OwnerRouteImport } from './routes/owner'
 import { Route as LojaProRouteImport } from './routes/loja-pro'
 import { Route as LojaRouteImport } from './routes/loja'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as FinanceiroRouteImport } from './routes/financeiro'
 import { Route as EvolucaoRouteImport } from './routes/evolucao'
 import { Route as EliteRouteImport } from './routes/elite'
@@ -99,6 +100,11 @@ const LojaRoute = LojaRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FinanceiroRoute = FinanceiroRouteImport.update({
@@ -212,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/elite': typeof EliteRoute
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
+  '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/loja': typeof LojaRouteWithChildren
   '/loja-pro': typeof LojaProRouteWithChildren
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/elite': typeof EliteRoute
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
+  '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/loja': typeof LojaRouteWithChildren
   '/loja-pro': typeof LojaProRouteWithChildren
@@ -278,6 +286,7 @@ export interface FileRoutesById {
   '/elite': typeof EliteRoute
   '/evolucao': typeof EvolucaoRoute
   '/financeiro': typeof FinanceiroRoute
+  '/historico': typeof HistoricoRoute
   '/login': typeof LoginRoute
   '/loja': typeof LojaRouteWithChildren
   '/loja-pro': typeof LojaProRouteWithChildren
@@ -313,6 +322,7 @@ export interface FileRouteTypes {
     | '/elite'
     | '/evolucao'
     | '/financeiro'
+    | '/historico'
     | '/login'
     | '/loja'
     | '/loja-pro'
@@ -345,6 +355,7 @@ export interface FileRouteTypes {
     | '/elite'
     | '/evolucao'
     | '/financeiro'
+    | '/historico'
     | '/login'
     | '/loja'
     | '/loja-pro'
@@ -378,6 +389,7 @@ export interface FileRouteTypes {
     | '/elite'
     | '/evolucao'
     | '/financeiro'
+    | '/historico'
     | '/login'
     | '/loja'
     | '/loja-pro'
@@ -412,6 +424,7 @@ export interface RootRouteChildren {
   EliteRoute: typeof EliteRoute
   EvolucaoRoute: typeof EvolucaoRoute
   FinanceiroRoute: typeof FinanceiroRoute
+  HistoricoRoute: typeof HistoricoRoute
   LoginRoute: typeof LoginRoute
   LojaRoute: typeof LojaRouteWithChildren
   LojaProRoute: typeof LojaProRouteWithChildren
@@ -510,6 +523,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/financeiro': {
@@ -709,6 +729,7 @@ const rootRouteChildren: RootRouteChildren = {
   EliteRoute: EliteRoute,
   EvolucaoRoute: EvolucaoRoute,
   FinanceiroRoute: FinanceiroRoute,
+  HistoricoRoute: HistoricoRoute,
   LoginRoute: LoginRoute,
   LojaRoute: LojaRouteWithChildren,
   LojaProRoute: LojaProRouteWithChildren,
@@ -725,13 +746,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
