@@ -39,8 +39,6 @@ const trainerModules: DashboardModule[] = [
   { icon: CheckCircle2, title: "Presença", description: "Check-ins dos alunos", to: "/agenda", image: headerGymAsset.url },
   { icon: Target, title: "Execução", description: "Biblioteca de exercícios", to: "/biblioteca", image: tileBibliotecaAsset.url },
   { icon: TrendingUp, title: "Progresso", description: "Resultados e gráficos", to: "/evolucao", image: tileProgressoAsset.url },
-  { icon: Store, title: "Loja", description: "Sua loja profissional", to: "/loja-pro", image: tileLojaAsset.url },
-  { icon: ShoppingBag, title: "Produtos", description: "Itens e serviços", to: "/produtos", image: tileProdutosAsset.url },
   { icon: FolderOpen, title: "Arquivos", description: "Materiais dos alunos", to: "/arquivos", image: tileArquivosAsset.url },
   { icon: Settings, title: "Configurações", description: "Perfil e preferências", to: "/config", image: headerGymAsset.url },
 ];
