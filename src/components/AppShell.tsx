@@ -9,6 +9,7 @@ export function AppShell({
   subtitle,
   children,
   hideBottomNav,
+  hideHeader,
   rightAction,
   action,
 }: {
@@ -16,6 +17,7 @@ export function AppShell({
   subtitle?: string;
   children: ReactNode;
   hideBottomNav?: boolean;
+  hideHeader?: boolean;
   rightAction?: ReactNode;
   /** alias compatível com versões antigas das rotas */
   action?: ReactNode;
@@ -51,33 +53,35 @@ export function AppShell({
 
   return (
     <div className="min-h-[100dvh] bg-background font-display text-foreground pb-24">
-      <header className="sticky top-0 z-40 bg-gradient-to-b from-black/90 to-black/60 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
-          {showBack && (
-            <button onClick={onBack} aria-label="Voltar" title="Voltar" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white transition shrink-0">
-              <ChevronLeft className="size-5" />
-            </button>
-          )}
-          <Link to={home} className="flex items-center gap-2 shrink-0">
-            <div className="leading-tight">
-              <div className="text-[15px] font-extrabold tracking-tight">
-                <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
+      {!hideHeader && (
+        <header className="sticky top-0 z-40 bg-gradient-to-b from-black/90 to-black/60 backdrop-blur-md border-b border-white/5">
+          <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+            {showBack && (
+              <button onClick={onBack} aria-label="Voltar" title="Voltar" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white transition shrink-0">
+                <ChevronLeft className="size-5" />
+              </button>
+            )}
+            <Link to={home} className="flex items-center gap-2 shrink-0">
+              <div className="leading-tight">
+                <div className="text-[15px] font-extrabold tracking-tight">
+                  <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
+                </div>
+                <div className="text-[9px] font-semibold tracking-[0.3em] text-primary/80">PERSONAL</div>
               </div>
-              <div className="text-[9px] font-semibold tracking-[0.3em] text-primary/80">PERSONAL</div>
+            </Link>
+            <div className="flex-1 min-w-0">
+              {title && <h1 className="text-sm font-semibold truncate">{title}</h1>}
+              {subtitle && <p className="text-[11px] text-white/55 truncate">{subtitle}</p>}
             </div>
-          </Link>
-          <div className="flex-1 min-w-0">
-            {title && <h1 className="text-sm font-semibold truncate">{title}</h1>}
-            {subtitle && <p className="text-[11px] text-white/55 truncate">{subtitle}</p>}
+            {rightAction ?? action}
+            <button onClick={onSignOut} title="Sair" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition">
+              <LogOut className="size-4" />
+            </button>
           </div>
-          {rightAction ?? action}
-          <button onClick={onSignOut} title="Sair" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition">
-            <LogOut className="size-4" />
-          </button>
-        </div>
-      </header>
+        </header>
+      )}
 
-      <main className="max-w-md mx-auto px-4 pt-4">{children}</main>
+      <main className={`max-w-md mx-auto px-4 ${hideHeader ? "pt-0" : "pt-4"}`}>{children}</main>
 
       {!hideBottomNav && <BottomNav role={role} />}
     </div>
