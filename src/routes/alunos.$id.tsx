@@ -127,14 +127,70 @@ function AlunoDetail() {
           <p className="text-[12px] text-muted-foreground">O aluno ainda não marcou nenhum treino feito.</p>
         ) : (
           <ul className="space-y-1.5">
-            {sessions.map((s) => (
-              <li key={s.id} className="flex items-center justify-between glass rounded-lg px-3 py-2">
-                <span className="text-[12px] font-semibold">{new Date(s.session_date).toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "short" })}</span>
-                <span className="text-[11px] text-muted-foreground">{s.duration_min ? `${s.duration_min} min` : ""}</span>
+            {sessions.map((s: any) => (
+              <li key={s.id} className="glass rounded-lg px-3 py-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[12px] font-semibold">{new Date(s.session_date).toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "short" })}</span>
+                  <div className="flex items-center gap-1.5">
+                    {s.rating && (
+                      <span className="flex items-center gap-0.5 text-primary text-[11px] font-bold">
+                        {Array.from({ length: s.rating }).map((_, i) => <Star key={i} className="size-2.5 fill-current" />)}
+                      </span>
+                    )}
+                    {s.rpe && <span className="text-[10px] bg-primary/15 text-primary rounded px-1.5 py-0.5 font-bold">RPE {s.rpe}</span>}
+                  </div>
+                </div>
+                {s.feedback && <p className="text-[11px] text-muted-foreground mt-1 italic">"{s.feedback}"</p>}
               </li>
             ))}
           </ul>
         )}
+      </Card>
+
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <ClipboardList className="size-4 text-primary" />
+          <h3 className="text-[12px] font-extrabold uppercase tracking-widest">Anamnese</h3>
+        </div>
+        {!anamnese?.completed_at ? (
+          <p className="text-[12px] text-muted-foreground">Aluno ainda não preencheu.</p>
+        ) : (
+          <div className="space-y-1.5 text-[12px]">
+            {anamnese.goal && <Info label="Objetivo" value={anamnese.goal} />}
+            {anamnese.has_health_issues && <Info label="Problemas de saúde" value={anamnese.health_issues || "Sim"} />}
+            {anamnese.medications && <Info label="Medicamentos" value={anamnese.medications} />}
+            {anamnese.injuries && <Info label="Lesões" value={anamnese.injuries} />}
+            {anamnese.allergies && <Info label="Alergias" value={anamnese.allergies} />}
+            {anamnese.surgeries && <Info label="Cirurgias" value={anamnese.surgeries} />}
+            <div className="flex gap-3 pt-1">
+              {anamnese.smokes !== null && <span className="text-[11px]">🚬 {anamnese.smokes ? "Fuma" : "Não fuma"}</span>}
+              {anamnese.drinks !== null && <span className="text-[11px]">🍺 {anamnese.drinks ? "Bebe" : "Não bebe"}</span>}
+              {anamnese.sleep_hours && <span className="text-[11px]">😴 {anamnese.sleep_hours}h</span>}
+            </div>
+            {anamnese.emergency_contact && <Info label="Emergência" value={anamnese.emergency_contact} />}
+            <p className="text-[10px] text-muted-foreground pt-1">Preenchida em {new Date(anamnese.completed_at).toLocaleDateString("pt-BR")}</p>
+          </div>
+        )}
+      </Card>
+
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <CalendarDays className="size-4 text-primary" />
+          <h3 className="text-[12px] font-extrabold uppercase tracking-widest">Próximos horários</h3>
+        </div>
+        {appts.length === 0 ? (
+          <p className="text-[12px] text-muted-foreground">Nada agendado.</p>
+        ) : (
+          <ul className="space-y-1.5">
+            {appts.map((a: any) => (
+              <li key={a.id} className="flex items-center justify-between glass rounded-lg px-3 py-2">
+                <span className="text-[12px] font-semibold">{new Date(a.starts_at).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                <span className="text-[10px] text-muted-foreground">{a.title} · {a.duration_min}min</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <Link to="/agenda" className="mt-3 block text-center text-[11px] font-bold text-primary">Abrir agenda →</Link>
       </Card>
 
       <Card className="p-4">
