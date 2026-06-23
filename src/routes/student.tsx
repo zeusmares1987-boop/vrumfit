@@ -198,7 +198,7 @@ function StudentPage() {
         </button>
       )}
 
-      {anamnese && !anamnese.completed_at || !anamnese ? (
+      {anamnese !== undefined && !anamnese?.completed_at && (
         <Link to="/anamnese" className="w-full mb-3 rounded-2xl border border-warning/40 bg-warning/10 p-3 flex items-center gap-3 hover:bg-warning/15 transition" style={{ borderColor: "rgba(255,180,40,0.4)", background: "rgba(255,180,40,0.10)" }}>
           <div className="size-10 rounded-xl bg-primary/20 border border-primary/50 grid place-items-center text-primary">
             <ClipboardList className="size-5" />
