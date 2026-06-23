@@ -8,7 +8,8 @@ import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import { bootstrapMasterOwner } from "@/lib/master-owner.functions";
 import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
+
+
 
 const heroLogin = heroLoginAsset.url;
 const logoV = logoVAsset.url;
