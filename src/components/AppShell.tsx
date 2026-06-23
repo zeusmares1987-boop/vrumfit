@@ -22,6 +22,7 @@ export function AppShell({
 }) {
   const { role, session, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  useRealtimePush();
 
   // Auto-protect: anyone using AppShell must be signed in
   if (!loading && !session) {
