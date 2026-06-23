@@ -147,7 +147,7 @@ function StudentPage() {
               </Link>
             )}
 
-            <WeekFrequency done={[0]} missed={[1]} />
+            <WeekFrequency />
           </div>
         )}
       />
