@@ -5,7 +5,7 @@ import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { StoredImage } from "@/components/StoredImage";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, Target, Dumbbell, Apple, ClipboardCheck, Activity, ArrowLeft, MessageCircle, CheckCircle2, FileText } from "lucide-react";
+import { Mail, Phone, Target, Dumbbell, Apple, ClipboardCheck, Activity, ArrowLeft, MessageCircle, CheckCircle2, FileText, Star, ClipboardList, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/alunos/$id")({
   head: () => ({ meta: [{ title: "Perfil do aluno — VRUMFIT" }] }),
