@@ -209,7 +209,7 @@ function StudentPage() {
           </div>
           <ChevronRight className="size-4 text-primary" />
         </Link>
-      ) : null}
+      )}
 
       {/* Welcome hero */}
       <section className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-30px_rgba(255,120,30,0.45)]">
