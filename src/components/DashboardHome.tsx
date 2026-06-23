@@ -1,10 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, ChevronDown, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
 import { cn } from "@/lib/utils";
-
-const logoV = logoVAsset.url;
 
 export type DashboardModule = {
   icon: ComponentType<{ className?: string }>;
@@ -160,8 +157,7 @@ function DashboardHero({
 
 function Brand() {
   return (
-    <div className="flex min-w-0 items-center gap-2">
-      <img src={logoV} alt="VrumFit" className="size-9 shrink-0 object-contain drop-shadow-[0_0_14px_var(--color-primary)]" />
+    <div className="flex min-w-0 items-center">
       <div className="min-w-0 leading-none">
         <div className="truncate text-lg font-black italic tracking-tight text-foreground">Vrum<span className="text-primary">Fit</span></div>
         <div className="mt-0.5 text-[8px] font-bold tracking-[0.35em] text-muted-foreground">PERSONAL</div>
