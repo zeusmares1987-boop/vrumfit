@@ -40,7 +40,7 @@ const studentModules: DashboardModule[] = [
   { icon: CalendarDays, title: "Agenda", description: "Seus horários de treino", to: "/agenda", image: headerGymAsset.url },
   { icon: TrendingUp, title: "Progresso", description: "Sua evolução em gráficos", to: "/evolucao", image: tileProgressoAsset.url },
   { icon: CheckCircle2, title: "Histórico", description: "Treinos concluídos", to: "/historico", image: headerGymAsset.url },
-  { icon: Store, title: "Loja", description: "Produtos e planos", to: "/loja", image: tileLojaAsset.url },
+  
   { icon: FolderOpen, title: "Arquivos", description: "Materiais do personal", to: "/arquivos", image: tileArquivosAsset.url },
   { icon: Bell, title: "Avisos", description: "Recados importantes", to: "/avisos", image: tileAvisosAsset.url },
   { icon: User, title: "Perfil", description: "Seus dados e preferências", to: "/config", image: headerGymAsset.url },
