@@ -8,10 +8,11 @@ import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import { bootstrapMasterOwner } from "@/lib/master-owner.functions";
 import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
-import logoVAsset from "@/assets/logo-v.webp.asset.json";
+
+
 
 const heroLogin = heroLoginAsset.url;
-const logoV = logoVAsset.url;
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -129,7 +130,7 @@ function AuthPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/5 via-background/20 to-background lg:bg-gradient-to-r lg:from-background/5 lg:via-background/25 lg:to-background" />
         <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-background to-transparent" />
         <div className="relative z-10 flex h-full min-h-[46dvh] flex-col items-center justify-end px-6 pb-10 text-center lg:min-h-[100dvh] lg:justify-center">
-          <img src={logoV} alt="VrumFit" className="size-28 object-contain drop-shadow-[0_0_28px_var(--color-primary)]" />
+          
           <h1 className="mt-3 text-5xl font-black italic leading-none tracking-tight md:text-6xl">
             Vrum<span className="text-primary">Fit</span>
           </h1>
