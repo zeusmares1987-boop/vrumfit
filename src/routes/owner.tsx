@@ -64,7 +64,7 @@ function OwnerPage() {
   );
 
   return (
-    <AppShell hideBottomNav={false}>
+    <AppShell hideHeader>
       <HomeHero
         photo={headerGym}
         eyebrow="Bem-vindo,"
