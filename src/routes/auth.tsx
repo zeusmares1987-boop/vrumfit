@@ -118,8 +118,6 @@ function AuthPage() {
     setBusy(false);
   };
 
-  const title = mode === "login" ? "Acesse sua conta" : mode === "signup" ? "Crie sua conta" : "Recuperar acesso";
-  const subtitle = mode === "login" ? "Treinos, dieta e evolução em um só lugar." : mode === "signup" ? "Comece em menos de um minuto." : "Enviaremos um link seguro para seu e-mail.";
 
   return (
     <main className="relative min-h-[100dvh] w-full overflow-hidden font-display text-foreground bg-black flex flex-col">
