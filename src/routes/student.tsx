@@ -10,6 +10,7 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { SimpleHeader } from "@/components/SimpleHeader";
 import { BigCardGrid, type BigCardItem } from "@/components/BigCard";
+import { WeekFrequency } from "@/components/WeekFrequency";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
