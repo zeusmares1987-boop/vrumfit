@@ -55,7 +55,7 @@ function AlunoDetail() {
     );
   }
 
-  const { profile, student, workout, diet, assess, sessions, invoices } = data;
+  const { profile, student, workout, diet, assess, sessions, invoices, anamnese, appts } = data;
   const name = profile.full_name ?? "Sem nome";
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
   const adherence30 = sessions.filter((s) => {
