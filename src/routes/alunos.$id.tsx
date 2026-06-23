@@ -5,7 +5,7 @@ import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { StoredImage } from "@/components/StoredImage";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, Target, Dumbbell, Apple, ClipboardCheck, Activity, ArrowLeft, MessageCircle, CheckCircle2, FileText } from "lucide-react";
+import { Mail, Phone, Target, Dumbbell, Apple, ClipboardCheck, Activity, ArrowLeft, MessageCircle, CheckCircle2, FileText, Star, ClipboardList, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/alunos/$id")({
   head: () => ({ meta: [{ title: "Perfil do aluno — VRUMFIT" }] }),
@@ -23,16 +23,18 @@ function AlunoDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["aluno-detail", id],
     queryFn: async () => {
-      const [{ data: profile }, { data: student }, { data: workout }, { data: diet }, { data: assess }, { data: sessions }, { data: invoices }] = await Promise.all([
+      const [{ data: profile }, { data: student }, { data: workout }, { data: diet }, { data: assess }, { data: sessions }, { data: invoices }, { data: anamnese }, { data: appts }] = await Promise.all([
         supabase.from("profiles").select("full_name,email,phone,avatar_url").eq("id", id).maybeSingle(),
         supabase.from("students").select("objective,status,personal_id,created_at").eq("user_id", id).maybeSingle(),
         supabase.from("workouts").select("id,name,objective,status,created_at").eq("student_id", id).eq("status", "ativo").order("created_at", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("diets").select("id,name,objective,status").eq("student_id", id).eq("status", "ativo").order("created_at", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("assessments").select("id,date,weight_kg").eq("student_id", id).order("date", { ascending: false }).limit(1).maybeSingle(),
-        supabase.from("workout_sessions").select("id,session_date,duration_min,notes").eq("student_id", id).order("session_date", { ascending: false }).limit(8),
+        supabase.from("workout_sessions").select("id,session_date,duration_min,notes,rating,rpe,feedback").eq("student_id", id).order("session_date", { ascending: false }).limit(8),
         supabase.from("invoices").select("id,amount_cents,status,due_date").eq("student_id", id).order("due_date", { ascending: false }).limit(5),
+        supabase.from("anamneses").select("*").eq("user_id", id).maybeSingle(),
+        supabase.from("appointments").select("id,starts_at,duration_min,title,status").eq("student_id", id).gte("starts_at", new Date(Date.now() - 86400000).toISOString()).order("starts_at", { ascending: true }).limit(5),
       ]);
-      return { profile, student, workout, diet, assess, sessions: sessions ?? [], invoices: invoices ?? [] };
+      return { profile, student, workout, diet, assess, sessions: sessions ?? [], invoices: invoices ?? [], anamnese, appts: appts ?? [] };
     },
   });
 
@@ -53,7 +55,7 @@ function AlunoDetail() {
     );
   }
 
-  const { profile, student, workout, diet, assess, sessions, invoices } = data;
+  const { profile, student, workout, diet, assess, sessions, invoices, anamnese, appts } = data;
   const name = profile.full_name ?? "Sem nome";
   const initials = name.split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase();
   const adherence30 = sessions.filter((s) => {
@@ -125,14 +127,70 @@ function AlunoDetail() {
           <p className="text-[12px] text-muted-foreground">O aluno ainda não marcou nenhum treino feito.</p>
         ) : (
           <ul className="space-y-1.5">
-            {sessions.map((s) => (
-              <li key={s.id} className="flex items-center justify-between glass rounded-lg px-3 py-2">
-                <span className="text-[12px] font-semibold">{new Date(s.session_date).toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "short" })}</span>
-                <span className="text-[11px] text-muted-foreground">{s.duration_min ? `${s.duration_min} min` : ""}</span>
+            {sessions.map((s: any) => (
+              <li key={s.id} className="glass rounded-lg px-3 py-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[12px] font-semibold">{new Date(s.session_date).toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "short" })}</span>
+                  <div className="flex items-center gap-1.5">
+                    {s.rating && (
+                      <span className="flex items-center gap-0.5 text-primary text-[11px] font-bold">
+                        {Array.from({ length: s.rating }).map((_, i) => <Star key={i} className="size-2.5 fill-current" />)}
+                      </span>
+                    )}
+                    {s.rpe && <span className="text-[10px] bg-primary/15 text-primary rounded px-1.5 py-0.5 font-bold">RPE {s.rpe}</span>}
+                  </div>
+                </div>
+                {s.feedback && <p className="text-[11px] text-muted-foreground mt-1 italic">"{s.feedback}"</p>}
               </li>
             ))}
           </ul>
         )}
+      </Card>
+
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <ClipboardList className="size-4 text-primary" />
+          <h3 className="text-[12px] font-extrabold uppercase tracking-widest">Anamnese</h3>
+        </div>
+        {!anamnese?.completed_at ? (
+          <p className="text-[12px] text-muted-foreground">Aluno ainda não preencheu.</p>
+        ) : (
+          <div className="space-y-1.5 text-[12px]">
+            {anamnese.goal && <Info label="Objetivo" value={anamnese.goal} />}
+            {anamnese.has_health_issues && <Info label="Problemas de saúde" value={anamnese.health_issues || "Sim"} />}
+            {anamnese.medications && <Info label="Medicamentos" value={anamnese.medications} />}
+            {anamnese.injuries && <Info label="Lesões" value={anamnese.injuries} />}
+            {anamnese.allergies && <Info label="Alergias" value={anamnese.allergies} />}
+            {anamnese.surgeries && <Info label="Cirurgias" value={anamnese.surgeries} />}
+            <div className="flex gap-3 pt-1">
+              {anamnese.smokes !== null && <span className="text-[11px]">🚬 {anamnese.smokes ? "Fuma" : "Não fuma"}</span>}
+              {anamnese.drinks !== null && <span className="text-[11px]">🍺 {anamnese.drinks ? "Bebe" : "Não bebe"}</span>}
+              {anamnese.sleep_hours && <span className="text-[11px]">😴 {anamnese.sleep_hours}h</span>}
+            </div>
+            {anamnese.emergency_contact && <Info label="Emergência" value={anamnese.emergency_contact} />}
+            <p className="text-[10px] text-muted-foreground pt-1">Preenchida em {new Date(anamnese.completed_at).toLocaleDateString("pt-BR")}</p>
+          </div>
+        )}
+      </Card>
+
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <CalendarDays className="size-4 text-primary" />
+          <h3 className="text-[12px] font-extrabold uppercase tracking-widest">Próximos horários</h3>
+        </div>
+        {appts.length === 0 ? (
+          <p className="text-[12px] text-muted-foreground">Nada agendado.</p>
+        ) : (
+          <ul className="space-y-1.5">
+            {appts.map((a: any) => (
+              <li key={a.id} className="flex items-center justify-between glass rounded-lg px-3 py-2">
+                <span className="text-[12px] font-semibold">{new Date(a.starts_at).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                <span className="text-[10px] text-muted-foreground">{a.title} · {a.duration_min}min</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <Link to="/agenda" className="mt-3 block text-center text-[11px] font-bold text-primary">Abrir agenda →</Link>
       </Card>
 
       <Card className="p-4">
@@ -175,5 +233,14 @@ function DetailRow({ icon: Icon, title, value, hint, to }: { icon: React.Compone
         <p className="text-[10.5px] text-muted-foreground truncate">{hint}</p>
       </div>
     </Link>
+  );
+}
+
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex gap-2">
+      <span className="text-muted-foreground shrink-0">{label}:</span>
+      <span className="font-semibold break-words">{value}</span>
+    </div>
   );
 }
