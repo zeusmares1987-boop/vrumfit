@@ -119,9 +119,14 @@ function StudentPage() {
         </Link>
       )}
 
-      <div className="mt-5">
+      <div className="mt-4">
+        <WeekFrequency done={[0]} missed={[1]} />
+      </div>
+
+      <div className="mt-4">
         <BigCardGrid items={tiles} />
       </div>
     </AppShell>
   );
 }
+
