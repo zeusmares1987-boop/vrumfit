@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Users, Dumbbell, Apple, ClipboardCheck, TrendingUp, FolderOpen, Bell, Wallet,
-  BookOpen, ChevronRight, LayoutGrid, Store,
+  BookOpen, ChevronRight, LayoutGrid, Store, CalendarDays,
 } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
@@ -52,6 +52,7 @@ const smallTiles: Tile[] = [
   { icon: Dumbbell, label: "Treinos", hint: "Prescrever / histórico", to: "/treinos", bg: tileTreinos },
   { icon: Apple, label: "Dietas", hint: "Prescrever / modelos", to: "/dieta", bg: tileDieta },
   { icon: ClipboardCheck, label: "Avaliações", hint: "Medidas e fotos", to: "/avaliacoes", bg: tileAvaliacoes },
+  { icon: CalendarDays, label: "Agenda", hint: "Horários dos alunos", to: "/agenda", bg: tileAvaliacoes },
   { icon: TrendingUp, label: "Progresso", hint: "Evolução dos alunos", to: "/evolucao", bg: tileProgresso },
   { icon: BookOpen, label: "Biblioteca", hint: "Exercícios VrumFit", to: "/biblioteca", bg: tileBiblioteca },
   { icon: Bell, label: "Avisos", hint: "Comunicados", to: "/avisos", bg: tileAvisos },
