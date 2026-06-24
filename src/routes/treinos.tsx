@@ -85,6 +85,23 @@ function TreinosPage() {
   const [activeWeek, setActiveWeek] = useState(1);
   const [openDay, setOpenDay] = useState<number | null>(0);
 
+  // Pré-preenchimento automático a partir do contexto do aluno (Fase 2)
+  const { ctx } = useStudentContext();
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (prefilled.current) return;
+    if (ctx.age || ctx.weightKg || ctx.heightCm || ctx.goalWorkout || ctx.level) {
+      if (ctx.age) setAge(ctx.age);
+      if (ctx.weightKg) setWeight(ctx.weightKg);
+      if (ctx.heightCm) setHeight(ctx.heightCm);
+      if (ctx.goalWorkout && ctx.goalWorkout !== "saude" && ctx.goalWorkout !== "manutencao") {
+        setGoal(ctx.goalWorkout as Goal);
+      }
+      if (ctx.level) setLevel(ctx.level);
+      prefilled.current = true;
+    }
+  }, [ctx]);
+
   const toggleInjury = (k: string) =>
     setInjuries((arr) => (arr.includes(k) ? arr.filter((x) => x !== k) : [...arr, k]));
 
@@ -106,6 +123,31 @@ function TreinosPage() {
   };
 
   const week = plan?.find((w) => w.week === activeWeek);
+
+  const [saving, setSaving] = useState(false);
+  const handleSaveWeek = async () => {
+    if (!week || !user) return;
+    setSaving(true);
+    try {
+      const { data: stu } = await supabase.from("students").select("personal_id").eq("user_id", user.id).maybeSingle();
+      const exMapById = new Map<string, string>();
+      (exLib ?? []).forEach((e) => exMapById.set(normalize(e.name), e.id));
+      await saveWorkoutWeek({
+        studentId: user.id,
+        personalId: stu?.personal_id ?? null,
+        week,
+        level,
+        goal,
+        exerciseIdByName: exMapById,
+      });
+      toast.success(`Semana ${week.week} salva no perfil`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao salvar";
+      toast.error(msg);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <AppShell title="Gerador Elite" subtitle="Periodização científica · RIR · MEV/MAV/MRV">
