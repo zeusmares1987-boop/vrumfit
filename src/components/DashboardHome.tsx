@@ -152,17 +152,17 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="dashboard-panel relative min-h-[86px] min-w-0 overflow-hidden rounded-[22px] p-3.5">
-      <div className="grid grid-cols-[34px_minmax(0,1fr)_10px] items-center gap-1.5">
-        <div className="dashboard-icon-ring grid size-[38px] shrink-0 place-items-center rounded-full text-primary">
-          <stat.icon className="size-5" />
+    <article className="dashboard-panel relative min-h-[86px] min-w-0 overflow-hidden rounded-[22px] p-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-1">
+        <div className="dashboard-icon-ring grid size-8 shrink-0 place-items-center rounded-full text-primary">
+          <stat.icon className="size-4" />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-[11px] font-semibold leading-tight text-foreground">{stat.label}</p>
-          <p className="truncate text-[25px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
-          <p className="mt-1 truncate text-[10px] leading-none text-muted-foreground">{stat.hint}</p>
-        </div>
-        <ChevronRight className="size-5 shrink-0 text-muted-foreground/70" />
+        <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground/70" />
+      </div>
+      <div className="mt-2 min-w-0">
+        <p className="truncate text-[10px] font-semibold leading-tight text-foreground">{stat.label}</p>
+        <p className="truncate text-[23px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
+        <p className="mt-1 truncate text-[10px] leading-none text-muted-foreground">{stat.hint}</p>
       </div>
     </article>
   );
