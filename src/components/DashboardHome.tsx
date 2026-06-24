@@ -65,7 +65,7 @@ export function DashboardHome({
   }, [modules, query]);
 
   return (
-    <div className="dashboard-home dashboard-owner-screen space-y-4 pb-8 md:space-y-5">
+    <div className="dashboard-home dashboard-owner-screen space-y-6 pb-8 md:space-y-8">
       <Hero
         name={name}
         roleLabel={roleLabel}
@@ -75,13 +75,20 @@ export function DashboardHome({
         heroImageUrl={heroImageUrl}
         notifCount={notifCount}
       />
-      <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} filtersOpen={filtersOpen} onToggleFilters={() => setFiltersOpen((v) => !v)} />
-      {filtersOpen && <FilterTabs />}
       {alerts}
       {beforeStats}
       {stats.length > 0 && <StatsRow stats={stats} />}
-      <SectionHeader />
       <ModuleGrid modules={visibleModules} />
+      {/* manter busca/filtros disponíveis mas escondidos por padrão p/ casar com referência */}
+      <details className="group">
+        <summary className="dashboard-order-button inline-flex cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[13px] font-medium text-primary">
+          <SlidersHorizontal className="size-4" /> Buscar / Filtrar
+        </summary>
+        <div className="mt-4 space-y-3">
+          <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} filtersOpen={filtersOpen} onToggleFilters={() => setFiltersOpen((v) => !v)} />
+          {filtersOpen && <FilterTabs />}
+        </div>
+      </details>
     </div>
   );
 }
@@ -135,12 +142,14 @@ function Hero({
         </Link>
       </header>
 
-      <div className="relative mt-14 max-w-[74%] md:mt-12 md:max-w-[58%]">
-        <h1 className="dashboard-heading text-[35px] font-bold leading-[1.08] tracking-[-0.055em] text-foreground md:text-[47px]">
-          {roleLabel === "Proprietário" ? "Bem-vindo," : `${greeting()},`} {" "}
-          <span className="text-primary">{titleName}</span>
+      <div className="relative mt-10 max-w-[92%] md:mt-12 md:max-w-[70%]">
+        <h1 className="dashboard-heading text-[40px] font-black leading-[1.02] tracking-[-0.05em] text-foreground md:text-[64px]">
+          {subtitle.split(" ").slice(0, Math.ceil(subtitle.split(" ").length / 2)).join(" ")}{" "}
+          <span className="text-primary">{subtitle.split(" ").slice(Math.ceil(subtitle.split(" ").length / 2)).join(" ")}</span>
         </h1>
-        <p className="mt-2 text-[18px] leading-snug text-muted-foreground md:text-[24px]">{subtitle}</p>
+        <p className="mt-3 text-[16px] leading-snug text-muted-foreground md:text-[20px]">
+          {roleLabel === "Proprietário" ? "Mais gestão. Mais resultados." : `${greeting()}, ${titleName}.`}
+        </p>
       </div>
     </section>
   );
@@ -183,7 +192,7 @@ function VrumMark({ className }: { className?: string }) {
 
 function StatsRow({ stats }: { stats: DashboardStat[] }) {
   return (
-    <section className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-5">
+    <section className="grid grid-cols-3 gap-2.5 md:gap-5">
       {stats.map((s) => <StatCard key={s.label} stat={s} />)}
     </section>
   );
@@ -201,20 +210,15 @@ function statSpark(value: string) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="dashboard-panel relative min-h-[168px] min-w-0 overflow-hidden rounded-[20px] p-5 md:min-h-[222px] md:rounded-[19px] md:p-6">
-      <div className="flex items-start gap-4">
-        <div className="dashboard-small-ring grid size-[58px] shrink-0 place-items-center rounded-full text-primary md:size-[64px]">
-          <stat.icon className="size-8" />
-        </div>
-        <div className="min-w-0 pt-1">
-          <p className="truncate text-[18px] font-medium text-foreground md:text-[21px]">{safeShortLabel(stat.label)}</p>
-          <p className="mt-5 truncate text-[46px] font-black leading-none tracking-[-0.055em] text-foreground md:text-[52px]">{stat.value}</p>
-          <p className="mt-1 truncate text-[18px] leading-none text-primary md:text-[20px]">{stat.hint}</p>
-        </div>
+    <article className="dashboard-panel relative min-w-0 overflow-hidden rounded-[18px] p-3 md:rounded-[20px] md:p-5">
+      <div className="dashboard-small-ring grid size-[40px] place-items-center rounded-[10px] text-primary md:size-[52px]">
+        <stat.icon className="size-5 md:size-7" />
       </div>
-      <svg className="dashboard-spark" viewBox="0 0 144 48" aria-hidden="true">
-        <path d={statSpark(stat.value)} />
-      </svg>
+      <p className="mt-3 truncate text-[12px] font-medium text-foreground md:text-[16px]">{stat.label}</p>
+      <p className="mt-1 truncate text-[28px] font-black leading-none tracking-[-0.04em] text-foreground md:text-[44px]">{stat.value}</p>
+      <p className="mt-2 truncate text-[11px] leading-tight text-primary md:text-[14px]">
+        <span className="font-bold">{stat.trend ?? "+0%"}</span> <span className="text-muted-foreground">{stat.hint}</span>
+      </p>
     </article>
   );
 }
@@ -274,7 +278,7 @@ function SectionHeader() {
 
 function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
   return (
-    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-4">
+    <section className="grid grid-cols-3 gap-2.5 md:gap-4">
       {modules.map((m) => <ModuleCard key={m.title + m.to} module={m} />)}
     </section>
   );
@@ -284,20 +288,18 @@ function ModuleCard({ module }: { module: DashboardModule }) {
   return (
     <Link
       to={module.to}
-      className="dashboard-module group relative min-h-[156px] overflow-hidden rounded-[18px] p-5 transition active:scale-[0.98] hover:border-primary/55 md:min-h-[180px] md:p-5"
+      className="dashboard-module group relative flex flex-col items-center justify-between overflow-hidden rounded-[18px] p-4 pb-3 text-center transition active:scale-[0.98] hover:border-primary/55 md:min-h-[220px] md:p-6"
     >
       <div className="dashboard-module-photo" aria-hidden="true" />
       <div className="dashboard-module-shade" aria-hidden="true" />
-      <div className="flex items-start justify-between">
-        <div className="dashboard-module-icon grid size-[56px] place-items-center rounded-full text-primary md:size-[60px]">
-          <module.icon className="size-8" />
-        </div>
-        <ChevronRight className="relative z-10 size-8 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
+      <div className="dashboard-module-icon relative z-10 mt-2 grid size-[58px] place-items-center rounded-[14px] text-primary md:size-[72px]">
+        <module.icon className="size-8 md:size-10" />
       </div>
-      <div className="relative z-10 mt-10 md:mt-9">
-        <p className="truncate text-[22px] font-bold leading-tight tracking-[-0.045em] text-foreground md:text-[24px]">{module.title}</p>
-        <p className="mt-1 line-clamp-1 text-[15px] text-muted-foreground md:text-[17px]">{module.description}</p>
+      <div className="relative z-10 mt-4">
+        <p className="text-[15px] font-bold leading-tight tracking-[-0.02em] text-foreground md:text-[20px]">{module.title}</p>
+        <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground md:text-[14px]">{module.description}</p>
       </div>
+      <ChevronRight className="relative z-10 mt-3 size-5 rounded-full border border-white/15 p-0.5 text-muted-foreground transition group-hover:text-primary md:size-6" />
     </Link>
   );
 }
