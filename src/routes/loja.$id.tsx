@@ -76,7 +76,7 @@ function Detail() {
 
   const waNumber = o.whatsapp?.replace(/\D/g, "") ?? "";
   const waText = encodeURIComponent(`Olá! Tenho interesse na oferta "${o.title}" do VRUMFIT.`);
-  const waHref = waNumber ? `https://wa.me/${waNumber}?text=${waText}` : undefined;
+  const waHref = waNumber ? `whatsapp://send?phone=${waNumber}&text=${waText}` : undefined;
 
   return (
     <AppShell title={o.title} subtitle={seller?.display_name ?? "Vendedor"}>
