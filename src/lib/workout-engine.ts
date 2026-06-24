@@ -303,7 +303,7 @@ function buildDay(focus: DayFocus, input: WorkoutPlanInput, pool: ExerciseDef[])
         rir: rx.rir,
         tier: p.tier,
         primary: p.primary,
-        substitutes: p.substitutes,
+        substitutes: [...p.substitutes, ...extraSubsFor(p.primary, p.name)].slice(0, 10),
         loadHint,
       });
     }
