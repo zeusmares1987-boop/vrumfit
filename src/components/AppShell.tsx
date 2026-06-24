@@ -81,7 +81,7 @@ export function AppShell({
         </header>
       )}
 
-      <main className={`max-w-md mx-auto px-4 ${hideHeader ? "pt-0" : "pt-4"}`}>{children}</main>
+      <main className={`w-full max-w-md md:max-w-[941px] mx-auto px-4 md:px-8 ${hideHeader ? "pt-0" : "pt-4"}`}>{children}</main>
 
       {!hideBottomNav && <BottomNav role={role} />}
     </div>
@@ -102,7 +102,7 @@ function BottomNav({ role }: { role: "dono" | "personal" | "aluno" | null }) {
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 pointer-events-none">
-      <div className="pointer-events-auto max-w-md mx-auto px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
+        <div className="pointer-events-auto max-w-md md:max-w-[941px] mx-auto px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
         <div className="rounded-t-3xl border border-b-0 border-border bg-card/95 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] flex items-end justify-around px-1 pt-2 pb-2">
           {items.map((it) => {
             const active = path === it.to || (it.to === home && path === "/");
