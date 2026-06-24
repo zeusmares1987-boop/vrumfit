@@ -172,6 +172,54 @@
 }
 
 @layer components {
+  .dashboard-reference-screen {
+    position: relative;
+    width: min(100%, 841px);
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 0;
+    background: var(--background);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--brand) 22%, transparent),
+      0 30px 90px -40px color-mix(in oklab, var(--brand) 42%, black);
+  }
+
+  .dashboard-reference-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    user-select: none;
+  }
+
+  .dashboard-hotspot {
+    position: absolute;
+    z-index: 4;
+    border-radius: 18px;
+    outline-offset: -3px;
+  }
+
+  .dashboard-hotspot:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--brand) 82%, white 18%);
+    background: color-mix(in oklab, var(--brand) 10%, transparent);
+  }
+
+  .dashboard-hotspot-profile { left: 74%; top: 4%; width: 16%; height: 5.4%; border-radius: 9999px; }
+  .dashboard-hotspot-bell { left: 92%; top: 4.2%; width: 5.4%; height: 3.4%; border-radius: 9999px; }
+
+  .dashboard-hotspot-module-0 { left: 5.3%; top: 54%; width: 27.3%; height: 16.1%; }
+  .dashboard-hotspot-module-1 { left: 35.2%; top: 54%; width: 27.3%; height: 16.1%; }
+  .dashboard-hotspot-module-2 { left: 65.3%; top: 54%; width: 27.3%; height: 16.1%; }
+  .dashboard-hotspot-module-3 { left: 5.3%; top: 72.9%; width: 27.3%; height: 16.1%; }
+  .dashboard-hotspot-module-4 { left: 35.2%; top: 72.9%; width: 27.3%; height: 16.1%; }
+  .dashboard-hotspot-module-5 { left: 65.3%; top: 72.9%; width: 27.3%; height: 16.1%; }
+
+  .dashboard-hotspot-nav { bottom: 1.2%; width: 14%; height: 4.2%; border-radius: 14px; }
+  .dashboard-hotspot-nav-0 { left: 7%; }
+  .dashboard-hotspot-nav-1 { left: 24%; }
+  .dashboard-hotspot-nav-2 { left: 42%; }
+  .dashboard-hotspot-nav-3 { left: 60%; }
+  .dashboard-hotspot-nav-4 { left: 78%; }
+
   .dashboard-home {
     --dash-panel: color-mix(in oklab, var(--card) 86%, black 14%);
     --dash-blue-line: color-mix(in oklab, var(--brand) 64%, transparent);
