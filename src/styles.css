@@ -183,6 +183,14 @@
       linear-gradient(180deg, color-mix(in oklab, var(--background) 74%, black 26%) 0%, var(--background) 100%);
   }
 
+  @media (min-width: 768px) {
+    .dashboard-hero {
+      background:
+        radial-gradient(460px 270px at 78% 30%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 66%),
+        linear-gradient(180deg, color-mix(in oklab, var(--background) 74%, black 26%) 0%, var(--background) 100%);
+    }
+  }
+
   .dashboard-hero-grid {
     position: absolute;
     inset: 0;
@@ -200,6 +208,12 @@
     overflow: hidden;
     opacity: .96;
     mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 78%, transparent 100%);
+  }
+
+  @media (min-width: 768px) {
+    .dashboard-hero-figure {
+      width: 48%;
+    }
   }
 
   .dashboard-hero-image {
