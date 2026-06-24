@@ -1,27 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  Dumbbell, Apple, Target, Camera, CalendarDays, TrendingUp,
-  CheckCircle2, Store, FolderOpen, Bell, User, Settings,
-  ChevronRight, Crown, ClipboardList,
+  Dumbbell, Apple, Target, CalendarDays, TrendingUp, CheckCircle2,
+  ChevronRight, Crown, ClipboardList, Flame, Clock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
-import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
+import { DashboardHome, type DashboardModule } from "@/components/DashboardHome";
 import { WeekFrequency } from "@/components/WeekFrequency";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
 import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
-import tileTreinosAsset from "@/assets/tile-treinos.jpg.asset.json";
-import tileDietaAsset from "@/assets/tile-dieta.jpg.asset.json";
-import tileExecucaoAsset from "@/assets/tile-execucao.jpg.asset.json";
-import tileAvaliacoesAsset from "@/assets/tile-avaliacoes.jpg.asset.json";
-import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
-import tileLojaAsset from "@/assets/tile-loja.jpg.asset.json";
-import tileArquivosAsset from "@/assets/tile-arquivos.jpg.asset.json";
-import tileAvisosAsset from "@/assets/tile-avisos.jpg.asset.json";
 
 export const Route = createFileRoute("/student")({
   head: () => ({ meta: [{ title: "Meu treino — VRUMFIT PERSONAL" }] }),
@@ -33,20 +24,13 @@ export const Route = createFileRoute("/student")({
 });
 
 const studentModules: DashboardModule[] = [
-  { icon: Dumbbell, title: "Meu Treino", description: "Veja séries, cargas e descanso", to: "/treinos", image: tileTreinosAsset.url },
-  { icon: Apple, title: "Dieta", description: "Plano alimentar do dia", to: "/dieta", image: tileDietaAsset.url },
-  { icon: Target, title: "Execução", description: "Aprenda o movimento certo", to: "/biblioteca", image: tileExecucaoAsset.url },
-  { icon: Camera, title: "Avaliação", description: "Fotos, medidas e histórico", to: "/avaliacoes", image: tileAvaliacoesAsset.url },
-  { icon: CalendarDays, title: "Agenda", description: "Seus horários de treino", to: "/agenda", image: headerGymAsset.url },
-  { icon: TrendingUp, title: "Progresso", description: "Sua evolução em gráficos", to: "/evolucao", image: tileProgressoAsset.url },
-  { icon: CheckCircle2, title: "Histórico", description: "Treinos concluídos", to: "/historico", image: headerGymAsset.url },
-  
-  { icon: FolderOpen, title: "Arquivos", description: "Materiais do personal", to: "/arquivos", image: tileArquivosAsset.url },
-  { icon: Bell, title: "Avisos", description: "Recados importantes", to: "/avisos", image: tileAvisosAsset.url },
-  { icon: User, title: "Perfil", description: "Seus dados e preferências", to: "/config", image: headerGymAsset.url },
-  { icon: Settings, title: "Configurações", description: "Ajustes da conta", to: "/config", image: headerGymAsset.url },
+  { icon: Dumbbell, title: "Meu Treino", description: "Séries e exercícios", to: "/treinos" },
+  { icon: Apple, title: "Dieta", description: "Refeições e água", to: "/dieta" },
+  { icon: Target, title: "Execução", description: "Como fazer certo", to: "/biblioteca" },
+  { icon: CalendarDays, title: "Agenda", description: "Aulas e horários", to: "/agenda" },
+  { icon: TrendingUp, title: "Progresso", description: "Sua evolução", to: "/evolucao" },
+  { icon: CheckCircle2, title: "Check-in", description: "Registrar presença", to: "/historico" },
 ];
-
 
 function StudentPage() {
   const { user } = useAuth();
@@ -94,29 +78,22 @@ function StudentPage() {
         toast.error("Já existe um dono cadastrado.");
       }
     },
-    onError: (error: Error) => toast.error(error.message || "Falha ao reivindicar."),
+    onError: (e: Error) => toast.error(e.message || "Falha ao reivindicar."),
   });
 
-  const { data: stats } = useQuery({
-    queryKey: ["student-stats", user?.id],
+  const { data: todayWorkout } = useQuery({
+    queryKey: ["student-today-workout", user?.id],
     queryFn: async () => {
-      if (!user) return { week: 0, month: 0, lastDays: null as number | null };
-      const now = new Date();
-      const dow = now.getDay();
-      const weekStart = new Date(now); weekStart.setDate(now.getDate() - dow); weekStart.setHours(0, 0, 0, 0);
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const iso = (d: Date) => d.toISOString().slice(0, 10);
-
-      const [{ count: week }, { count: month }, { data: last }] = await Promise.all([
-        supabase.from("workout_sessions").select("id", { count: "exact", head: true }).eq("student_id", user.id).gte("session_date", iso(weekStart)),
-        supabase.from("workout_sessions").select("id", { count: "exact", head: true }).eq("student_id", user.id).gte("session_date", iso(monthStart)),
-        supabase.from("workout_sessions").select("session_date").eq("student_id", user.id).order("session_date", { ascending: false }).limit(1).maybeSingle(),
-      ]);
-
-      const lastDays = last?.session_date
-        ? Math.floor((now.getTime() - new Date(last.session_date).getTime()) / 86400000)
-        : null;
-      return { week: week ?? 0, month: month ?? 0, lastDays };
+      if (!user) return null;
+      const { data } = await supabase
+        .from("workouts")
+        .select("id,name,duration_min")
+        .eq("student_id", user.id)
+        .eq("status", "ativo")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data as { id: string; name: string | null; duration_min: number | null } | null;
     },
     enabled: !!user,
   });
@@ -139,23 +116,17 @@ function StudentPage() {
 
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Aluno";
 
-  const studentStats: DashboardStat[] = [
-    { icon: Dumbbell, label: "Treinos", value: String(stats?.week ?? 0), hint: "Nesta semana", trend: "" },
-    { icon: CheckCircle2, label: "Concluídos", value: String(stats?.month ?? 0), hint: "No mês", trend: "" },
-    { icon: TrendingUp, label: "Último", value: stats?.lastDays == null ? "—" : stats.lastDays === 0 ? "Hoje" : `${stats.lastDays}d`, hint: "Atrás", trend: "" },
-  ];
-
   return (
     <AppShell hideHeader>
       <DashboardHome
         name={firstName}
         roleLabel="Aluno"
         modeLabel="Modo treino"
-        subtitle="Seu treino, sua dieta e sua evolução"
+        subtitle="Acompanhe seu treino e sua evolução."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
-        searchPlaceholder="Buscar treino, dieta, execução..."
-        stats={studentStats}
+        searchPlaceholder="Buscar treino, dieta, exercícios..."
+        stats={[]}
         modules={studentModules}
         notifCount={notifCount ?? 0}
         alerts={(
@@ -186,12 +157,33 @@ function StudentPage() {
                 <ChevronRight className="size-4 shrink-0 text-primary" />
               </Link>
             )}
-
+          </div>
+        )}
+        beforeStats={(
+          <div className="space-y-3">
             <WeekFrequency />
+            {todayWorkout && (
+              <Link to="/treinos" className="relative flex items-center gap-3 overflow-hidden rounded-2xl border border-border bg-card/70 p-3 backdrop-blur-sm transition hover:border-primary/55">
+                <div className="grid size-14 shrink-0 place-items-center rounded-full border border-primary/50 bg-primary/10 text-primary">
+                  <Dumbbell className="size-6" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[16px] font-extrabold text-foreground">Treino de Hoje</p>
+                  <p className="truncate text-[12px] text-muted-foreground">{todayWorkout.name ?? "Sem nome"}</p>
+                  {todayWorkout.duration_min && (
+                    <div className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1"><Clock className="size-3 text-primary" />{todayWorkout.duration_min} min</span>
+                      <span className="inline-flex items-center gap-1"><Flame className="size-3 text-primary" />~{Math.round(todayWorkout.duration_min * 9)} kcal</span>
+                    </div>
+                  )}
+                </div>
+                <span className="ml-1 hidden shrink-0 rounded-xl bg-primary px-3 py-2 text-[12px] font-bold text-primary-foreground sm:inline-block">Iniciar</span>
+                <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
+              </Link>
+            )}
           </div>
         )}
       />
     </AppShell>
   );
 }
-

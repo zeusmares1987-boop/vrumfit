@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, ChevronRight, Search } from "lucide-react";
+import { ChevronRight, Search, SlidersHorizontal, User as UserIcon } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
 
 export type DashboardModule = {
@@ -14,7 +14,7 @@ export type DashboardStat = {
   label: string;
   value: string;
   hint: string;
-  trend: string;
+  trend?: string;
   icon: ComponentType<{ className?: string }>;
 };
 
@@ -30,120 +30,76 @@ type DashboardHomeProps = {
   stats: DashboardStat[];
   notifCount?: number;
   alerts?: ReactNode;
+  beforeStats?: ReactNode;
 };
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Bom dia";
+  if (h < 18) return "Boa tarde";
+  return "Boa noite";
+}
 
 export function DashboardHome({
   name,
-  roleLabel,
-  modeLabel,
   subtitle,
-  avatarUrl,
+  avatarUrl: _avatarUrl,
   heroImageUrl,
   searchPlaceholder,
   modules,
   stats,
-  notifCount = 0,
   alerts,
+  beforeStats,
 }: DashboardHomeProps) {
   const [query, setQuery] = useState("");
 
   const visibleModules = useMemo(() => {
     const clean = query.trim().toLowerCase();
     if (!clean) return modules;
-    return modules.filter((item) => `${item.title} ${item.description}`.toLowerCase().includes(clean));
+    return modules.filter((m) => `${m.title} ${m.description}`.toLowerCase().includes(clean));
   }, [modules, query]);
 
   return (
-    <div className="pb-6">
-      <DashboardHero
-        name={name}
-        roleLabel={roleLabel}
-        modeLabel={modeLabel}
-        subtitle={subtitle}
-        avatarUrl={avatarUrl}
-        heroImageUrl={heroImageUrl}
-        notifCount={notifCount}
-        searchPlaceholder={searchPlaceholder}
-        query={query}
-        onQueryChange={setQuery}
-      />
-
-      {alerts && <div className="mt-4">{alerts}</div>}
-      <StatsGrid stats={stats} />
-      <ModuleSection modules={visibleModules} />
+    <div className="space-y-5 pb-6">
+      <Hero name={name} subtitle={subtitle} heroImageUrl={heroImageUrl} />
+      {alerts}
+      {beforeStats}
+      {stats.length > 0 && <StatsRow stats={stats} />}
+      <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} />
+      <ModuleGrid modules={visibleModules} />
     </div>
   );
 }
 
-function DashboardHero({
-  name,
-  roleLabel,
-  modeLabel,
-  subtitle,
-  avatarUrl,
-  heroImageUrl,
-  notifCount,
-  searchPlaceholder,
-  query,
-  onQueryChange,
-}: {
-  name: string;
-  roleLabel: string;
-  modeLabel: string;
-  subtitle: string;
-  avatarUrl: string;
-  heroImageUrl: string;
-  notifCount: number;
-  searchPlaceholder: string;
-  query: string;
-  onQueryChange: (value: string) => void;
-}) {
+function Hero({ name, subtitle, heroImageUrl }: { name: string; subtitle: string; heroImageUrl: string }) {
   return (
-    <section className="relative -mx-4 overflow-hidden bg-background px-4 pb-4 pt-3">
-      <div className="absolute inset-0">
-        <img src={heroImageUrl} alt="" className="size-full object-cover opacity-25" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
+    <section className="relative -mx-4 overflow-hidden px-4 pb-2 pt-4">
+      {/* Imagem à direita, fade pra esquerda */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-[58%]">
+        <img src={heroImageUrl} alt="" className="size-full object-cover object-right opacity-60" loading="eager" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
       </div>
 
-      {/* Linha 1: marca + ações */}
+      {/* Topo: logo + avatar */}
       <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <Brand />
-        <div className="flex shrink-0 items-center gap-2">
-          <Link to="/avisos" aria-label="Notificações" className="relative grid size-10 place-items-center rounded-full border border-border bg-card/80 text-muted-foreground backdrop-blur transition hover:text-primary">
-            <Bell className="size-[18px]" />
-            {notifCount > 0 && <span className="absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-primary px-1 text-[10px] font-black text-primary-foreground">{notifCount}</span>}
-          </Link>
-          <Link to="/config" aria-label="Meu perfil">
-            <img src={avatarUrl} alt="" className="size-10 rounded-full border-2 border-primary object-cover shadow-[0_0_18px_-6px_var(--color-primary)]" />
-          </Link>
-        </div>
+        <Link
+          to="/config"
+          aria-label="Meu perfil"
+          className="grid size-11 shrink-0 place-items-center rounded-full border-[1.5px] border-primary/70 text-primary backdrop-blur-sm transition hover:bg-primary/10"
+        >
+          <UserIcon className="size-5" />
+        </Link>
       </header>
 
-      {/* Linha 2: boas-vindas */}
-      <div className="relative mt-5 rounded-3xl border border-border bg-card/40 p-4 backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center rounded-full border border-primary/50 bg-primary/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">{roleLabel}</span>
-          <span className="inline-flex items-center rounded-full border border-border bg-card/70 px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
-            {modeLabel}
-          </span>
-        </div>
-        <h1 className="mt-2 text-[26px] font-black leading-tight tracking-tight text-foreground">
-          Bem-vindo, <span className="text-primary">{name}</span>
+      {/* Saudação */}
+      <div className="relative mt-7 max-w-[78%]">
+        <h1 className="text-[34px] font-black leading-[1.05] tracking-tight text-foreground">
+          {greeting()},{" "}
+          <span className="text-primary">{name}!</span>
         </h1>
-        <p className="mt-1 text-[12px] leading-snug text-muted-foreground">{subtitle}</p>
-      </div>
-
-      {/* Linha 3: busca */}
-      <div className="relative mt-3">
-        <label className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            value={query}
-            onChange={(event) => onQueryChange(event.target.value)}
-            placeholder={searchPlaceholder}
-            className="h-11 w-full rounded-full border border-border bg-card/80 pl-11 pr-4 text-[13px] text-foreground outline-none backdrop-blur placeholder:text-muted-foreground focus:border-primary/70"
-          />
-        </label>
+        <p className="mt-2 text-[13px] leading-snug text-muted-foreground">{subtitle}</p>
       </div>
     </section>
   );
@@ -151,69 +107,92 @@ function DashboardHero({
 
 function Brand() {
   return (
-    <div className="flex min-w-0 items-center">
+    <div className="flex min-w-0 items-center gap-2">
+      <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-[0_0_24px_-6px_var(--color-primary)]">
+        <span className="text-xl font-black italic leading-none">V</span>
+      </div>
       <div className="min-w-0 leading-none">
-        <div className="truncate text-lg font-black italic tracking-tight text-foreground">Vrum<span className="text-primary">Fit</span></div>
-        <div className="mt-0.5 text-[8px] font-bold tracking-[0.35em] text-muted-foreground">PERSONAL</div>
+        <div className="truncate text-[20px] font-black italic tracking-tight text-foreground">
+          Vrum<span className="text-primary">Fit</span>
+        </div>
+        <div className="mt-1 text-[8px] font-bold tracking-[0.4em] text-muted-foreground">PERSONAL</div>
       </div>
     </div>
   );
 }
 
-function StatsGrid({ stats }: { stats: DashboardStat[] }) {
+function StatsRow({ stats }: { stats: DashboardStat[] }) {
   return (
-    <section className="mt-4 grid grid-cols-3 gap-2">
-      {stats.map((stat) => <StatCard key={stat.label} stat={stat} />)}
+    <section className="grid grid-cols-3 gap-2">
+      {stats.map((s) => <StatCard key={s.label} stat={s} />)}
     </section>
   );
 }
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="min-w-0 rounded-2xl border border-border bg-card/80 p-3 shadow-[0_14px_40px_-34px_var(--color-primary)]">
-      <div className="flex items-center justify-between gap-1">
-        <div className="grid size-8 place-items-center rounded-full border border-primary/40 bg-primary/10 text-primary">
-          <stat.icon className="size-4" />
+    <article className="relative min-w-0 overflow-hidden rounded-2xl border border-border bg-card/70 p-3 backdrop-blur-sm">
+      <div className="flex items-start gap-2">
+        <div className="grid size-9 shrink-0 place-items-center rounded-full border border-primary/40 bg-primary/10 text-primary">
+          <stat.icon className="size-[18px]" />
         </div>
-        <span className="truncate text-[10px] font-bold text-primary">{stat.trend}</span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[11px] font-medium text-muted-foreground">{stat.label}</p>
+          <p className="truncate text-2xl font-black leading-tight tracking-tight text-foreground">{stat.value}</p>
+          <p className="truncate text-[10px] text-muted-foreground">{stat.hint}</p>
+        </div>
+        <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground/60" />
       </div>
-      <p className="mt-3 truncate text-[10px] text-muted-foreground">{stat.label}</p>
-      <p className="mt-0.5 truncate text-xl font-black tracking-tight text-foreground">{stat.value}</p>
-      <p className="truncate text-[10px] text-primary">{stat.hint}</p>
+      <div className="pointer-events-none absolute inset-x-4 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
     </article>
   );
 }
 
-function ModuleSection({ modules }: { modules: DashboardModule[] }) {
+function SearchRow({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   return (
-    <section className="mt-5">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="border-l-4 border-primary pl-3 text-lg font-bold text-foreground">Módulos</h2>
-      </div>
-      <div className="grid grid-cols-3 gap-2.5">
-        {modules.map((module) => <ModuleCard key={module.title} module={module} />)}
-      </div>
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+      <label className="relative">
+        <Search className="absolute left-4 top-1/2 size-[18px] -translate-y-1/2 text-muted-foreground" />
+        <input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="h-12 w-full rounded-2xl border border-border bg-card/70 pl-11 pr-4 text-[13px] text-foreground outline-none backdrop-blur-sm placeholder:text-muted-foreground focus:border-primary/60"
+        />
+      </label>
+      <button type="button" className="grid h-12 shrink-0 grid-flow-col items-center gap-2 rounded-2xl border border-border bg-card/70 px-4 text-[13px] font-semibold text-primary backdrop-blur-sm transition hover:border-primary/50">
+        <SlidersHorizontal className="size-4" />
+        Filtros
+      </button>
+    </div>
+  );
+}
+
+function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
+  return (
+    <section className="grid grid-cols-2 gap-3">
+      {modules.map((m) => <ModuleCard key={m.title + m.to} module={m} />)}
     </section>
   );
 }
 
 function ModuleCard({ module }: { module: DashboardModule }) {
   return (
-    <Link to={module.to} className="group relative aspect-[0.86] overflow-hidden rounded-2xl border border-border bg-card transition active:scale-[0.98] hover:border-primary/55">
-      {module.image && <img src={module.image} alt="" className="absolute inset-0 size-full object-cover opacity-[0.55] transition duration-300 group-hover:scale-105" loading="lazy" />}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/58 to-background/10" />
-      <div className="relative flex h-full flex-col p-2.5">
-        <div className="grid size-8 place-items-center rounded-full border border-primary/35 bg-background/65 text-primary backdrop-blur">
-          <module.icon className="size-4 drop-shadow-[0_0_8px_var(--color-primary)]" />
+    <Link
+      to={module.to}
+      className="group relative overflow-hidden rounded-2xl border border-border bg-card/70 p-4 backdrop-blur-sm transition active:scale-[0.98] hover:border-primary/55"
+    >
+      <div className="flex items-start justify-between">
+        <div className="grid size-12 place-items-center rounded-full border-[1.5px] border-primary/60 bg-primary/5 text-primary">
+          <module.icon className="size-6" />
         </div>
-        <div className="mt-auto">
-          <p className="line-clamp-2 text-[12px] font-extrabold leading-tight text-foreground">{module.title}</p>
-          <div className="mt-1 flex items-center justify-between gap-1">
-            <p className="line-clamp-1 text-[9px] leading-tight text-muted-foreground">{module.description}</p>
-            <ChevronRight className="size-3.5 shrink-0 text-primary" />
-          </div>
-        </div>
+        <ChevronRight className="size-5 text-muted-foreground/60 transition group-hover:translate-x-0.5 group-hover:text-primary" />
       </div>
+      <div className="mt-5">
+        <p className="truncate text-[18px] font-extrabold leading-tight text-foreground">{module.title}</p>
+        <p className="mt-1 line-clamp-1 text-[12px] text-muted-foreground">{module.description}</p>
+      </div>
+      <div className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
     </Link>
   );
 }
