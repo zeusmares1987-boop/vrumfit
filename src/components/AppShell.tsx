@@ -1,5 +1,5 @@
 import { Link, Navigate, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Dumbbell, Apple, TrendingUp, MoreHorizontal, LogOut, ChevronLeft } from "lucide-react";
+import { Home, CalendarDays, BarChart3, MessageCircle, LayoutGrid, LogOut, ChevronLeft } from "lucide-react";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import { useRealtimePush } from "@/hooks/useRealtimePush";
 import type { ReactNode, InputHTMLAttributes } from "react";
@@ -90,40 +90,27 @@ export function AppShell({
 
 function BottomNav({ role }: { role: "dono" | "personal" | "aluno" | null }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const items = role === "aluno"
-    ? [
-        { to: "/student", label: "Início", icon: Home },
-        { to: "/treinos", label: "Treino", icon: Dumbbell },
-        { to: "/dieta", label: "Dieta", icon: Apple },
-        { to: "/evolucao", label: "Progresso", icon: TrendingUp },
-        { to: "/config", label: "Mais", icon: MoreHorizontal },
-      ]
-    : role === "personal"
-    ? [
-        { to: "/trainer", label: "Início", icon: Home },
-        { to: "/alunos", label: "Alunos", icon: Dumbbell },
-        { to: "/treinos", label: "Treinos", icon: Apple },
-        { to: "/avaliacoes", label: "Avaliações", icon: TrendingUp },
-        { to: "/config", label: "Mais", icon: MoreHorizontal },
-      ]
-    : [
-        { to: "/owner", label: "Início", icon: Home },
-        { to: "/alunos", label: "Alunos", icon: Dumbbell },
-        { to: "/loja", label: "Loja", icon: Apple },
-        { to: "/financeiro", label: "Financeiro", icon: TrendingUp },
-        { to: "/config", label: "Mais", icon: MoreHorizontal },
-      ];
+  const home = role === "aluno" ? "/student" : role === "personal" ? "/trainer" : "/owner";
+  const reports = role === "dono" ? "/financeiro" : "/evolucao";
+  const items = [
+    { to: home, label: "Início", icon: Home },
+    { to: "/agenda", label: "Agenda", icon: CalendarDays },
+    { to: reports, label: "Relatórios", icon: BarChart3 },
+    { to: "/avisos", label: "Mensagens", icon: MessageCircle },
+    { to: "/config", label: "Mais", icon: LayoutGrid },
+  ];
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 pointer-events-none">
       <div className="pointer-events-auto max-w-md mx-auto px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
-        <div className="rounded-2xl bg-black/85 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex items-center justify-around px-1 py-1.5">
+        <div className="rounded-t-3xl border border-b-0 border-border bg-card/95 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] flex items-end justify-around px-1 pt-2 pb-2">
           {items.map((it) => {
-            const active = path === it.to;
+            const active = path === it.to || (it.to === home && path === "/");
             return (
-              <Link key={it.to} to={it.to} className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl transition ${active ? "text-primary" : "text-white/55 hover:text-white"}`}>
-                <it.icon className={`size-[18px] ${active ? "drop-shadow-[0_0_6px_rgba(255,140,40,0.7)]" : ""}`} />
+              <Link key={it.to} to={it.to} className={`flex-1 flex flex-col items-center justify-center gap-1 py-1 rounded-xl transition ${active ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+                <it.icon className="size-[20px]" />
                 <span className="text-[10px] font-semibold tracking-wide">{it.label}</span>
+                {active && <span className="h-[3px] w-7 rounded-full bg-primary shadow-[0_0_10px_var(--color-primary)]" />}
               </Link>
             );
           })}
