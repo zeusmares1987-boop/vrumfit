@@ -43,14 +43,8 @@ const trainerModules: DashboardModule[] = [
   { icon: Settings, title: "Configurações", description: "Perfil e preferências", to: "/config", image: headerGymAsset.url },
 ];
 
-const trainerStats: DashboardStat[] = [
-  { icon: Users, label: "Alunos", value: "86", hint: "Ativos", trend: "↑ 10%" },
-  { icon: Dumbbell, label: "Treinos", value: "142", hint: "Montados", trend: "↑ 7%" },
-  { icon: CheckCircle2, label: "Presença", value: "91%", hint: "Na semana", trend: "↑ 4%" },
-];
-
 function TrainerPage() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const { data: profile } = useQuery({
     queryKey: ["my-profile", user?.id],
     queryFn: async () => {
@@ -61,7 +55,57 @@ function TrainerPage() {
     enabled: !!user,
   });
 
+  const { data: dashboard } = useQuery({
+    queryKey: ["trainer-dashboard-real", user?.id, role],
+    queryFn: async () => {
+      if (!user) return { students: 0, workouts: 0, presence: 0, notices: 0 };
+      const now = new Date();
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - now.getDay());
+      weekStart.setHours(0, 0, 0, 0);
+      const since = new Date(Date.now() - 30 * 86400000).toISOString();
+
+      let studentsQuery = supabase.from("students").select("user_id").eq("status", "ativo");
+      let workoutsQuery = supabase.from("workouts").select("id", { count: "exact", head: true }).eq("status", "ativo");
+      let noticesQuery = supabase.from("notices").select("id", { count: "exact", head: true }).eq("status", "ativo").gte("created_at", since);
+
+      if (role === "personal") {
+        studentsQuery = studentsQuery.eq("personal_id", user.id);
+        workoutsQuery = workoutsQuery.eq("personal_id", user.id);
+        noticesQuery = noticesQuery.eq("personal_id", user.id);
+      }
+
+      const [{ data: studentRows }, workouts, notices] = await Promise.all([
+        studentsQuery,
+        workoutsQuery,
+        noticesQuery,
+      ]);
+      const studentIds = (studentRows ?? []).map((student) => student.user_id);
+      const { data: sessions } = studentIds.length
+        ? await supabase
+          .from("workout_sessions")
+          .select("student_id")
+          .in("student_id", studentIds)
+          .gte("session_date", weekStart.toISOString().slice(0, 10))
+        : { data: [] };
+      const presentStudents = new Set((sessions ?? []).map((session) => session.student_id)).size;
+
+      return {
+        students: studentIds.length,
+        workouts: workouts.count ?? 0,
+        presence: studentIds.length ? Math.round((presentStudents / studentIds.length) * 100) : 0,
+        notices: notices.count ?? 0,
+      };
+    },
+    enabled: !!user,
+  });
+
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Professor";
+  const trainerStats: DashboardStat[] = [
+    { icon: Users, label: "Alunos", value: String(dashboard?.students ?? 0), hint: "Ativos", trend: "" },
+    { icon: Dumbbell, label: "Treinos", value: String(dashboard?.workouts ?? 0), hint: "Ativos", trend: "" },
+    { icon: CheckCircle2, label: "Presença", value: `${dashboard?.presence ?? 0}%`, hint: "Semana", trend: "" },
+  ];
 
   return (
     <AppShell hideHeader>
@@ -76,7 +120,7 @@ function TrainerPage() {
         filters={["Visão geral", "Hoje", "Semana", "Alunos", "Treinos"]}
         stats={trainerStats}
         modules={trainerModules}
-        notifCount={3}
+        notifCount={dashboard?.notices ?? 0}
       />
     </AppShell>
   );
