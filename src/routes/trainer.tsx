@@ -114,7 +114,7 @@ function TrainerPage() {
         roleLabel="Personal"
         modeLabel="Modo professor"
         subtitle="Gerencie alunos, treinos e resultados"
-        avatarUrl={avatarOwnerAsset.url}
+        avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
         searchPlaceholder="Buscar alunos, treinos, avaliações..."
         stats={trainerStats}
