@@ -21,21 +21,23 @@ export const Route = createFileRoute("/config")({
 function Cfg() {
   const nav = useNavigate();
   const { user, signOut, role } = useAuth();
-  const [form, setForm] = useState({ full_name: "", email: "", phone: "", avatar_url: "" });
+  const [form, setForm] = useState({ full_name: "", email: "", phone: "", avatar_url: "", cref: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const showCref = role === "personal" || role === "dono";
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       const { data } = await supabase
-        .from("profiles").select("full_name,email,phone,avatar_url").eq("id", user.id).maybeSingle();
+        .from("profiles").select("full_name,email,phone,avatar_url,cref").eq("id", user.id).maybeSingle();
       if (data) setForm({
         full_name: data.full_name ?? "",
         email: data.email ?? user.email ?? "",
         phone: data.phone ?? "",
         avatar_url: data.avatar_url ?? "",
+        cref: (data as { cref?: string | null }).cref ?? "",
       });
       setLoading(false);
     })();
@@ -47,6 +49,7 @@ function Cfg() {
     setSaving(true);
     const { error } = await supabase.from("profiles").update({
       full_name: form.full_name, phone: form.phone, avatar_url: form.avatar_url || null,
+      ...(showCref ? { cref: form.cref || null } : {}),
     }).eq("id", user.id);
     setSaving(false);
     if (error) return toast.error(error.message);
@@ -126,6 +129,11 @@ function Cfg() {
             <Field label="Telefone">
               <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="(11) 99999-9999" />
             </Field>
+            {showCref && (
+              <Field label="CREF (registro profissional)">
+                <input value={form.cref} onChange={(e) => setForm({ ...form, cref: e.target.value })} className={inputCls} placeholder="000000-G/SP" />
+              </Field>
+            )}
             <button disabled={saving} className={btnPrimary}>{saving ? "SALVANDO…" : "SALVAR PERFIL"}</button>
           </form>
         )}
