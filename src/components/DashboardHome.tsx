@@ -184,7 +184,7 @@ function SearchRow({ value, onChange, placeholder }: { value: string; onChange: 
 
 function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
   return (
-    <section className="grid grid-cols-3 gap-2 pt-1 sm:gap-3">
+    <section className="grid grid-cols-3 gap-2.5 pt-1 sm:gap-3">
       {modules.map((m) => <ModuleCard key={m.to} module={m} />)}
     </section>
   );
@@ -192,13 +192,16 @@ function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
 
 function ModuleCard({ module }: { module: DashboardModule }) {
   return (
-    <Link to={module.to} className="vrum-module-card group relative block min-h-[116px] overflow-hidden rounded-[16px] p-4 text-left transition active:scale-[0.98]">
-      <div className="vrum-module-ring grid size-12 place-items-center rounded-full text-primary">
-        <module.icon className="size-7" strokeWidth={1.75} />
+    <Link
+      to={module.to}
+      className="vrum-module-card group relative flex aspect-square flex-col items-center justify-center gap-2 overflow-hidden rounded-[18px] p-3 text-center transition active:scale-[0.97]"
+    >
+      <div className="vrum-module-ring grid size-11 place-items-center rounded-2xl text-primary">
+        <module.icon className="size-[22px]" strokeWidth={1.9} />
       </div>
-      <ChevronRight className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" strokeWidth={2.3} />
-      <p className="mt-3 truncate pr-5 text-[18px] font-bold leading-tight text-foreground">{module.title}</p>
-      <p className="mt-1 line-clamp-2 pr-4 text-[12px] leading-tight text-muted-foreground">{module.description}</p>
+      <p className="line-clamp-2 w-full px-0.5 text-[11.5px] font-semibold leading-[1.15] text-foreground">
+        {module.title}
+      </p>
     </Link>
   );
 }
