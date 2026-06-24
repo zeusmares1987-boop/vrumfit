@@ -203,7 +203,7 @@
   }
 
   .vrum-hero {
-    min-height: 430px;
+    min-height: 365px;
     background: var(--background);
   }
 
@@ -211,10 +211,10 @@
     position: absolute;
     top: 0;
     right: 0;
-    height: 78%;
-    width: 76%;
+    height: 86%;
+    width: 82%;
     object-fit: cover;
-    object-position: 72% top;
+    object-position: 64% top;
     opacity: .9;
     pointer-events: none;
     user-select: none;
@@ -225,8 +225,8 @@
     inset: 0;
     pointer-events: none;
     background:
-      linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 96%, transparent) 31%, color-mix(in oklab, var(--background) 45%, transparent) 62%, transparent 88%),
-      linear-gradient(180deg, color-mix(in oklab, black 16%, transparent) 0%, transparent 43%, var(--background) 82%, var(--background) 100%);
+      linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 91%, transparent) 30%, color-mix(in oklab, var(--background) 42%, transparent) 64%, transparent 92%),
+      linear-gradient(180deg, color-mix(in oklab, black 12%, transparent) 0%, transparent 46%, var(--background) 88%, var(--background) 100%);
   }
 
   .vrum-top-icon {
