@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { AppShell, Card, btnPrimary } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, BookOpen, Dumbbell, Copy } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowLeft, BookOpen, Dumbbell, MessageCircle } from "lucide-react";
 
 type Module = { t: string; d?: string };
 type Offer = {
