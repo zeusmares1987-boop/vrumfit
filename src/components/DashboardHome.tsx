@@ -130,17 +130,12 @@ function Brand() {
 
 function VrumMark({ className }: { className?: string }) {
   return (
-    <svg className={cn("dashboard-v-mark", className)} viewBox="0 0 64 64" role="img" aria-label="VrumFit">
-      <defs>
-        <linearGradient id="vrumMarkGradient" x1="9" x2="55" y1="8" y2="58" gradientUnits="userSpaceOnUse">
-          <stop className="dashboard-v-stop-a" />
-          <stop offset="1" className="dashboard-v-stop-b" />
-        </linearGradient>
-      </defs>
-      <path d="M5 9h14l13 30L49 9h10L38 55H26L5 9Z" fill="url(#vrumMarkGradient)" />
-      <path d="M20 9h14L24 31 16 16l4-7Z" className="dashboard-v-mark-shadow" />
-      <path d="M36 37 50 12h8L40 55h-9l5-18Z" className="dashboard-v-mark-highlight" />
-    </svg>
+    <img
+      src={vrumMarkAsset.url}
+      alt="VrumFit"
+      className={cn("dashboard-v-mark object-contain", className)}
+      draggable={false}
+    />
   );
 }
 
