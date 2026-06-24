@@ -8,6 +8,11 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
 import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
+import tileAlunosAsset from "@/assets/tile-alunos.jpg.asset.json";
+import tileFinanceiroAsset from "@/assets/tile-financeiro.jpg.asset.json";
+import tilePlanosAsset from "@/assets/tile-planos.jpg.asset.json";
+import tileProfessoresAsset from "@/assets/tile-professores.jpg.asset.json";
+import tileUsuariosAsset from "@/assets/tile-usuarios.jpg.asset.json";
 
 export const Route = createFileRoute("/owner")({
   head: () => ({
@@ -24,11 +29,11 @@ export const Route = createFileRoute("/owner")({
 });
 
 const ownerModules: DashboardModule[] = [
-  { icon: Users, title: "Usuários", description: "Acessos e permissões", to: "/personais" },
-  { icon: User, title: "Professores", description: "Equipe e gestão", to: "/trainer" },
-  { icon: GraduationCap, title: "Alunos", description: "Cadastros e matrículas", to: "/alunos" },
-  { icon: ClipboardList, title: "Planos", description: "Assinaturas e limites", to: "/planos" },
-  { icon: Wallet, title: "Financeiro", description: "Receitas e relatórios", to: "/financeiro" },
+  { icon: Users, title: "Usuários", description: "Gerencie acessos", to: "/personais", image: tileUsuariosAsset.url },
+  { icon: User, title: "Professores", description: "Equipe e gestão", to: "/trainer", image: tileProfessoresAsset.url },
+  { icon: GraduationCap, title: "Alunos", description: "Alunos e matrículas", to: "/alunos", image: tileAlunosAsset.url },
+  { icon: ClipboardList, title: "Planos", description: "Assinaturas ativas", to: "/planos", image: tilePlanosAsset.url },
+  { icon: Wallet, title: "Financeiro", description: "Receitas e relatórios", to: "/financeiro", image: tileFinanceiroAsset.url },
   { icon: Settings, title: "Configurações", description: "Regras do sistema", to: "/config" },
 ];
 
