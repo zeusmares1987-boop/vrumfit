@@ -13,6 +13,10 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
 import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
+import tileDietaAsset from "@/assets/tile-dieta.jpg.asset.json";
+import tileExecucaoAsset from "@/assets/tile-execucao.jpg.asset.json";
+import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
+import tileTreinosAsset from "@/assets/tile-treinos.jpg.asset.json";
 
 export const Route = createFileRoute("/student")({
   head: () => ({ meta: [{ title: "Meu treino — VRUMFIT PERSONAL" }] }),
@@ -24,11 +28,11 @@ export const Route = createFileRoute("/student")({
 });
 
 const studentModules: DashboardModule[] = [
-  { icon: Dumbbell, title: "Meu Treino", description: "Séries e exercícios", to: "/treinos" },
-  { icon: Apple, title: "Dieta", description: "Refeições e água", to: "/dieta" },
-  { icon: Target, title: "Execução", description: "Como fazer certo", to: "/biblioteca" },
+  { icon: Dumbbell, title: "Meu Treino", description: "Séries e exercícios", to: "/treinos", image: tileTreinosAsset.url },
+  { icon: Apple, title: "Dieta", description: "Refeições e água", to: "/dieta", image: tileDietaAsset.url },
+  { icon: Target, title: "Execução", description: "Como fazer certo", to: "/biblioteca", image: tileExecucaoAsset.url },
   { icon: CalendarDays, title: "Agenda", description: "Aulas e horários", to: "/agenda" },
-  { icon: TrendingUp, title: "Progresso", description: "Sua evolução", to: "/evolucao" },
+  { icon: TrendingUp, title: "Progresso", description: "Sua evolução", to: "/evolucao", image: tileProgressoAsset.url },
   { icon: CheckCircle2, title: "Check-in", description: "Registrar presença", to: "/historico" },
 ];
 
