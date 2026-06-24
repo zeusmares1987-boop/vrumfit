@@ -210,20 +210,15 @@ function statSpark(value: string) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="dashboard-panel relative min-h-[168px] min-w-0 overflow-hidden rounded-[20px] p-5 md:min-h-[222px] md:rounded-[19px] md:p-6">
-      <div className="flex items-start gap-4">
-        <div className="dashboard-small-ring grid size-[58px] shrink-0 place-items-center rounded-full text-primary md:size-[64px]">
-          <stat.icon className="size-8" />
-        </div>
-        <div className="min-w-0 pt-1">
-          <p className="truncate text-[18px] font-medium text-foreground md:text-[21px]">{safeShortLabel(stat.label)}</p>
-          <p className="mt-5 truncate text-[46px] font-black leading-none tracking-[-0.055em] text-foreground md:text-[52px]">{stat.value}</p>
-          <p className="mt-1 truncate text-[18px] leading-none text-primary md:text-[20px]">{stat.hint}</p>
-        </div>
+    <article className="dashboard-panel relative min-w-0 overflow-hidden rounded-[18px] p-3 md:rounded-[20px] md:p-5">
+      <div className="dashboard-small-ring grid size-[40px] place-items-center rounded-[10px] text-primary md:size-[52px]">
+        <stat.icon className="size-5 md:size-7" />
       </div>
-      <svg className="dashboard-spark" viewBox="0 0 144 48" aria-hidden="true">
-        <path d={statSpark(stat.value)} />
-      </svg>
+      <p className="mt-3 truncate text-[12px] font-medium text-foreground md:text-[16px]">{stat.label}</p>
+      <p className="mt-1 truncate text-[28px] font-black leading-none tracking-[-0.04em] text-foreground md:text-[44px]">{stat.value}</p>
+      <p className="mt-2 truncate text-[11px] leading-tight text-primary md:text-[14px]">
+        <span className="font-bold">{stat.trend ?? "+0%"}</span> <span className="text-muted-foreground">{stat.hint}</span>
+      </p>
     </article>
   );
 }
