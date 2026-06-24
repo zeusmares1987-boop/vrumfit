@@ -103,7 +103,7 @@ function AlunoDetail() {
         </div>
         {profile.phone && (
           <a
-            href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`}
+            href={`whatsapp://send?phone=${profile.phone.replace(/\D/g, "")}`}
             target="_blank" rel="noopener noreferrer"
             className="mt-3 flex items-center justify-center gap-2 h-11 rounded-xl bg-success/15 border border-success/40 text-success text-[12px] font-bold"
           >
