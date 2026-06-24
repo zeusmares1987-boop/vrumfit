@@ -86,7 +86,7 @@ function OwnerPage() {
         modeLabel="Modo gestor"
         subtitle="Controle total do seu negócio."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
-        heroImageUrl={headerGymAsset.url}
+        heroImageUrl={heroOwnerAsset.url}
         
         searchPlaceholder="Buscar módulos, usuários, produtos..."
         stats={ownerStats}
