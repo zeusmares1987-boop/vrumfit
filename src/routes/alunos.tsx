@@ -205,13 +205,12 @@ function AlunosPage() {
                 </div>
                 {p.profiles?.phone && (
                   <a
-                    href={`https://wa.me/${p.profiles.phone.replace(/\D/g, "")}`}
-                    target="_blank" rel="noopener noreferrer"
+                    href={`tel:${p.profiles.phone.replace(/\D/g, "")}`}
                     onClick={(e) => e.stopPropagation()}
                     className="shrink-0 size-9 rounded-xl bg-success/15 border border-success/40 grid place-items-center text-success"
-                    aria-label={`WhatsApp de ${name}`}
+                    aria-label={`Ligar para ${name}`}
                   >
-                    <MessageCircle className="size-4" />
+                    <Phone className="size-4" />
                   </a>
                 )}
                 <ChevronRight className="size-4 text-muted-foreground shrink-0" />
