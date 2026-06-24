@@ -196,8 +196,14 @@
     opacity: .9;
   }
 
+  .vrum-dash {
+    background:
+      radial-gradient(360px 300px at 78% 3%, color-mix(in oklab, var(--brand) 13%, transparent), transparent 68%),
+      linear-gradient(180deg, color-mix(in oklab, var(--background) 96%, black 4%), var(--background));
+  }
+
   .vrum-hero {
-    min-height: 280px;
+    min-height: 430px;
     background: var(--background);
   }
 
@@ -205,10 +211,11 @@
     position: absolute;
     top: 0;
     right: 0;
-    height: 100%;
-    width: 70%;
+    height: 78%;
+    width: 76%;
     object-fit: cover;
-    object-position: right top;
+    object-position: 72% top;
+    opacity: .9;
     pointer-events: none;
     user-select: none;
   }
@@ -218,15 +225,30 @@
     inset: 0;
     pointer-events: none;
     background:
-      linear-gradient(90deg, var(--background) 0%, var(--background) 28%, color-mix(in oklab, var(--background) 55%, transparent) 55%, transparent 85%),
-      linear-gradient(180deg, transparent 60%, var(--background) 100%);
+      linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 96%, transparent) 31%, color-mix(in oklab, var(--background) 45%, transparent) 62%, transparent 88%),
+      linear-gradient(180deg, color-mix(in oklab, black 16%, transparent) 0%, transparent 43%, var(--background) 82%, var(--background) 100%);
   }
 
-  .vrum-profile-btn {
-    border: 1.5px solid color-mix(in oklab, var(--brand) 70%, transparent);
-    background: color-mix(in oklab, var(--background) 60%, transparent);
-    box-shadow: 0 0 24px -10px color-mix(in oklab, var(--brand) 80%, transparent);
-    backdrop-filter: blur(8px);
+  .vrum-top-icon {
+    border: 1px solid color-mix(in oklab, white 15%, transparent);
+    background: color-mix(in oklab, black 34%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .vrum-notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -4px;
+    display: grid;
+    min-width: 22px;
+    height: 22px;
+    place-items: center;
+    border-radius: 9999px;
+    background: var(--brand);
+    color: var(--primary-foreground);
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 0 16px color-mix(in oklab, var(--brand) 84%, transparent);
   }
 
   .vrum-card {
@@ -258,6 +280,55 @@
     box-shadow:
       inset 0 0 12px color-mix(in oklab, var(--brand) 10%, transparent),
       0 0 18px -8px color-mix(in oklab, var(--brand) 80%, transparent);
+  }
+
+  .vrum-pulse-line {
+    height: 28px;
+    border-top: 1px solid color-mix(in oklab, var(--brand) 66%, transparent);
+    filter: drop-shadow(0 0 7px color-mix(in oklab, var(--brand) 78%, transparent));
+  }
+
+  .vrum-pulse-line::before {
+    content: "";
+    position: absolute;
+    left: 46%;
+    top: -13px;
+    width: 42px;
+    height: 26px;
+    background:
+      linear-gradient(135deg, transparent 0 39%, var(--brand) 40% 47%, transparent 48% 100%),
+      linear-gradient(45deg, transparent 0 42%, var(--brand) 43% 50%, transparent 51% 100%);
+    clip-path: polygon(0 52%, 30% 52%, 42% 0, 57% 100%, 69% 52%, 100% 52%, 100% 58%, 65% 58%, 56% 86%, 42% 28%, 34% 58%, 0 58%);
+  }
+
+  .vrum-search-box,
+  .vrum-stat-card {
+    border: 1px solid color-mix(in oklab, white 12%, var(--brand) 10%);
+    background: color-mix(in oklab, black 50%, var(--surface) 50%);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 6%, transparent),
+      0 12px 28px -22px black;
+  }
+
+  .vrum-mini-ring {
+    border: 1px solid color-mix(in oklab, var(--brand) 62%, transparent);
+    background: color-mix(in oklab, var(--brand) 8%, transparent);
+  }
+
+  .vrum-launcher-ring {
+    border: 2px solid color-mix(in oklab, var(--brand) 82%, transparent);
+    background:
+      radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--brand) 12%, transparent), transparent 60%),
+      color-mix(in oklab, black 84%, var(--brand) 16%);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--brand) 20%, transparent),
+      0 0 20px -4px color-mix(in oklab, var(--brand) 92%, transparent),
+      0 0 44px -14px color-mix(in oklab, var(--brand) 85%, transparent),
+      inset 0 0 18px color-mix(in oklab, var(--brand) 18%, transparent);
+  }
+
+  .vrum-launcher-ring svg {
+    filter: drop-shadow(0 0 7px color-mix(in oklab, var(--brand) 80%, transparent));
   }
 
   .vrum-greeting {
