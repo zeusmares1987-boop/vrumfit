@@ -17,7 +17,6 @@ import tileDietaAsset from "@/assets/tile-dieta.jpg.asset.json";
 import tileExecucaoAsset from "@/assets/tile-execucao.jpg.asset.json";
 import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
 import tileTreinosAsset from "@/assets/tile-treinos.jpg.asset.json";
-import studentPremiumImage from "@/assets/refs/vrum-student-blue-premium.png";
 
 export const Route = createFileRoute("/student")({
   head: () => ({ meta: [{ title: "Meu treino — VRUMFIT PERSONAL" }] }),
@@ -130,7 +129,6 @@ function StudentPage() {
         subtitle="Acompanhe seu treino e sua evolução."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
-        referenceImageUrl={studentPremiumImage}
         searchPlaceholder="Buscar treino, dieta, exercícios..."
         stats={[]}
         modules={studentModules}

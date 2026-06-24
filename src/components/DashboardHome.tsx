@@ -66,20 +66,8 @@ export function DashboardHome({
     return modules.filter((m) => `${m.title} ${m.description}`.toLowerCase().includes(clean));
   }, [modules, query]);
 
-  if (referenceImageUrl) {
-    return (
-      <ReferenceDashboard
-        name={name}
-        roleLabel={roleLabel}
-        modeLabel={modeLabel}
-        subtitle={subtitle}
-        referenceImageUrl={referenceImageUrl}
-        modules={visibleModules}
-        stats={stats}
-        notifCount={notifCount}
-      />
-    );
-  }
+  void referenceImageUrl;
+
 
   return (
     <div className="dashboard-home dashboard-owner-screen space-y-6 pb-8 md:space-y-8">
@@ -110,67 +98,7 @@ export function DashboardHome({
   );
 }
 
-function ReferenceDashboard({
-  name,
-  roleLabel,
-  modeLabel,
-  subtitle,
-  referenceImageUrl,
-  modules,
-  stats,
-  notifCount,
-}: {
-  name: string;
-  roleLabel: string;
-  modeLabel: string;
-  subtitle: string;
-  referenceImageUrl: string;
-  modules: DashboardModule[];
-  stats: DashboardStat[];
-  notifCount: number;
-}) {
-  const bottomItems = [
-    { to: roleLabel === "Aluno" ? "/student" : roleLabel === "Personal" ? "/trainer" : "/owner", label: "Início" },
-    { to: "/agenda", label: "Agenda" },
-    { to: roleLabel === "Proprietário" ? "/financeiro" : "/evolucao", label: "Relatórios" },
-    { to: "/avisos", label: "Mensagens" },
-    { to: "/config", label: "Mais" },
-  ];
 
-  return (
-    <section className="dashboard-reference-screen" aria-label={`Painel ${roleLabel}`}>
-      <img src={referenceImageUrl} alt={`Visual premium do painel ${roleLabel}`} className="dashboard-reference-image" loading="eager" />
-
-      <div className="sr-only">
-        <h1>{subtitle}</h1>
-        <p>{`${greeting()}, ${name}. ${modeLabel}. ${notifCount} avisos.`}</p>
-        <ul>
-          {stats.map((stat) => <li key={stat.label}>{`${stat.label}: ${stat.value} ${stat.hint}`}</li>)}
-          {modules.map((module) => <li key={module.to}>{`${module.title}: ${module.description}`}</li>)}
-        </ul>
-      </div>
-
-      <Link to="/config" aria-label="Perfil e configurações" className="dashboard-hotspot dashboard-hotspot-profile" />
-      <Link to="/avisos" aria-label="Avisos" className="dashboard-hotspot dashboard-hotspot-bell" />
-      {modules.slice(0, 6).map((module, index) => (
-        <Link
-          key={module.title + module.to}
-          to={module.to}
-          aria-label={module.title}
-          className={cn("dashboard-hotspot dashboard-hotspot-module", `dashboard-hotspot-module-${index}`)}
-        />
-      ))}
-      {bottomItems.map((item, index) => (
-        <Link
-          key={item.to + item.label}
-          to={item.to}
-          aria-label={item.label}
-          className={cn("dashboard-hotspot dashboard-hotspot-nav", `dashboard-hotspot-nav-${index}`)}
-        />
-      ))}
-    </section>
-  );
-}
 
 function Hero({
   name,
