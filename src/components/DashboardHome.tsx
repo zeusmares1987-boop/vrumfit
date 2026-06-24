@@ -3,8 +3,10 @@ import { ChevronRight, Search, SlidersHorizontal, User as UserIcon } from "lucid
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
+type IconProps = { className?: string; strokeWidth?: number };
+
 export type DashboardModule = {
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<IconProps>;
   title: string;
   description: string;
   to: string;
@@ -16,7 +18,7 @@ export type DashboardStat = {
   value: string;
   hint: string;
   trend?: string;
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<IconProps>;
 };
 
 type DashboardHomeProps = {
