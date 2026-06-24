@@ -66,20 +66,8 @@ export function DashboardHome({
     return modules.filter((m) => `${m.title} ${m.description}`.toLowerCase().includes(clean));
   }, [modules, query]);
 
-  if (referenceImageUrl) {
-    return (
-      <ReferenceDashboard
-        name={name}
-        roleLabel={roleLabel}
-        modeLabel={modeLabel}
-        subtitle={subtitle}
-        referenceImageUrl={referenceImageUrl}
-        modules={visibleModules}
-        stats={stats}
-        notifCount={notifCount}
-      />
-    );
-  }
+  void referenceImageUrl;
+
 
   return (
     <div className="dashboard-home dashboard-owner-screen space-y-6 pb-8 md:space-y-8">
