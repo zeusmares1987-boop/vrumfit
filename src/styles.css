@@ -41,11 +41,11 @@
 }
 
 :root {
-  --background: oklch(0.035 0.004 45);
+  --background: oklch(0.045 0.012 258);
   --foreground: oklch(0.985 0 0);
-  --surface: oklch(0.105 0.012 45);
-  --surface-2: oklch(0.155 0.018 45);
-  --card: oklch(0.09 0.012 45);
+  --surface: oklch(0.11 0.020 258);
+  --surface-2: oklch(0.16 0.025 258);
+  --card: oklch(0.095 0.020 258);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.105 0.018 255);
   --popover-foreground: oklch(0.985 0 0);
