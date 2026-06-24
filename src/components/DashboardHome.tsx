@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, ChevronDown, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
+import { Bell, ChevronRight, Search } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
-import { cn } from "@/lib/utils";
 
 export type DashboardModule = {
   icon: ComponentType<{ className?: string }>;
@@ -44,12 +43,10 @@ export function DashboardHome({
   searchPlaceholder,
   modules,
   stats,
-  filters,
   notifCount = 0,
   alerts,
 }: DashboardHomeProps) {
   const [query, setQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState(filters[0] ?? "Visão geral");
 
   const visibleModules = useMemo(() => {
     const clean = query.trim().toLowerCase();
@@ -72,7 +69,6 @@ export function DashboardHome({
         onQueryChange={setQuery}
       />
 
-      <FilterPills filters={filters} activeFilter={activeFilter} onChange={setActiveFilter} />
       {alerts && <div className="mt-4">{alerts}</div>}
       <StatsGrid stats={stats} />
       <ModuleSection modules={visibleModules} />
@@ -126,9 +122,9 @@ function DashboardHero({
       <div className="relative mt-5 rounded-3xl border border-border bg-card/40 p-4 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center rounded-full border border-primary/50 bg-primary/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">{roleLabel}</span>
-          <button className="inline-flex items-center gap-1 rounded-full border border-border bg-card/70 px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
-            {modeLabel} <ChevronDown className="size-3" />
-          </button>
+          <span className="inline-flex items-center rounded-full border border-border bg-card/70 px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+            {modeLabel}
+          </span>
         </div>
         <h1 className="mt-2 text-[26px] font-black leading-tight tracking-tight text-foreground">
           Bem-vindo, <span className="text-primary">{name}</span>
@@ -137,7 +133,7 @@ function DashboardHero({
       </div>
 
       {/* Linha 3: busca */}
-      <div className="relative mt-3 flex gap-2">
+      <div className="relative mt-3">
         <label className="relative flex-1">
           <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -147,9 +143,6 @@ function DashboardHero({
             className="h-11 w-full rounded-full border border-border bg-card/80 pl-11 pr-4 text-[13px] text-foreground outline-none backdrop-blur placeholder:text-muted-foreground focus:border-primary/70"
           />
         </label>
-        <button className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-primary/45 bg-card/80 px-4 text-[12px] font-bold text-primary backdrop-blur transition hover:border-primary/60">
-          <SlidersHorizontal className="size-4" /> Filtros
-        </button>
       </div>
     </section>
   );
@@ -162,21 +155,6 @@ function Brand() {
         <div className="truncate text-lg font-black italic tracking-tight text-foreground">Vrum<span className="text-primary">Fit</span></div>
         <div className="mt-0.5 text-[8px] font-bold tracking-[0.35em] text-muted-foreground">PERSONAL</div>
       </div>
-    </div>
-  );
-}
-
-function FilterPills({ filters, activeFilter, onChange }: { filters: string[]; activeFilter: string; onChange: (value: string) => void }) {
-  return (
-    <div className="no-scrollbar -mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1">
-      {filters.map((filter) => {
-        const active = filter === activeFilter;
-        return (
-          <button key={filter} onClick={() => onChange(filter)} className={cn("h-9 shrink-0 rounded-full border px-4 text-[12px] font-semibold transition", active ? "border-primary bg-primary/15 text-primary shadow-[0_0_18px_-10px_var(--color-primary)]" : "border-border bg-card text-muted-foreground hover:text-foreground")}>
-            {filter}
-          </button>
-        );
-      })}
     </div>
   );
 }
@@ -210,7 +188,6 @@ function ModuleSection({ modules }: { modules: DashboardModule[] }) {
     <section className="mt-5">
       <div className="mb-3 flex items-center justify-between gap-3">
         <h2 className="border-l-4 border-primary pl-3 text-lg font-bold text-foreground">Módulos</h2>
-        <button className="rounded-full border border-border bg-card px-4 py-2 text-[12px] font-semibold text-primary">Ordenar</button>
       </div>
       <div className="grid grid-cols-3 gap-2.5">
         {modules.map((module) => <ModuleCard key={module.title} module={module} />)}
