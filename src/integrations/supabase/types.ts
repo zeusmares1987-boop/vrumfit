@@ -1263,7 +1263,12 @@ export type Database = {
         | "jantar"
         | "ceia"
       publish_status: "ativo" | "inativo" | "rascunho"
-      subscription_status: "trial" | "ativo" | "vencido" | "cancelado"
+      subscription_status:
+        | "trial"
+        | "ativo"
+        | "vencido"
+        | "cancelado"
+        | "pendente"
       user_status: "ativo" | "bloqueado" | "inativo"
       workout_level: "iniciante" | "intermediario" | "avancado"
       workout_objective:
@@ -1427,7 +1432,13 @@ export const Constants = {
         "ceia",
       ],
       publish_status: ["ativo", "inativo", "rascunho"],
-      subscription_status: ["trial", "ativo", "vencido", "cancelado"],
+      subscription_status: [
+        "trial",
+        "ativo",
+        "vencido",
+        "cancelado",
+        "pendente",
+      ],
       user_status: ["ativo", "bloqueado", "inativo"],
       workout_level: ["iniciante", "intermediario", "avancado"],
       workout_objective: [
