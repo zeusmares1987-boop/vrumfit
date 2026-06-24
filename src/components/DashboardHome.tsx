@@ -192,7 +192,7 @@ function VrumMark({ className }: { className?: string }) {
 
 function StatsRow({ stats }: { stats: DashboardStat[] }) {
   return (
-    <section className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-5">
+    <section className="grid grid-cols-3 gap-2.5 md:gap-5">
       {stats.map((s) => <StatCard key={s.label} stat={s} />)}
     </section>
   );
