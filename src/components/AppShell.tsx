@@ -81,7 +81,7 @@ export function AppShell({
         </header>
       )}
 
-      <main className={`w-full max-w-md md:max-w-[941px] mx-auto px-4 md:px-8 ${hideHeader ? "pt-0" : "pt-4"}`}>{children}</main>
+      <main className={`w-full max-w-md md:max-w-[941px] mx-auto px-4 md:px-10 ${hideHeader ? "pt-0" : "pt-4"}`}>{children}</main>
 
       {!hideBottomNav && <BottomNav role={role} />}
     </div>
