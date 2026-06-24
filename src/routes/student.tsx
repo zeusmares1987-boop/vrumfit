@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Dumbbell, Apple, Target, CalendarDays, TrendingUp, CheckCircle2,
-  ChevronRight, Crown, ClipboardList, Flame, Clock, BadgeCheck,
+  ChevronRight, Crown, ClipboardList, Flame, Clock, BadgeCheck, ShoppingBag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -30,8 +30,10 @@ export const Route = createFileRoute("/student")({
 const studentModules: DashboardModule[] = [
   { icon: Dumbbell, title: "Meu Treino", description: "Séries e exercícios", to: "/treinos", image: tileTreinosAsset.url },
   { icon: Apple, title: "Dieta", description: "Refeições e água", to: "/dieta", image: tileDietaAsset.url },
+  { icon: Dumbbell, title: "Gerar Treino", description: "1 grátis por dia", to: "/treinos" },
+  { icon: Apple, title: "Gerar Dieta", description: "1 grátis por dia", to: "/dieta" },
+  { icon: ShoppingBag, title: "Loja", description: "Produtos e suplementos", to: "/loja" },
   { icon: Target, title: "Execução", description: "Como fazer certo", to: "/biblioteca", image: tileExecucaoAsset.url },
-  { icon: CalendarDays, title: "Agenda", description: "Aulas e horários", to: "/agenda" },
   { icon: TrendingUp, title: "Progresso", description: "Sua evolução", to: "/evolucao", image: tileProgressoAsset.url },
   { icon: CheckCircle2, title: "Check-in", description: "Registrar presença", to: "/historico" },
 ];
