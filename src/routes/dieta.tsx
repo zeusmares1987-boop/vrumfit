@@ -53,6 +53,21 @@ function DietaPage() {
   });
   const studentName = profile?.full_name ?? profile?.email ?? user?.email ?? "Aluno";
 
+  // Pré-preenchimento automático a partir do contexto do aluno (Fase 2)
+  const { ctx } = useStudentContext();
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (prefilled.current) return;
+    if (ctx.age || ctx.weightKg || ctx.heightCm || ctx.goalDiet || ctx.activityFactor) {
+      if (ctx.age) setAge(ctx.age);
+      if (ctx.weightKg) setWeight(ctx.weightKg);
+      if (ctx.heightCm) setHeight(ctx.heightCm);
+      if (ctx.activityFactor) setActivity(ctx.activityFactor);
+      if (ctx.goalDiet) setGoal(ctx.goalDiet);
+      prefilled.current = true;
+    }
+  }, [ctx]);
+
   const toggleR = (r: DietRestriction) =>
     setRestrictions((arr) => (arr.includes(r) ? arr.filter((x) => x !== r) : [...arr, r]));
 
@@ -65,6 +80,27 @@ function DietaPage() {
     };
     setPlan(generateDietPlan(input));
     setOpenMeal(0);
+  };
+
+  const [saving, setSaving] = useState(false);
+  const handleSave = async () => {
+    if (!plan || !user) return;
+    setSaving(true);
+    try {
+      const { data: stu } = await supabase.from("students").select("personal_id").eq("user_id", user.id).maybeSingle();
+      await saveDietPlan({
+        studentId: user.id,
+        personalId: stu?.personal_id ?? null,
+        plan,
+        goal,
+      });
+      toast.success("Dieta salva no perfil do aluno");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao salvar";
+      toast.error(msg);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
