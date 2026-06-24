@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Archive, Bell, Box, ClipboardList, Eye, LayoutGrid, Settings, ShoppingBag, Target, User, Users, Wallet } from "lucide-react";
+import { Archive, ArrowUpRight, Bell, Box, ClipboardList, Eye, GraduationCap, LayoutGrid, Settings, ShoppingBag, Target, User, Users, Wallet } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
@@ -104,24 +104,32 @@ function OwnerPage() {
 }
 
 function RolePreviewLinks() {
+  const items = [
+    { to: "/trainer", label: "Professor", hint: "Tela do personal", Icon: Users },
+    { to: "/student", label: "Aluno", hint: "Tela do treino", Icon: GraduationCap },
+  ] as const;
   return (
-    <section className="grid grid-cols-2 gap-2">
-      <Link to="/trainer" className="rounded-2xl border border-primary/35 bg-primary/10 p-3 active:scale-[0.98]">
-        <div className="mb-2 flex items-center gap-2 text-primary">
-          <Eye className="size-4" />
-          <span className="text-[10px] font-black uppercase tracking-[0.16em]">Ver como</span>
-        </div>
-        <p className="text-[17px] font-black leading-none text-foreground">Professor</p>
-        <p className="mt-1 text-[11px] leading-tight text-muted-foreground">Tela do personal</p>
-      </Link>
-      <Link to="/student" className="rounded-2xl border border-primary/35 bg-primary/10 p-3 active:scale-[0.98]">
-        <div className="mb-2 flex items-center gap-2 text-primary">
-          <Eye className="size-4" />
-          <span className="text-[10px] font-black uppercase tracking-[0.16em]">Ver como</span>
-        </div>
-        <p className="text-[17px] font-black leading-none text-foreground">Aluno</p>
-        <p className="mt-1 text-[11px] leading-tight text-muted-foreground">Tela do treino</p>
-      </Link>
+    <section className="grid grid-cols-2 gap-2.5">
+      {items.map(({ to, label, hint, Icon }) => (
+        <Link
+          key={to}
+          to={to}
+          className="vrum-stat-card group relative flex items-center gap-3 overflow-hidden rounded-[18px] p-3 transition active:scale-[0.98]"
+        >
+          <div className="vrum-mini-ring grid size-10 shrink-0 place-items-center rounded-2xl text-primary">
+            <Icon className="size-[18px]" strokeWidth={1.9} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1 text-primary">
+              <Eye className="size-3" strokeWidth={2.2} />
+              <span className="text-[8.5px] font-black uppercase tracking-[0.18em]">Ver como</span>
+            </div>
+            <p className="mt-0.5 truncate text-[15px] font-black leading-none text-foreground">{label}</p>
+            <p className="mt-1 truncate text-[10px] leading-tight text-muted-foreground">{hint}</p>
+          </div>
+          <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition group-hover:text-primary" strokeWidth={2.2} />
+        </Link>
+      ))}
     </section>
   );
 }
