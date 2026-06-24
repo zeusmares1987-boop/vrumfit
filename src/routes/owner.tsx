@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Archive, Bell, Box, ClipboardList, Dumbbell, LayoutGrid, Settings, ShoppingBag, Target, User, Users, Wallet } from "lucide-react";
+import { Archive, Bell, Box, ClipboardList, LayoutGrid, Settings, ShoppingBag, Target, User, Users, Wallet } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
