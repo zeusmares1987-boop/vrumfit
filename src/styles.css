@@ -41,30 +41,30 @@
 }
 
 :root {
-  --background: oklch(0.12 0.005 260);
+  --background: oklch(0.055 0.005 260);
   --foreground: oklch(0.985 0 0);
-  --surface: oklch(0.165 0.006 260);
-  --surface-2: oklch(0.21 0.008 260);
-  --card: oklch(0.165 0.006 260);
+  --surface: oklch(0.105 0.018 255);
+  --surface-2: oklch(0.15 0.025 255);
+  --card: oklch(0.095 0.018 255);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.165 0.006 260);
+  --popover: oklch(0.105 0.018 255);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.66 0.22 255);
-  --primary-foreground: oklch(0.12 0.005 260);
-  --secondary: oklch(0.22 0.008 260);
+  --primary: oklch(0.64 0.24 257);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.16 0.018 255);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.22 0.008 260);
-  --muted-foreground: oklch(0.74 0.014 260);
-  --accent: oklch(0.22 0.008 260);
+  --muted: oklch(0.16 0.018 255);
+  --muted-foreground: oklch(0.72 0.018 255);
+  --accent: oklch(0.16 0.018 255);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.62 0.22 25);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.66 0.22 255);
-  --brand: oklch(0.66 0.22 255);
+  --border: oklch(0.55 0.1 255 / 31%);
+  --input: oklch(0.55 0.1 255 / 28%);
+  --ring: oklch(0.64 0.24 257);
+  --brand: oklch(0.64 0.24 257);
   --brand-foreground: oklch(0.98 0 0);
-  --brand-glow: oklch(0.74 0.22 250);
+  --brand-glow: oklch(0.76 0.23 252);
   --success: oklch(0.72 0.16 155);
 }
 
@@ -80,8 +80,8 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     background-image:
-      radial-gradient(1200px 600px at 15% -10%, color-mix(in oklab, var(--brand) 14%, transparent), transparent 60%),
-      radial-gradient(900px 500px at 110% 10%, color-mix(in oklab, var(--brand) 8%, transparent), transparent 60%);
+      radial-gradient(900px 460px at 70% -8%, color-mix(in oklab, var(--brand) 10%, transparent), transparent 62%),
+      radial-gradient(620px 420px at 20% 8%, color-mix(in oklab, var(--brand) 5%, transparent), transparent 64%);
   }
 
   ::selection {
@@ -172,6 +172,109 @@
 }
 
 @layer components {
+  .dashboard-home {
+    --dash-panel: color-mix(in oklab, var(--card) 84%, black 16%);
+    --dash-blue-line: color-mix(in oklab, var(--brand) 64%, transparent);
+  }
+
+  .dashboard-hero {
+    background:
+      radial-gradient(260px 170px at 78% 28%, color-mix(in oklab, var(--brand) 16%, transparent), transparent 66%),
+      linear-gradient(180deg, color-mix(in oklab, var(--background) 74%, black 26%) 0%, var(--background) 100%);
+  }
+
+  .dashboard-hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .45;
+    background:
+      linear-gradient(90deg, transparent 0 8%, color-mix(in oklab, var(--brand) 8%, transparent) 8.3% 8.55%, transparent 8.8% 100%),
+      repeating-linear-gradient(90deg, color-mix(in oklab, var(--brand) 7%, transparent) 0 1px, transparent 1px 42px);
+    mask-image: radial-gradient(circle at 74% 25%, black 0 36%, transparent 64%);
+  }
+
+  .dashboard-hero-figure {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 54%;
+    overflow: hidden;
+    opacity: .96;
+    mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 78%, transparent 100%);
+  }
+
+  .dashboard-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 74% 22%;
+    filter: saturate(.9) contrast(1.14) brightness(.64);
+  }
+
+  .dashboard-hero-figure::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 86%, transparent) 17%, transparent 48%),
+      linear-gradient(180deg, color-mix(in oklab, var(--background) 28%, transparent) 0%, transparent 45%, var(--background) 100%);
+  }
+
+  .dashboard-profile {
+    border: 1.5px solid color-mix(in oklab, var(--brand) 82%, transparent);
+    background:
+      radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--brand) 13%, transparent), transparent 68%),
+      color-mix(in oklab, var(--background) 48%, transparent);
+    box-shadow: 0 0 28px -12px color-mix(in oklab, var(--brand) 80%, transparent);
+  }
+
+  .dashboard-logo-text,
+  .dashboard-heading {
+    text-shadow: 0 2px 18px color-mix(in oklab, black 70%, transparent);
+  }
+
+  .dashboard-v-stop-a { stop-color: color-mix(in oklab, var(--brand-glow) 96%, white 4%); }
+  .dashboard-v-stop-b { stop-color: color-mix(in oklab, var(--brand) 86%, black 14%); }
+  .dashboard-v-mark { filter: drop-shadow(0 0 14px color-mix(in oklab, var(--brand) 38%, transparent)); }
+  .dashboard-v-mark-shadow { fill: color-mix(in oklab, var(--brand) 60%, black 40%); opacity: .72; }
+  .dashboard-v-mark-highlight { fill: color-mix(in oklab, var(--brand-glow) 92%, white 8%); }
+
+  .dashboard-panel,
+  .dashboard-module,
+  .dashboard-search-box {
+    border: 1px solid color-mix(in oklab, var(--brand) 36%, transparent);
+    background:
+      radial-gradient(120px 80px at 20% 8%, color-mix(in oklab, var(--brand) 11%, transparent), transparent 68%),
+      linear-gradient(145deg, color-mix(in oklab, var(--dash-panel) 92%, transparent), color-mix(in oklab, black 72%, transparent));
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 7%, transparent),
+      inset 0 -1px 0 color-mix(in oklab, var(--brand) 14%, transparent),
+      0 16px 32px -24px black;
+    backdrop-filter: blur(14px) saturate(130%);
+  }
+
+  .dashboard-panel::after,
+  .dashboard-module::after {
+    content: "";
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: -1px;
+    height: 2px;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--brand) 88%, transparent), transparent);
+    filter: blur(.5px);
+  }
+
+  .dashboard-icon-ring {
+    border: 1.35px solid color-mix(in oklab, var(--brand) 74%, transparent);
+    background:
+      radial-gradient(circle, color-mix(in oklab, var(--brand) 12%, transparent), transparent 67%),
+      color-mix(in oklab, var(--surface) 54%, transparent);
+    box-shadow:
+      inset 0 0 18px color-mix(in oklab, var(--brand) 13%, transparent),
+      0 0 19px -10px color-mix(in oklab, var(--brand) 88%, transparent);
+  }
+
   .vrum-poster-shell {
     width: min(100%, 691px);
     aspect-ratio: 691 / 1536;
