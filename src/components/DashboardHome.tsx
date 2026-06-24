@@ -91,8 +91,8 @@ function Hero({
   roleLabel,
   modeLabel,
   subtitle,
-  avatarUrl,
-  heroImageUrl,
+  avatarUrl: _avatarUrl,
+  heroImageUrl: _heroImageUrl,
   notifCount,
 }: {
   name: string;
@@ -108,9 +108,7 @@ function Hero({
   return (
     <section className="dashboard-hero relative -mx-4 min-h-[312px] overflow-hidden px-6 pb-6 pt-9 md:-mx-10 md:min-h-[342px] md:px-8 md:pb-8 md:pt-10">
       <div className="dashboard-hero-grid" aria-hidden="true" />
-      <div className="dashboard-hero-figure" aria-hidden="true">
-        <img src={heroImageUrl} alt="" className="dashboard-hero-image" loading="eager" />
-      </div>
+      <div className="dashboard-hero-figure" aria-hidden="true" />
 
       <header className="relative grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 md:gap-5">
         <Brand />
@@ -119,7 +117,7 @@ function Hero({
           aria-label="Meu perfil"
           className="dashboard-user-chip hidden min-w-0 items-center gap-3 rounded-full py-2 pl-2 pr-4 md:flex"
         >
-          <img src={avatarUrl} alt="" className="size-[58px] rounded-full object-cover" />
+          <span className="dashboard-mini-avatar">{roleLabel.slice(0, 1)}</span>
           <span className="min-w-0 leading-tight">
             <span className="block truncate text-[23px] font-semibold text-foreground">{roleLabel}</span>
             <span className="inline-flex items-center gap-2 text-[17px] font-medium text-primary">
@@ -129,7 +127,7 @@ function Hero({
           </span>
         </Link>
         <Link to="/config" aria-label="Meu perfil" className="dashboard-avatar-button grid size-[58px] place-items-center overflow-hidden rounded-full md:hidden">
-          <img src={avatarUrl} alt="" className="size-full object-cover" />
+          <span className="dashboard-mini-avatar">{roleLabel.slice(0, 1)}</span>
         </Link>
         <Link to="/avisos" aria-label="Avisos" className="dashboard-bell relative grid size-[52px] place-items-center rounded-full text-foreground md:size-[58px]">
           <Bell className="size-7" />
@@ -288,7 +286,7 @@ function ModuleCard({ module }: { module: DashboardModule }) {
       to={module.to}
       className="dashboard-module group relative min-h-[156px] overflow-hidden rounded-[18px] p-5 transition active:scale-[0.98] hover:border-primary/55 md:min-h-[180px] md:p-5"
     >
-      {module.image && <img src={module.image} alt="" className="dashboard-module-image" loading="lazy" />}
+      <div className="dashboard-module-photo" aria-hidden="true" />
       <div className="dashboard-module-shade" aria-hidden="true" />
       <div className="flex items-start justify-between">
         <div className="dashboard-module-icon grid size-[56px] place-items-center rounded-full text-primary md:size-[60px]">
