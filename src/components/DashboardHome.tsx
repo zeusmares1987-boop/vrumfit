@@ -150,7 +150,7 @@ function VrumMark({ className }: { className?: string }) {
 
 function StatsRow({ stats }: { stats: DashboardStat[] }) {
   return (
-    <section className="grid grid-cols-3 gap-2.5">
+    <section className="grid grid-cols-3 gap-1.5">
       {stats.map((s) => <StatCard key={s.label} stat={s} />)}
     </section>
   );
@@ -158,16 +158,16 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="vrum-stat-card relative min-h-[88px] overflow-hidden rounded-[15px] p-2.5">
-      <div className="vrum-mini-ring absolute left-2.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full text-primary">
-        <stat.icon className="size-5" strokeWidth={1.75} />
+    <article className="vrum-stat-card relative min-h-[76px] overflow-hidden rounded-[14px] p-2">
+      <div className="vrum-mini-ring absolute left-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-primary">
+        <stat.icon className="size-4" strokeWidth={1.75} />
       </div>
-      <div className="ml-12 min-w-0 pr-3">
-          <p className="whitespace-nowrap text-[10px] font-semibold text-foreground">{stat.label}</p>
-          <p className="mt-1 text-[24px] font-black leading-none text-foreground">{stat.value}</p>
-          <p className="mt-1 whitespace-nowrap text-[10px] text-muted-foreground">{stat.hint}</p>
+      <div className="ml-10 min-w-0 pr-2.5">
+          <p className="truncate text-[9px] font-semibold text-foreground">{stat.label}</p>
+          <p className="mt-0.5 text-[22px] font-black leading-none text-foreground">{stat.value}</p>
+          <p className="mt-0.5 truncate text-[9px] text-muted-foreground">{stat.hint}</p>
       </div>
-      <ChevronRight className="absolute right-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={2.4} />
+      <ChevronRight className="absolute right-1.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" strokeWidth={2.4} />
     </article>
   );
 }
