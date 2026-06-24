@@ -187,6 +187,18 @@ function StudentPage() {
         beforeStats={(
           <div className="space-y-3">
             <WeekFrequency />
+            {trainer && (
+              <div className="flex items-center gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-3">
+                <div className="grid size-12 shrink-0 place-items-center rounded-full border border-primary/40 bg-primary/10 text-primary">
+                  <BadgeCheck className="size-6" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] uppercase tracking-widest text-primary font-bold">Meu professor</p>
+                  <p className="truncate text-[14px] font-extrabold text-foreground">{trainer.full_name ?? "—"}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">CREF: {trainer.cref?.trim() || "não informado"}</p>
+                </div>
+              </div>
+            )}
             {todayWorkout && (
               <Link to="/treinos" className="relative flex items-center gap-3 overflow-hidden rounded-2xl border border-border bg-card/70 p-3 backdrop-blur-sm transition hover:border-primary/55">
                 <div className="grid size-14 shrink-0 place-items-center rounded-full border border-primary/50 bg-primary/10 text-primary">
