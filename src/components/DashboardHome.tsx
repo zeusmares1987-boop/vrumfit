@@ -141,7 +141,7 @@ function VrumMark({ className }: { className?: string }) {
 
 function StatsRow({ stats }: { stats: DashboardStat[] }) {
   return (
-    <section className="grid grid-cols-3 gap-1.5">
+    <section className="grid grid-cols-3 gap-2">
       {stats.map((s) => <StatCard key={s.label} stat={s} />)}
     </section>
   );
@@ -149,14 +149,20 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="vrum-stat-card relative min-h-[76px] overflow-hidden rounded-[14px] p-2">
-      <div className="vrum-mini-ring absolute left-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full text-primary">
-        <stat.icon className="size-3.5" strokeWidth={1.75} />
+    <article className="vrum-stat-card relative flex min-h-[96px] flex-col justify-between overflow-hidden rounded-[18px] p-3">
+      <div className="flex items-start justify-between">
+        <div className="vrum-mini-ring grid size-8 place-items-center rounded-xl text-primary">
+          <stat.icon className="size-4" strokeWidth={1.9} />
+        </div>
+        {stat.trend && (
+          <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-primary">
+            {stat.trend}
+          </span>
+        )}
       </div>
-      <div className="ml-9 min-w-0 pr-1">
-          <p className="truncate text-[9px] font-semibold text-foreground">{stat.label}</p>
-          <p className="mt-0.5 text-[22px] font-black leading-none text-foreground">{stat.value}</p>
-          <p className="mt-0.5 truncate text-[8px] text-muted-foreground">{stat.hint}</p>
+      <div className="min-w-0">
+        <p className="text-[22px] font-black leading-none tracking-tight text-foreground">{stat.value}</p>
+        <p className="mt-1 truncate text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">{stat.label}</p>
       </div>
     </article>
   );
