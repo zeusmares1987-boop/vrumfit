@@ -192,13 +192,13 @@ function Detail() {
 
       <div className="fixed bottom-20 left-0 right-0 px-4 z-30">
         <div className="max-w-md mx-auto">
-          {contact ? (
-            <button onClick={copyContact} className={`${btnPrimary} w-full flex items-center justify-center gap-2 shadow-2xl`}>
-              <Copy className="size-4" /> COPIAR CONTATO DO VENDEDOR
-            </button>
+          {waHref ? (
+            <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btnPrimary} w-full flex items-center justify-center gap-2 shadow-2xl`}>
+              <MessageCircle className="size-4" /> CHAMAR NO WHATSAPP
+            </a>
           ) : (
             <button disabled className={`${btnPrimary} w-full flex items-center justify-center gap-2 shadow-2xl opacity-60`}>
-              SEM CONTATO INFORMADO
+              <MessageCircle className="size-4" /> SEM WHATSAPP
             </button>
           )}
         </div>
