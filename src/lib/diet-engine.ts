@@ -301,9 +301,11 @@ function buildMeal(slot: { slot: MealSlot; title: string; time: string; kcalPct:
     fiber: 0,
   };
 
-  const substitutionsByItem = items.map((i) =>
-    pool.filter((p) => p.group === i.food.group && p.name !== i.food.name).slice(0, 3).map((p) => p.name)
-  );
+  const substitutionsByItem = items.map((i) => {
+    const curated = pool.filter((p) => p.group === i.food.group && p.name !== i.food.name).slice(0, 3).map((p) => p.name);
+    const extras = extraSubsFor(i.food.group, i.food.name);
+    return [...curated, ...extras].slice(0, 8);
+  });
 
   return { ...slot, items, totals, substitutionsByItem };
 }
