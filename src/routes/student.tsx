@@ -102,6 +102,27 @@ function StudentPage() {
     enabled: !!user,
   });
 
+  const { data: trainer } = useQuery({
+    queryKey: ["my-trainer", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data: link } = await supabase
+        .from("students")
+        .select("personal_id")
+        .eq("user_id", user.id)
+        .eq("status", "ativo")
+        .maybeSingle();
+      if (!link?.personal_id) return null;
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("full_name,cref,phone,avatar_url")
+        .eq("id", link.personal_id)
+        .maybeSingle();
+      return prof as { full_name: string | null; cref: string | null; phone: string | null; avatar_url: string | null } | null;
+    },
+    enabled: !!user,
+  });
+
   const { data: notifCount } = useQuery({
     queryKey: ["student-notif-count", user?.id],
     queryFn: async () => {
