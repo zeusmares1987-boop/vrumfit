@@ -220,49 +220,127 @@
     mask-image: radial-gradient(circle at 74% 26%, black 0 40%, transparent 68%);
   }
 
-  .dashboard-hero-figure {
+  .dashboard-hero-code-scene {
     position: absolute;
     inset: 0 0 0 auto;
-    width: 68%;
+    width: 72%;
     overflow: hidden;
     opacity: .96;
     mask-image: linear-gradient(90deg, transparent 0%, black 22%, black 84%, transparent 100%);
     background:
-      radial-gradient(190px 120px at 70% 34%, color-mix(in oklab, var(--brand) 18%, transparent), transparent 72%),
-      repeating-linear-gradient(92deg, color-mix(in oklab, var(--brand) 12%, transparent) 0 2px, transparent 2px 42px),
-      linear-gradient(100deg, transparent, color-mix(in oklab, var(--surface) 62%, transparent));
+      radial-gradient(240px 170px at 68% 35%, color-mix(in oklab, var(--brand) 30%, transparent), transparent 72%),
+      radial-gradient(360px 250px at 82% 62%, color-mix(in oklab, var(--brand-glow) 12%, transparent), transparent 70%),
+      repeating-linear-gradient(90deg, color-mix(in oklab, var(--brand) 14%, transparent) 0 1px, transparent 1px 44px),
+      repeating-linear-gradient(0deg, color-mix(in oklab, var(--brand) 8%, transparent) 0 1px, transparent 1px 44px),
+      linear-gradient(100deg, transparent, color-mix(in oklab, var(--surface) 58%, transparent));
   }
 
   @media (min-width: 768px) {
-    .dashboard-hero-figure {
-      width: 58%;
+    .dashboard-hero-code-scene {
+      width: 60%;
     }
   }
 
-  .dashboard-hero-figure::before {
+  .dashboard-hero-code-scene::before {
     content: "";
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 5;
     background:
       linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 86%, transparent) 22%, transparent 58%),
       linear-gradient(180deg, color-mix(in oklab, var(--background) 22%, transparent) 0%, transparent 44%, var(--background) 100%);
   }
 
-  .dashboard-hero-figure::after {
+  .dashboard-hero-code-scene::after {
     content: "";
     position: absolute;
-    right: 8%;
-    bottom: 0;
-    width: min(52%, 310px);
-    height: 82%;
-    z-index: 1;
+    right: 7%;
+    bottom: 10%;
+    width: min(58%, 360px);
+    height: 66%;
+    z-index: 2;
     background:
-      radial-gradient(circle at 48% 16%, color-mix(in oklab, var(--foreground) 20%, black 80%) 0 13%, transparent 14%),
-      radial-gradient(ellipse at 46% 53%, color-mix(in oklab, var(--foreground) 14%, black 86%) 0 36%, transparent 37%),
-      linear-gradient(82deg, transparent 0 22%, color-mix(in oklab, var(--foreground) 12%, black 88%) 23% 42%, transparent 43%),
-      linear-gradient(278deg, transparent 0 21%, color-mix(in oklab, var(--foreground) 12%, black 88%) 22% 42%, transparent 43%);
-    filter: drop-shadow(0 0 38px color-mix(in oklab, var(--brand) 32%, transparent));
+      linear-gradient(90deg, transparent 0 12%, color-mix(in oklab, var(--brand) 82%, white 6%) 12% 14%, transparent 14% 29%, color-mix(in oklab, var(--brand) 48%, transparent) 29% 30%, transparent 30% 100%),
+      linear-gradient(0deg, transparent 0 20%, color-mix(in oklab, var(--brand) 82%, white 6%) 20% 22%, transparent 22% 48%, color-mix(in oklab, var(--brand) 34%, transparent) 48% 49%, transparent 49% 100%),
+      radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--brand-glow) 22%, transparent) 0 8%, transparent 9% 100%);
+    border: 1px solid color-mix(in oklab, var(--brand) 34%, transparent);
+    border-radius: 28px;
+    box-shadow:
+      inset 0 0 32px color-mix(in oklab, var(--brand) 13%, transparent),
+      0 0 46px -10px color-mix(in oklab, var(--brand) 60%, transparent);
+    transform: perspective(720px) rotateY(-18deg) rotateX(7deg) skewY(-2deg);
+  }
+
+  .dashboard-code-ring,
+  .dashboard-code-core,
+  .dashboard-code-bar {
+    position: absolute;
+    z-index: 3;
+    display: block;
+    pointer-events: none;
+  }
+
+  .dashboard-code-ring {
+    border: 1px solid color-mix(in oklab, var(--brand) 62%, transparent);
+    border-radius: 9999px;
+    box-shadow:
+      inset 0 0 28px color-mix(in oklab, var(--brand) 12%, transparent),
+      0 0 36px -10px color-mix(in oklab, var(--brand) 75%, transparent);
+  }
+
+  .dashboard-code-ring-a {
+    right: 13%;
+    top: 18%;
+    width: min(42vw, 310px);
+    aspect-ratio: 1;
+  }
+
+  .dashboard-code-ring-b {
+    right: 22%;
+    top: 31%;
+    width: min(27vw, 195px);
+    aspect-ratio: 1;
+    opacity: .72;
+  }
+
+  .dashboard-code-core {
+    right: 30%;
+    top: 46%;
+    width: 22px;
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    background: var(--brand-glow);
+    box-shadow:
+      0 0 18px var(--brand),
+      0 0 58px color-mix(in oklab, var(--brand) 70%, transparent);
+  }
+
+  .dashboard-code-bar {
+    height: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, transparent, var(--brand-glow), transparent);
+    box-shadow: 0 0 16px color-mix(in oklab, var(--brand) 80%, transparent);
+  }
+
+  .dashboard-code-bar-a {
+    right: 11%;
+    top: 28%;
+    width: min(31vw, 280px);
+    transform: rotate(-18deg);
+  }
+
+  .dashboard-code-bar-b {
+    right: 21%;
+    top: 62%;
+    width: min(26vw, 240px);
+    transform: rotate(14deg);
+  }
+
+  .dashboard-code-bar-c {
+    right: 8%;
+    top: 76%;
+    width: min(22vw, 210px);
+    transform: rotate(-6deg);
   }
 
   .dashboard-hero::after {
