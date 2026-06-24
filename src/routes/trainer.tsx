@@ -117,7 +117,6 @@ function TrainerPage() {
         avatarUrl={avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
         searchPlaceholder="Buscar alunos, treinos, avaliações..."
-        filters={["Visão geral", "Hoje", "Semana", "Alunos", "Treinos"]}
         stats={trainerStats}
         modules={trainerModules}
         notifCount={dashboard?.notices ?? 0}

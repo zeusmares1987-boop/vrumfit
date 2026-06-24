@@ -99,7 +99,6 @@ function OwnerPage() {
         avatarUrl={avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
         searchPlaceholder="Buscar módulos, usuários, produtos..."
-        filters={["Visão geral", "Hoje", "Semana", "Mês", "Personalizado"]}
         stats={ownerStats}
         modules={ownerModules}
         notifCount={dashboard?.notices ?? 0}

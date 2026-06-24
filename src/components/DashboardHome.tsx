@@ -28,7 +28,6 @@ type DashboardHomeProps = {
   searchPlaceholder: string;
   modules: DashboardModule[];
   stats: DashboardStat[];
-  filters: string[];
   notifCount?: number;
   alerts?: ReactNode;
 };
