@@ -278,7 +278,7 @@ function SectionHeader() {
 
 function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
   return (
-    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-4">
+    <section className="grid grid-cols-3 gap-2.5 md:gap-4">
       {modules.map((m) => <ModuleCard key={m.title + m.to} module={m} />)}
     </section>
   );
@@ -288,20 +288,18 @@ function ModuleCard({ module }: { module: DashboardModule }) {
   return (
     <Link
       to={module.to}
-      className="dashboard-module group relative min-h-[156px] overflow-hidden rounded-[18px] p-5 transition active:scale-[0.98] hover:border-primary/55 md:min-h-[180px] md:p-5"
+      className="dashboard-module group relative flex flex-col items-center justify-between overflow-hidden rounded-[18px] p-4 pb-3 text-center transition active:scale-[0.98] hover:border-primary/55 md:min-h-[220px] md:p-6"
     >
       <div className="dashboard-module-photo" aria-hidden="true" />
       <div className="dashboard-module-shade" aria-hidden="true" />
-      <div className="flex items-start justify-between">
-        <div className="dashboard-module-icon grid size-[56px] place-items-center rounded-full text-primary md:size-[60px]">
-          <module.icon className="size-8" />
-        </div>
-        <ChevronRight className="relative z-10 size-8 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
+      <div className="dashboard-module-icon relative z-10 mt-2 grid size-[58px] place-items-center rounded-[14px] text-primary md:size-[72px]">
+        <module.icon className="size-8 md:size-10" strokeWidth={1.6} />
       </div>
-      <div className="relative z-10 mt-10 md:mt-9">
-        <p className="truncate text-[22px] font-bold leading-tight tracking-[-0.045em] text-foreground md:text-[24px]">{module.title}</p>
-        <p className="mt-1 line-clamp-1 text-[15px] text-muted-foreground md:text-[17px]">{module.description}</p>
+      <div className="relative z-10 mt-4">
+        <p className="text-[15px] font-bold leading-tight tracking-[-0.02em] text-foreground md:text-[20px]">{module.title}</p>
+        <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground md:text-[14px]">{module.description}</p>
       </div>
+      <ChevronRight className="relative z-10 mt-3 size-5 rounded-full border border-white/15 p-0.5 text-muted-foreground transition group-hover:text-primary md:size-6" />
     </Link>
   );
 }
