@@ -7,7 +7,7 @@ import { DashboardHome, type DashboardModule, type DashboardStat } from "@/compo
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
-import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
+import heroTrainerAsset from "@/assets/hero/hero-trainer.png.asset.json";
 import tileAlunosAsset from "@/assets/tile-alunos.jpg.asset.json";
 import tileAvaliacoesAsset from "@/assets/tile-avaliacoes.jpg.asset.json";
 import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
@@ -97,7 +97,7 @@ function TrainerPage() {
         modeLabel="Modo professor"
         subtitle="Gerencie alunos, treinos e evolução."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
-        heroImageUrl={headerGymAsset.url}
+        heroImageUrl={heroTrainerAsset.url}
         searchPlaceholder="Buscar alunos, treinos, dietas..."
         stats={trainerStats}
         modules={trainerModules}
