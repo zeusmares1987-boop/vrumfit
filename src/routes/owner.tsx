@@ -35,7 +35,9 @@ const ownerModules: DashboardModule[] = [
   { icon: GraduationCap, title: "Alunos", description: "Alunos e matrículas", to: "/alunos", image: tileAlunosAsset.url },
   { icon: ClipboardList, title: "Planos", description: "Assinaturas ativas", to: "/planos", image: tilePlanosAsset.url },
   { icon: Wallet, title: "Financeiro", description: "Receitas e relatórios", to: "/financeiro", image: tileFinanceiroAsset.url },
+  { icon: ShoppingBag, title: "Loja", description: "Produtos e vendas", to: "/loja-pro" },
   { icon: Settings, title: "Configurações", description: "Regras do sistema", to: "/config" },
+
 ];
 
 function OwnerPage() {
