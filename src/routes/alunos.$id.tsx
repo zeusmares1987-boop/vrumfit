@@ -103,10 +103,11 @@ function AlunoDetail() {
         </div>
         {profile.phone && (
           <a
-            href={`tel:${profile.phone.replace(/\D/g, "")}`}
+            href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`}
+            target="_blank" rel="noopener noreferrer"
             className="mt-3 flex items-center justify-center gap-2 h-11 rounded-xl bg-success/15 border border-success/40 text-success text-[12px] font-bold"
           >
-            <Phone className="size-4" /> LIGAR
+            <Phone className="size-4" /> ABRIR WHATSAPP
           </a>
         )}
       </Card>
