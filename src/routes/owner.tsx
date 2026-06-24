@@ -13,6 +13,7 @@ import tileFinanceiroAsset from "@/assets/tile-financeiro.jpg.asset.json";
 import tilePlanosAsset from "@/assets/tile-planos.jpg.asset.json";
 import tileProfessoresAsset from "@/assets/tile-professores.jpg.asset.json";
 import tileUsuariosAsset from "@/assets/tile-usuarios.jpg.asset.json";
+import ownerPremiumAsset from "@/assets/refs/vrum-owner-blue-premium.png.asset.json";
 
 export const Route = createFileRoute("/owner")({
   head: () => ({
@@ -84,6 +85,7 @@ function OwnerPage() {
         subtitle="Controle total do seu negócio."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
+        referenceImageUrl={ownerPremiumAsset.url}
         searchPlaceholder="Buscar módulos, usuários, produtos..."
         stats={ownerStats}
         modules={ownerModules}
