@@ -150,14 +150,15 @@ function Hero({
       </header>
 
       <div className="relative mt-10 max-w-[92%] md:mt-12 md:max-w-[70%]">
-        <h1 className="dashboard-heading text-[40px] font-black leading-[1.02] tracking-[-0.05em] text-foreground md:text-[64px]">
-          {subtitle.split(" ").slice(0, Math.ceil(subtitle.split(" ").length / 2)).join(" ")}{" "}
-          <span className="text-primary">{subtitle.split(" ").slice(Math.ceil(subtitle.split(" ").length / 2)).join(" ")}</span>
+        <h1 className="dashboard-heading text-[44px] font-black leading-[1] tracking-[-0.05em] text-foreground md:text-[68px]">
+          {roleLabel === "Proprietário" ? roleLabel : `${greeting()}, `}
+          {roleLabel !== "Proprietário" && <span className="text-primary">{titleName}!</span>}
         </h1>
         <p className="mt-3 text-[16px] leading-snug text-muted-foreground md:text-[20px]">
-          {roleLabel === "Proprietário" ? "Mais gestão. Mais resultados." : `${greeting()}, ${titleName}.`}
+          {roleLabel === "Proprietário" ? `${greeting()}, ${name}.` : subtitle}
         </p>
       </div>
+
     </section>
   );
 }
