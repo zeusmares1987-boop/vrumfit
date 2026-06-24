@@ -35,7 +35,7 @@ export async function saveDietPlan(opts: {
     .from("diets")
     .insert({
       student_id: studentId,
-      personal_id: personalId ?? null,
+      personal_id: personalId ?? studentId,
       name: opts.name ?? `Dieta ${objective} ${plan.target.kcal} kcal`,
       objective,
       water_liters: plan.waterMl ? plan.waterMl / 1000 : null,
@@ -107,7 +107,7 @@ export async function saveWorkoutWeek(opts: {
     .from("workouts")
     .insert({
       student_id: studentId,
-      personal_id: personalId ?? null,
+      personal_id: personalId ?? studentId,
       name: opts.name ?? `Treino Semana ${week.week} · ${objective}`,
       objective,
       level,
