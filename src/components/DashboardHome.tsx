@@ -158,18 +158,16 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="vrum-stat-card relative overflow-hidden rounded-[15px] p-3">
-      <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
-        <div className="vrum-mini-ring grid size-9 shrink-0 place-items-center rounded-full text-primary">
-          <stat.icon className="size-5" strokeWidth={1.75} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-[11px] font-semibold text-foreground">{stat.label}</p>
-          <p className="mt-1 text-[24px] font-black leading-none text-foreground">{stat.value}</p>
-          <p className="mt-1 truncate text-[10px] text-muted-foreground">{stat.hint}</p>
-        </div>
-        <ChevronRight className="size-4 text-muted-foreground" strokeWidth={2.4} />
+    <article className="vrum-stat-card relative min-h-[88px] overflow-hidden rounded-[15px] p-2.5">
+      <div className="vrum-mini-ring absolute left-2.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full text-primary">
+        <stat.icon className="size-5" strokeWidth={1.75} />
       </div>
+      <div className="ml-12 min-w-0 pr-3">
+          <p className="whitespace-nowrap text-[10px] font-semibold text-foreground">{stat.label}</p>
+          <p className="mt-1 text-[24px] font-black leading-none text-foreground">{stat.value}</p>
+          <p className="mt-1 whitespace-nowrap text-[10px] text-muted-foreground">{stat.hint}</p>
+      </div>
+      <ChevronRight className="absolute right-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={2.4} />
     </article>
   );
 }
