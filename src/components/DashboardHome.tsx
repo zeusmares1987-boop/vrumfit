@@ -153,7 +153,7 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
     <article className="dashboard-panel relative min-h-[86px] min-w-0 overflow-hidden rounded-[22px] p-3.5">
-      <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+      <div className="grid grid-cols-[42px_minmax(0,1fr)_14px] items-center gap-2">
         <div className="dashboard-icon-ring grid size-[50px] shrink-0 place-items-center rounded-full text-primary">
           <stat.icon className="size-[25px]" />
         </div>
