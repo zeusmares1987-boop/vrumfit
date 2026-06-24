@@ -157,7 +157,7 @@ function StudentPage() {
         filters={["Visão geral", "Hoje", "Semana", "Treino", "Dieta"]}
         stats={studentStats}
         modules={studentModules}
-        notifCount={3}
+        notifCount={notifCount ?? 0}
         alerts={(
           <div className="space-y-3">
             {hasOwner === false && (
