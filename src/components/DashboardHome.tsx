@@ -184,7 +184,7 @@ function SearchRow({ value, onChange, placeholder }: { value: string; onChange: 
 
 function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
   return (
-    <section className="grid grid-cols-2 gap-3 pt-1">
+    <section className="grid grid-cols-3 gap-2 pt-1 sm:gap-3">
       {modules.map((m) => <ModuleCard key={m.to} module={m} />)}
     </section>
   );
