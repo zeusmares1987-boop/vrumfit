@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { useStudentContext } from "@/lib/student-context";
+import { saveDietPlan } from "@/lib/plan-persistence";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
