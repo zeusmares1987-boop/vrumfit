@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { createStudentForPersonal } from "@/lib/students.functions";
 import { CredentialsModal, type CredentialsInfo } from "@/components/Credentials";
-import { Search, Trash2, Users, UserPlus, Mail, Phone, ChevronRight, MessageCircle } from "lucide-react";
+import { Search, Trash2, Users, UserPlus, Mail, Phone, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 type Row = {
