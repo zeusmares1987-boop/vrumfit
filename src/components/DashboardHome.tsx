@@ -90,7 +90,7 @@ function Hero({
   notifCount: number;
 }) {
   return (
-    <section className="vrum-hero relative -mx-4 overflow-hidden px-4 pb-1 pt-7">
+    <section className="vrum-hero relative -mx-4 overflow-hidden px-4 pb-0 pt-7">
       <img src={heroImageUrl} alt="" aria-hidden="true" className="vrum-hero-photo" />
       <div className="vrum-hero-fade" aria-hidden="true" />
 
@@ -107,14 +107,14 @@ function Hero({
         </div>
       </header>
 
-      <div className="relative mt-12 max-w-[66%]">
+      <div className="relative mt-10 max-w-[66%]">
         <h1 className="vrum-greeting text-[39px] font-black leading-[1.03] text-foreground">
           {greeting()},<br /> <span className="text-primary">{roleLabel || name}</span>
         </h1>
         <p className="mt-3 max-w-[245px] text-[15px] leading-snug text-muted-foreground">{subtitle}</p>
       </div>
 
-      <div className="vrum-pulse-line relative mt-8" aria-hidden="true" />
+      <div className="vrum-pulse-line relative mt-7" aria-hidden="true" />
     </section>
   );
 }
