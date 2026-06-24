@@ -42,6 +42,7 @@ import { Route as LojaIdRouteImport } from './routes/loja.$id'
 import { Route as LojaProConfigRouteImport } from './routes/loja-pro.config'
 import { Route as BibliotecaIdRouteImport } from './routes/biblioteca.$id'
 import { Route as AlunosIdRouteImport } from './routes/alunos.$id'
+import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
 
 const TreinosRoute = TreinosRouteImport.update({
   id: '/treinos',
@@ -208,6 +209,11 @@ const AlunosIdRoute = AlunosIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AlunosRoute,
 } as any)
+const ApiPublicMpWebhookRoute = ApiPublicMpWebhookRouteImport.update({
+  id: '/api/public/mp-webhook',
+  path: '/api/public/mp-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -243,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
   '/biblioteca/': typeof BibliotecaIndexRoute
+  '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -277,6 +284,7 @@ export interface FileRoutesByTo {
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
   '/biblioteca': typeof BibliotecaIndexRoute
+  '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -313,6 +321,7 @@ export interface FileRoutesById {
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
   '/biblioteca/': typeof BibliotecaIndexRoute
+  '/api/public/mp-webhook': typeof ApiPublicMpWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -350,6 +359,7 @@ export interface FileRouteTypes {
     | '/loja-pro/config'
     | '/loja/$id'
     | '/biblioteca/'
+    | '/api/public/mp-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -384,6 +394,7 @@ export interface FileRouteTypes {
     | '/loja-pro/config'
     | '/loja/$id'
     | '/biblioteca'
+    | '/api/public/mp-webhook'
   id:
     | '__root__'
     | '/'
@@ -419,6 +430,7 @@ export interface FileRouteTypes {
     | '/loja-pro/config'
     | '/loja/$id'
     | '/biblioteca/'
+    | '/api/public/mp-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -450,6 +462,7 @@ export interface RootRouteChildren {
   SuporteRoute: typeof SuporteRoute
   TrainerRoute: typeof TrainerRoute
   TreinosRoute: typeof TreinosRoute
+  ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -685,6 +698,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlunosIdRouteImport
       parentRoute: typeof AlunosRoute
     }
+    '/api/public/mp-webhook': {
+      id: '/api/public/mp-webhook'
+      path: '/api/public/mp-webhook'
+      fullPath: '/api/public/mp-webhook'
+      preLoaderRoute: typeof ApiPublicMpWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -763,6 +783,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuporteRoute: SuporteRoute,
   TrainerRoute: TrainerRoute,
   TreinosRoute: TreinosRoute,
+  ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

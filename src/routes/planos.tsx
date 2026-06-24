@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { createMpCheckout } from "@/lib/mp.functions";
 import { Check, Plus, Trash2, X, CreditCard, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,6 +23,19 @@ export const Route = createFileRoute("/planos")({
 
 function Planos() {
   const { role } = useAuth();
+  const checkout = useServerFn(createMpCheckout);
+  const [paying, setPaying] = useState<string | null>(null);
+  const subscribe = async (planId: string) => {
+    setPaying(planId);
+    try {
+      const r = await checkout({ data: { planId } });
+      window.location.href = r.url;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha no pagamento";
+      toast.error(msg === "PAYMENT_UNAVAILABLE" ? "Pagamento indisponível no momento" : msg);
+      setPaying(null);
+    }
+  };
   const [list, setList] = useState<Plan[]>([]);
   const [show, setShow] = useState(false);
   const [form, setForm] = useState({ name: "", price: "", period: "mensal", benefits: "" });
@@ -136,6 +151,15 @@ function Planos() {
                     </li>
                   ))}
                 </ul>
+                {!canEdit && p.status === "ativo" && p.price_cents > 0 && (
+                  <button
+                    onClick={() => subscribe(p.id)}
+                    disabled={paying === p.id}
+                    className={`${btnPrimary} mt-4 disabled:opacity-60`}
+                  >
+                    {paying === p.id ? "ABRINDO PAGAMENTO…" : "ASSINAR COM PIX OU CARTÃO"}
+                  </button>
+                )}
               </Card>
             );
           })}
