@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { useStudentContext } from "@/lib/student-context";
+import { saveDietPlan } from "@/lib/plan-persistence";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -50,6 +53,21 @@ function DietaPage() {
   });
   const studentName = profile?.full_name ?? profile?.email ?? user?.email ?? "Aluno";
 
+  // Pré-preenchimento automático a partir do contexto do aluno (Fase 2)
+  const { ctx } = useStudentContext();
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (prefilled.current) return;
+    if (ctx.age || ctx.weightKg || ctx.heightCm || ctx.goalDiet || ctx.activityFactor) {
+      if (ctx.age) setAge(ctx.age);
+      if (ctx.weightKg) setWeight(ctx.weightKg);
+      if (ctx.heightCm) setHeight(ctx.heightCm);
+      if (ctx.activityFactor) setActivity(ctx.activityFactor);
+      if (ctx.goalDiet) setGoal(ctx.goalDiet);
+      prefilled.current = true;
+    }
+  }, [ctx]);
+
   const toggleR = (r: DietRestriction) =>
     setRestrictions((arr) => (arr.includes(r) ? arr.filter((x) => x !== r) : [...arr, r]));
 
@@ -62,6 +80,27 @@ function DietaPage() {
     };
     setPlan(generateDietPlan(input));
     setOpenMeal(0);
+  };
+
+  const [saving, setSaving] = useState(false);
+  const handleSave = async () => {
+    if (!plan || !user) return;
+    setSaving(true);
+    try {
+      const { data: stu } = await supabase.from("students").select("personal_id").eq("user_id", user.id).maybeSingle();
+      await saveDietPlan({
+        studentId: user.id,
+        personalId: stu?.personal_id ?? null,
+        plan,
+        goal,
+      });
+      toast.success("Dieta salva no perfil do aluno");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao salvar";
+      toast.error(msg);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -178,6 +217,9 @@ function DietaPage() {
                 </button>
                 <button onClick={() => exportPdf(plan, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
                   <FileDown className="size-3" /> PDF VrumFit
+                </button>
+                <button onClick={handleSave} disabled={saving} className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50">
+                  {saving ? "Salvando…" : "Salvar no perfil"}
                 </button>
               </div>
             </div>
