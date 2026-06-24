@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Dumbbell, Apple, Target, CalendarDays, TrendingUp, CheckCircle2,
-  ChevronRight, Crown, ClipboardList, Flame, Clock,
+  ChevronRight, Crown, ClipboardList, Flame, Clock, BadgeCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
