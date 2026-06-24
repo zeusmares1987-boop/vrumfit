@@ -153,16 +153,16 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
     <article className="dashboard-panel relative min-h-[86px] min-w-0 overflow-hidden rounded-[22px] p-3.5">
-      <div className="grid grid-cols-[42px_minmax(0,1fr)_14px] items-center gap-2">
-        <div className="dashboard-icon-ring grid size-[50px] shrink-0 place-items-center rounded-full text-primary">
-          <stat.icon className="size-[25px]" />
+      <div className="grid grid-cols-[34px_minmax(0,1fr)_10px] items-center gap-1.5">
+        <div className="dashboard-icon-ring grid size-[38px] shrink-0 place-items-center rounded-full text-primary">
+          <stat.icon className="size-5" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[14px] font-semibold leading-tight text-foreground">{stat.label}</p>
-          <p className="truncate text-[33px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
-          <p className="mt-1 truncate text-[13px] leading-none text-muted-foreground">{stat.hint}</p>
+          <p className="truncate text-[11px] font-semibold leading-tight text-foreground">{stat.label}</p>
+          <p className="truncate text-[25px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
+          <p className="mt-1 truncate text-[10px] leading-none text-muted-foreground">{stat.hint}</p>
         </div>
-        <ChevronRight className="size-6 shrink-0 text-muted-foreground/70" />
+        <ChevronRight className="size-5 shrink-0 text-muted-foreground/70" />
       </div>
     </article>
   );
