@@ -104,6 +104,24 @@ export const LIBRARY: ExerciseDef[] = [
   { name: "Burpee",                   primary: "core", pattern: "cardio", tier: "composto_aux", equip: ["peso_corporal"], substitutes: ["Mountain climber", "Jumping jack"] },
 ];
 
+// Pool extra (preenchido em runtime pelo library-loader a partir do banco).
+// Só amplia a lista de substitutos — a seleção principal continua na LIBRARY curada.
+const EXTRA_BY_MUSCLE: Map<MuscleGroup, string[]> = new Map();
+
+export function registerExtraExercises(items: { name: string; primary: MuscleGroup }[]) {
+  for (const it of items) {
+    if (!it?.name || !it?.primary) continue;
+    const arr = EXTRA_BY_MUSCLE.get(it.primary) ?? [];
+    if (!arr.includes(it.name) && !LIBRARY.some((e) => e.name === it.name)) arr.push(it.name);
+    EXTRA_BY_MUSCLE.set(it.primary, arr);
+  }
+}
+
+function extraSubsFor(primary: MuscleGroup, exclude: string): string[] {
+  const arr = EXTRA_BY_MUSCLE.get(primary) ?? [];
+  return arr.filter((n) => n !== exclude).slice(0, 6);
+}
+
 // MEV / MAV / MRV — séries semanais por grupo (Renaissance Periodization)
 const VOLUME: Record<MuscleGroup, { mev: number; mav: number; mrv: number }> = {
   peito:       { mev: 8,  mav: 14, mrv: 22 },
