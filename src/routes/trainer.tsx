@@ -8,6 +8,10 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
 import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
+import tileAlunosAsset from "@/assets/tile-alunos.jpg.asset.json";
+import tileAvaliacoesAsset from "@/assets/tile-avaliacoes.jpg.asset.json";
+import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
+import tileTreinosAsset from "@/assets/tile-treinos.jpg.asset.json";
 
 export const Route = createFileRoute("/trainer")({
   head: () => ({ meta: [{ title: "Painel do Personal — VRUMFIT PERSONAL" }] }),
@@ -19,12 +23,12 @@ export const Route = createFileRoute("/trainer")({
 });
 
 const trainerModules: DashboardModule[] = [
-  { icon: Users, title: "Alunos", description: "Cadastro e acompanhamento", to: "/alunos" },
-  { icon: Dumbbell, title: "Treinos", description: "Fichas e exercícios", to: "/treinos" },
-  { icon: Camera, title: "Avaliação", description: "Fotos e resultados", to: "/avaliacoes" },
+  { icon: Users, title: "Alunos", description: "Cadastro e acompanhamento", to: "/alunos", image: tileAlunosAsset.url },
+  { icon: Dumbbell, title: "Treinos", description: "Fichas e exercícios", to: "/treinos", image: tileTreinosAsset.url },
+  { icon: Camera, title: "Avaliação", description: "Fotos e resultados", to: "/avaliacoes", image: tileAvaliacoesAsset.url },
   { icon: CalendarDays, title: "Agenda", description: "Aulas e compromissos", to: "/agenda" },
   { icon: CheckCircle2, title: "Presença", description: "Check-in e frequência", to: "/historico" },
-  { icon: TrendingUp, title: "Progresso", description: "Evolução dos alunos", to: "/evolucao" },
+  { icon: TrendingUp, title: "Progresso", description: "Evolução dos alunos", to: "/evolucao", image: tileProgressoAsset.url },
 ];
 
 function TrainerPage() {
