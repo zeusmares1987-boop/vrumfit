@@ -109,11 +109,13 @@ function DashboardHero({
       <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <Brand />
         <div className="flex shrink-0 items-center gap-2">
-          <button aria-label="Notificações" className="relative grid size-10 place-items-center rounded-full border border-border bg-card/80 text-muted-foreground backdrop-blur transition hover:text-primary">
+          <Link to="/avisos" aria-label="Notificações" className="relative grid size-10 place-items-center rounded-full border border-border bg-card/80 text-muted-foreground backdrop-blur transition hover:text-primary">
             <Bell className="size-[18px]" />
             {notifCount > 0 && <span className="absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-primary px-1 text-[10px] font-black text-primary-foreground">{notifCount}</span>}
-          </button>
-          <img src={avatarUrl} alt="" className="size-10 rounded-full border-2 border-primary object-cover shadow-[0_0_18px_-6px_var(--color-primary)]" />
+          </Link>
+          <Link to="/config" aria-label="Meu perfil">
+            <img src={avatarUrl} alt="" className="size-10 rounded-full border-2 border-primary object-cover shadow-[0_0_18px_-6px_var(--color-primary)]" />
+          </Link>
         </div>
       </header>
 

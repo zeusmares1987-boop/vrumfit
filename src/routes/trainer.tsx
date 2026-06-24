@@ -49,7 +49,7 @@ function TrainerPage() {
     queryKey: ["my-profile", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
+      const { data } = await supabase.from("profiles").select("full_name,avatar_url").eq("id", user.id).maybeSingle();
       return data;
     },
     enabled: !!user,
@@ -114,7 +114,7 @@ function TrainerPage() {
         roleLabel="Personal"
         modeLabel="Modo professor"
         subtitle="Gerencie alunos, treinos e resultados"
-        avatarUrl={avatarOwnerAsset.url}
+        avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
         searchPlaceholder="Buscar alunos, treinos, avaliações..."
         stats={trainerStats}
