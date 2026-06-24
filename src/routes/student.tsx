@@ -129,8 +129,9 @@ function StudentPage() {
       const { count } = await supabase
         .from("notices")
         .select("id", { count: "exact", head: true })
+        .eq("status", "ativo")
         .gte("created_at", since)
-        .or(`audience.eq.geral,target_user_id.eq.${user.id}`);
+        .or(`audience.in.(todos,alunos),target_user_id.eq.${user.id}`);
       return count ?? 0;
     },
     enabled: !!user,
@@ -154,7 +155,6 @@ function StudentPage() {
         avatarUrl={avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
         searchPlaceholder="Buscar treino, dieta, execução..."
-        filters={["Visão geral", "Hoje", "Semana", "Treino", "Dieta"]}
         stats={studentStats}
         modules={studentModules}
         notifCount={notifCount ?? 0}

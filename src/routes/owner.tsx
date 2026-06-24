@@ -49,12 +49,6 @@ const ownerModules: DashboardModule[] = [
   { icon: Settings, title: "Configurações", description: "Ajustes do aplicativo", to: "/config", image: headerGymAsset.url },
 ];
 
-const ownerStats: DashboardStat[] = [
-  { icon: Dumbbell, label: "Professores", value: "24", hint: "Ativos", trend: "↑ 8%" },
-  { icon: User, label: "Alunos", value: "312", hint: "Ativos", trend: "↑ 12%" },
-  { icon: ShieldCheck, label: "Produtos", value: "48", hint: "Cadastrados", trend: "↑ 5%" },
-];
-
 function OwnerPage() {
   const { user } = useAuth();
   const { data: profile } = useQuery({
@@ -67,7 +61,33 @@ function OwnerPage() {
     enabled: !!user,
   });
 
+  const { data: dashboard } = useQuery({
+    queryKey: ["owner-dashboard-real"],
+    queryFn: async () => {
+      const since = new Date(Date.now() - 30 * 86400000).toISOString();
+      const [trainers, students, products, notices] = await Promise.all([
+        supabase.from("user_roles").select("user_id", { count: "exact", head: true }).eq("role", "personal"),
+        supabase.from("students").select("user_id", { count: "exact", head: true }).eq("status", "ativo"),
+        supabase.from("products").select("id", { count: "exact", head: true }).eq("status", "ativo"),
+        supabase.from("notices").select("id", { count: "exact", head: true }).eq("status", "ativo").gte("created_at", since),
+      ]);
+
+      return {
+        trainers: trainers.count ?? 0,
+        students: students.count ?? 0,
+        products: products.count ?? 0,
+        notices: notices.count ?? 0,
+      };
+    },
+    enabled: !!user,
+  });
+
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Proprietário";
+  const ownerStats: DashboardStat[] = [
+    { icon: Dumbbell, label: "Professores", value: String(dashboard?.trainers ?? 0), hint: "Cadastrados", trend: "" },
+    { icon: User, label: "Alunos", value: String(dashboard?.students ?? 0), hint: "Ativos", trend: "" },
+    { icon: ShieldCheck, label: "Produtos", value: String(dashboard?.products ?? 0), hint: "Ativos", trend: "" },
+  ];
 
   return (
     <AppShell hideHeader>
@@ -79,10 +99,9 @@ function OwnerPage() {
         avatarUrl={avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
         searchPlaceholder="Buscar módulos, usuários, produtos..."
-        filters={["Visão geral", "Hoje", "Semana", "Mês", "Personalizado"]}
         stats={ownerStats}
         modules={ownerModules}
-        notifCount={3}
+        notifCount={dashboard?.notices ?? 0}
       />
     </AppShell>
   );

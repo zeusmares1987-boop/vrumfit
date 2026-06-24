@@ -3,6 +3,9 @@ import { useState } from "react";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { Flame, Beef, Wheat, Droplet, Download, FileDown, ShoppingCart, ChevronDown, ChevronUp, Salad } from "lucide-react";
 import type { DietPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateDietPDFBlob } from "@/lib/pdf-lazy";
@@ -21,6 +24,7 @@ export const Route = createFileRoute("/dieta")({
 });
 
 function DietaPage() {
+  const { user } = useAuth();
   const [sex, setSex] = useState<Sex>("M");
   const [age, setAge] = useState(30);
   const [weight, setWeight] = useState(80);
@@ -34,6 +38,17 @@ function DietaPage() {
   const [plan, setPlan] = useState<DietPlan | null>(null);
   const [openMeal, setOpenMeal] = useState<number | null>(0);
   const [showShop, setShowShop] = useState(false);
+
+  const { data: profile } = useQuery({
+    queryKey: ["my-profile-name", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("profiles").select("full_name,email").eq("id", user.id).maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+  const studentName = profile?.full_name ?? profile?.email ?? user?.email ?? "Aluno";
 
   const toggleR = (r: DietRestriction) =>
     setRestrictions((arr) => (arr.includes(r) ? arr.filter((x) => x !== r) : [...arr, r]));
@@ -161,7 +176,7 @@ function DietaPage() {
                 <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
                   <Download className="size-3" /> TXT
                 </button>
-                <button onClick={() => exportPdf(plan, goal)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
+                <button onClick={() => exportPdf(plan, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
                   <FileDown className="size-3" /> PDF VrumFit
                 </button>
               </div>
@@ -268,9 +283,9 @@ function exportTxt(plan: DietPlan) {
   URL.revokeObjectURL(url);
 }
 
-async function exportPdf(plan: DietPlan, goal: string) {
+async function exportPdf(plan: DietPlan, goal: string, studentName: string) {
   const data: DietPDFData = {
-    studentName: "Aluno VrumFit",
+    studentName,
     dayLabel: "Plano diário",
     water: `${plan.waterMl} ml`,
     goldenTip: `Objetivo: ${goal.replace("_", " ")}. Mastigue bem, prefira alimentos naturais e siga os horários.`,

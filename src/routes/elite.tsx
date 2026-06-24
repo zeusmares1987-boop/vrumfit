@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/lib/auth";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -21,6 +22,8 @@ export const Route = createFileRoute("/elite")({
 });
 
 function ElitePage() {
+  const { user } = useAuth();
+  const studentName = user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? user?.email ?? "Aluno";
   // dados compartilhados
   const [sex, setSex] = useState<Sex>("M");
   const [age, setAge] = useState(30);
@@ -121,7 +124,7 @@ function ElitePage() {
       for (let i = 0; i < week.days.length; i++) {
         const d = week.days[i];
         const data: WorkoutPDFData = {
-          studentName: "Aluno VrumFit",
+          studentName,
           dayLabel: `S1 · DIA ${i + 1} — ${d.name}`,
           tip: `RIR ${week.rirTarget}. Foco em técnica antes de carga.`,
           exercises: d.exercises.map((ex) => ({
@@ -142,7 +145,7 @@ function ElitePage() {
       // Dieta dia de treino + dieta dia descanso
       for (const [label, d] of [["DIA DE TREINO", plan.dietTraining], ["DIA DE DESCANSO", plan.dietRest]] as const) {
         const data: DietPDFData = {
-          studentName: "Aluno VrumFit",
+          studentName,
           dayLabel: label,
           water: `${label.includes("TREINO") ? plan.waterTrainingMl : plan.waterRestMl} ml`,
           goldenTip: `Alvo: ${(label.includes("TREINO") ? plan.targetTraining : plan.targetRest).kcal} kcal. Sincronizado com seu plano de treino.`,

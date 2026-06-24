@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
-import { PageHero } from "@/components/PageHero";
+import { EmptyState, PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
-import { useLocalState } from "@/hooks/use-local-state";
-import { Trash2, TrendingUp, TrendingDown, LineChart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
+import { Loader2, Trash2, TrendingUp, TrendingDown, LineChart } from "lucide-react";
 
-type Point = { date: string; weight: number; bf: number };
+type Point = { id: string; date: string; weight: number };
 
 export const Route = createFileRoute("/evolucao")({
   head: () => ({ meta: [{ title: "Evolução — VRUMFIT" }] }),
@@ -18,29 +20,69 @@ export const Route = createFileRoute("/evolucao")({
 });
 
 function EvoPage() {
-  const [pts, setPts] = useLocalState<Point[]>("vrumfit:evo", [
-    { date: "01/01", weight: 88, bf: 22 },
-    { date: "01/02", weight: 86, bf: 20 },
-    { date: "01/03", weight: 84, bf: 18 },
-    { date: "01/04", weight: 82.5, bf: 17 },
-    { date: "01/05", weight: 81, bf: 16 },
-  ]);
+  const { user, role } = useAuth();
+  const [pts, setPts] = useState<Point[]>([]);
   const [w, setW] = useState("");
-  const [bf, setBf] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const add = (e: React.FormEvent) => {
+  const load = async () => {
+    if (!user) return;
+    setLoading(true);
+    const query = supabase
+      .from("progress_entries")
+      .select("id,date,weight_kg")
+      .order("date", { ascending: true });
+    const { data, error } = role === "aluno" ? await query.eq("student_id", user.id) : await query;
+    if (error) {
+      toast.error(error.message);
+      setPts([]);
+    } else {
+      setPts(
+        (data ?? [])
+          .filter((point) => point.weight_kg !== null)
+          .map((point) => ({
+            id: point.id,
+            date: point.date,
+            weight: Number(point.weight_kg),
+          })),
+      );
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, [user?.id, role]);
+
+  const add = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!w || !bf) return;
+    if (!user || !w) return;
+    setSaving(true);
     const d = new Date();
-    const date = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
-    setPts([...pts, { date, weight: +w, bf: +bf }]);
-    setW(""); setBf("");
+    const date = d.toISOString().slice(0, 10);
+    const { error } = await supabase
+      .from("progress_entries")
+      .insert({ student_id: user.id, date, weight_kg: Number(w), attended: true });
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Registro salvo.");
+      setW("");
+      await load();
+    }
+    setSaving(false);
+  };
+
+  const remove = async (id: string) => {
+    const { error } = await supabase.from("progress_entries").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    setPts((current) => current.filter((point) => point.id !== id));
   };
 
   const last = pts[pts.length - 1];
   const first = pts[0];
   const dW = last && first ? +(last.weight - first.weight).toFixed(1) : 0;
-  const dBf = last && first ? +(last.bf - first.bf).toFixed(1) : 0;
+  const canWrite = role === "aluno";
 
   return (
     <AppShell title="Evolução">
@@ -52,43 +94,50 @@ function EvoPage() {
         stats={[
           { label: "Registros", value: pts.length },
           { label: "Atual", value: last ? `${last.weight}kg` : "—" },
-          { label: "% Gord.", value: last ? `${last.bf}%` : "—" },
+          { label: "Último", value: last ? new Date(last.date).toLocaleDateString("pt-BR") : "—" },
         ]}
       />
 
+      {loading ? (
+        <div className="grid place-items-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>
+      ) : null}
+
       <div className="grid grid-cols-2 gap-3">
         <Stat label="Δ Peso" value={`${dW > 0 ? "+" : ""}${dW} kg`} positive={dW < 0} />
-        <Stat label="Δ Gordura" value={`${dBf > 0 ? "+" : ""}${dBf} pp`} positive={dBf < 0} />
+        <Stat label="Registros" value={String(pts.length)} positive={pts.length > 0} />
       </div>
 
       <Card>
         <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold mb-3">Gráfico de peso</h3>
-        <Chart pts={pts} />
+        {pts.length === 0 ? <EmptyState icon={LineChart} title="Sem evolução registrada" hint="Nenhum dado real foi encontrado." /> : <Chart pts={pts} />}
       </Card>
 
-      <Card>
-        <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold mb-3">Novo registro</h3>
-        <form onSubmit={add} className="grid grid-cols-2 gap-2">
-          <input placeholder="Peso (kg)" value={w} onChange={(e) => setW(e.target.value)} className={inputCls} />
-          <input placeholder="% Gordura" value={bf} onChange={(e) => setBf(e.target.value)} className={inputCls} />
-          <button className={`${btnPrimary} col-span-2`}>ADICIONAR</button>
-        </form>
-      </Card>
+      {canWrite && (
+        <Card>
+          <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold mb-3">Novo registro</h3>
+          <form onSubmit={add} className="space-y-2">
+            <input placeholder="Peso (kg)" value={w} onChange={(e) => setW(e.target.value)} className={inputCls} />
+            <button disabled={saving} className={btnPrimary}>{saving ? "SALVANDO…" : "ADICIONAR"}</button>
+          </form>
+        </Card>
+      )}
 
-      <Card>
+      {pts.length > 0 && <Card>
         <h3 className="text-[10px] uppercase tracking-[0.28em] text-primary font-bold mb-3">Histórico</h3>
         <ul className="space-y-1.5">
-          {pts.slice().reverse().map((p, i) => (
-            <li key={i} className="flex items-center justify-between text-xs glass rounded-xl px-3 py-2.5">
-              <span className="font-mono text-muted-foreground">{p.date}</span>
-              <span className="font-bold">{p.weight} kg · {p.bf}%</span>
-              <button onClick={() => setPts(pts.filter((x) => x !== p))} className="text-muted-foreground hover:text-destructive">
-                <Trash2 className="size-3.5" />
-              </button>
+          {pts.slice().reverse().map((p) => (
+            <li key={p.id} className="flex items-center justify-between text-xs glass rounded-xl px-3 py-2.5">
+              <span className="font-mono text-muted-foreground">{new Date(p.date).toLocaleDateString("pt-BR")}</span>
+              <span className="font-bold">{p.weight} kg</span>
+              {canWrite && (
+                <button onClick={() => remove(p.id)} className="text-muted-foreground hover:text-destructive">
+                  <Trash2 className="size-3.5" />
+                </button>
+              )}
             </li>
           ))}
         </ul>
-      </Card>
+      </Card>}
     </AppShell>
   );
 }

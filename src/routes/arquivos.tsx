@@ -105,6 +105,7 @@ function Files() {
 
   const sizeFmt = (b: number) => (b < 1024 ? `${b}B` : b < 1024 ** 2 ? `${(b / 1024).toFixed(0)}KB` : `${(b / 1024 ** 2).toFixed(1)}MB`);
   const totalSize = list.reduce((a, b) => a + b.size, 0);
+  const latestUpdate = list[0]?.updated_at ? new Date(list[0].updated_at).toLocaleDateString("pt-BR") : "—";
 
   return (
     <AppShell title="Arquivos">
@@ -116,7 +117,7 @@ function Files() {
         stats={[
           { label: "Arquivos", value: list.length },
           { label: "Espaço", value: sizeFmt(totalSize) },
-          { label: "Limite", value: "1 GB" },
+          { label: "Último", value: latestUpdate },
         ]}
         action={
           <label className={`size-11 rounded-2xl bg-primary text-primary-foreground grid place-items-center cursor-pointer shadow-lg shadow-primary/40 hover:scale-105 transition ${uploading ? "opacity-60" : ""}`}>

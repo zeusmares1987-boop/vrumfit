@@ -6,6 +6,7 @@ import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShe
 import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { StoredImage } from "@/components/StoredImage";
+import { useAuth } from "@/lib/auth";
 import { Download, BookOpen, FileDown, Zap, Clock, Flame, ChevronDown, ChevronUp, Play, Dumbbell } from "lucide-react";
 import type { WorkoutPDFData } from "@/components/pdfs/VrumPDFs";
 import { generateWorkoutPDFBlob } from "@/lib/pdf-lazy";
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/treinos")({
 });
 
 function TreinosPage() {
+  const { user } = useAuth();
   const { data: exLib } = useQuery({
     queryKey: ["exercise-library"],
     queryFn: async () => {
@@ -36,6 +38,16 @@ function TreinosPage() {
       return data ?? [];
     },
   });
+  const { data: profile } = useQuery({
+    queryKey: ["my-profile-name", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("profiles").select("full_name,email").eq("id", user.id).maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+  const studentName = profile?.full_name ?? profile?.email ?? user?.email ?? "Aluno";
   const repeatedExerciseImages = useMemo(() => {
     const counts = new Map<string, number>();
     (exLib ?? []).forEach((e) => e.image_start && counts.set(e.image_start, (counts.get(e.image_start) ?? 0) + 1));
@@ -214,7 +226,7 @@ function TreinosPage() {
                 <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
                   <Download className="size-3" /> TXT
                 </button>
-                <button onClick={() => exportPdf(week, goal)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
+                <button onClick={() => exportPdf(week, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
                   <FileDown className="size-3" /> PDF semana {week.week}
                 </button>
               </div>
@@ -358,11 +370,11 @@ function exportTxt(plan: WeekPlan[]) {
   URL.revokeObjectURL(url);
 }
 
-async function exportPdf(week: WeekPlan, goal: string) {
+async function exportPdf(week: WeekPlan, goal: string, studentName: string) {
   for (let i = 0; i < week.days.length; i++) {
     const d = week.days[i];
     const data: WorkoutPDFData = {
-      studentName: "Aluno VrumFit",
+      studentName,
       dayLabel: `S${week.week} · DIA ${i + 1} — ${d.name}`,
       tip: `Objetivo: ${goal}. RIR alvo ${week.rirTarget}. ${week.isDeload ? "Semana de deload: foco em recuperação." : "Mantenha técnica antes de carga."}`,
       exercises: d.exercises.map((ex) => ({
