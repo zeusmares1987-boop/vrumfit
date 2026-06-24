@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Users, User, ClipboardList, Wallet, Settings, GraduationCap, ShoppingBag } from "lucide-react";
+import { Archive, Bell, Box, ClipboardList, LayoutGrid, Settings, ShoppingBag, Target, User, Users, Wallet } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
@@ -30,14 +30,18 @@ export const Route = createFileRoute("/owner")({
 });
 
 const ownerModules: DashboardModule[] = [
-  { icon: Users, title: "Usuários", description: "Gerencie acessos", to: "/personais", image: tileUsuariosAsset.url },
+  { icon: Users, title: "Usuários", description: "Acessos e permissões", to: "/personais", image: tileUsuariosAsset.url },
   { icon: User, title: "Professores", description: "Equipe e gestão", to: "/trainer", image: tileProfessoresAsset.url },
-  { icon: GraduationCap, title: "Alunos", description: "Alunos e matrículas", to: "/alunos", image: tileAlunosAsset.url },
-  { icon: ClipboardList, title: "Planos", description: "Assinaturas ativas", to: "/planos", image: tilePlanosAsset.url },
+  { icon: User, title: "Alunos", description: "Cadastros e matrículas", to: "/alunos", image: tileAlunosAsset.url },
+  { icon: ShoppingBag, title: "Loja", description: "Sua loja integrada", to: "/loja-pro" },
+  { icon: Box, title: "Produtos", description: "Catálogo e estoque", to: "/produtos" },
+  { icon: ClipboardList, title: "Planos", description: "Assinaturas e limites", to: "/planos", image: tilePlanosAsset.url },
   { icon: Wallet, title: "Financeiro", description: "Receitas e relatórios", to: "/financeiro", image: tileFinanceiroAsset.url },
-  { icon: ShoppingBag, title: "Loja", description: "Produtos e vendas", to: "/loja-pro" },
+  { icon: Target, title: "Execução", description: "Biblioteca e técnica", to: "/biblioteca" },
+  { icon: Bell, title: "Avisos", description: "Comunicados", to: "/avisos" },
+  { icon: Archive, title: "Arquivos", description: "Documentos e downloads", to: "/arquivos" },
   { icon: Settings, title: "Configurações", description: "Regras do sistema", to: "/config" },
-
+  { icon: LayoutGrid, title: "Mais", description: "Outras funções", to: "/elite" },
 ];
 
 function OwnerPage() {
@@ -84,7 +88,7 @@ function OwnerPage() {
         name={firstName}
         roleLabel="Proprietário"
         modeLabel="Modo gestor"
-        subtitle="Controle total do seu negócio."
+        subtitle="Tenha controle total do seu negócio."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={heroOwnerAsset.url}
         
