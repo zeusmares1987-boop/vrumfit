@@ -88,6 +88,24 @@ export const FOODS: FoodItem[] = [
   { name: "Cenoura", group: "vegetal", kcal: 41, p: 0.9, c: 10, f: 0.2, fiber: 2.8, measure: "unidade (80 g)", measureGrams: 80, tags: ["vegano", "sem_lactose", "sem_gluten", "barato"] },
 ];
 
+// Pool extra (preenchido em runtime pelo library-loader a partir do banco).
+// Não entra na composição da refeição — só amplia as opções de substituição.
+const EXTRA_BY_GROUP: Map<FoodItem["group"], string[]> = new Map();
+
+export function registerExtraFoods(items: { name: string; group: FoodItem["group"] }[]) {
+  for (const it of items) {
+    if (!it?.name || !it?.group) continue;
+    const arr = EXTRA_BY_GROUP.get(it.group) ?? [];
+    if (!arr.includes(it.name) && !FOODS.some((f) => f.name === it.name)) arr.push(it.name);
+    EXTRA_BY_GROUP.set(it.group, arr);
+  }
+}
+
+function extraSubsFor(group: FoodItem["group"], exclude: string): string[] {
+  const arr = EXTRA_BY_GROUP.get(group) ?? [];
+  return arr.filter((n) => n !== exclude).slice(0, 5);
+}
+
 // ============================================================
 // CÁLCULO METABÓLICO
 // ============================================================
@@ -283,9 +301,11 @@ function buildMeal(slot: { slot: MealSlot; title: string; time: string; kcalPct:
     fiber: 0,
   };
 
-  const substitutionsByItem = items.map((i) =>
-    pool.filter((p) => p.group === i.food.group && p.name !== i.food.name).slice(0, 3).map((p) => p.name)
-  );
+  const substitutionsByItem = items.map((i) => {
+    const curated = pool.filter((p) => p.group === i.food.group && p.name !== i.food.name).slice(0, 3).map((p) => p.name);
+    const extras = extraSubsFor(i.food.group, i.food.name);
+    return [...curated, ...extras].slice(0, 8);
+  });
 
   return { ...slot, items, totals, substitutionsByItem };
 }
