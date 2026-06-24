@@ -75,7 +75,8 @@ function OwnerPage() {
     enabled: !!user,
   });
 
-  const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "José";
+  const rawFirstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "José";
+  const firstName = /^(dono|propriet[aá]rio)$/i.test(rawFirstName) ? "José" : rawFirstName;
   const ownerStats: DashboardStat[] = [
     { icon: Users, label: "Professores", value: String(dashboard?.trainers ?? 0), hint: "Ativos" },
     { icon: User, label: "Alunos", value: String(dashboard?.students ?? 0), hint: "Matriculados" },
