@@ -32,6 +32,7 @@ function Sup() {
   const [subject, setSubject] = useState("");
   const [msg, setMsg] = useState("");
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const openTickets = tickets.filter((ticket) => ticket.status === "aberto").length;
 
   const load = async () => {
     if (!user) return;
@@ -63,7 +64,7 @@ function Sup() {
         stats={[
           { label: "FAQ", value: faqs.length },
           { label: "Tickets", value: tickets.length },
-          { label: "Resposta", value: "~24h" },
+          { label: "Abertos", value: openTickets },
         ]}
       />
 

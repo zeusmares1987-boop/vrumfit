@@ -61,6 +61,7 @@ function Avisos() {
 
   const canPost = role === "dono" || role === "personal";
   const today = list.filter((n) => new Date(n.created_at).toDateString() === new Date().toDateString()).length;
+  const audienceCount = new Set(list.map((notice) => notice.audience)).size;
 
   return (
     <AppShell title="Avisos">
@@ -72,7 +73,7 @@ function Avisos() {
         stats={[
           { label: "Total", value: list.length },
           { label: "Hoje", value: today },
-          { label: "Audiência", value: "Todos" },
+          { label: "Públicos", value: audienceCount || "—" },
         ]}
         action={canPost ? (
           <button onClick={() => setShow(!show)} className="size-11 rounded-2xl bg-primary text-primary-foreground grid place-items-center shadow-lg shadow-primary/40 hover:scale-105 transition">
