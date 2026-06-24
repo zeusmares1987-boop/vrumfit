@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Users, User, ClipboardList, Wallet, Settings, GraduationCap } from "lucide-react";
+import { Users, User, ClipboardList, Wallet, Settings, GraduationCap, ShoppingBag } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
