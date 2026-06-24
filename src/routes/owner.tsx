@@ -55,7 +55,7 @@ function OwnerPage() {
     queryKey: ["my-profile", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle();
+      const { data } = await supabase.from("profiles").select("full_name,avatar_url").eq("id", user.id).maybeSingle();
       return data;
     },
     enabled: !!user,
