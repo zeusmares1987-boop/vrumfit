@@ -12,7 +12,7 @@ import { WeekFrequency } from "@/components/WeekFrequency";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
-import heroStudentAsset from "@/assets/hero/hero-student.png.asset.json";
+import heroStudentAsset from "@/assets/hero/hero-student.jpg.asset.json";
 import tileDietaAsset from "@/assets/tile-dieta.jpg.asset.json";
 import tileExecucaoAsset from "@/assets/tile-execucao.jpg.asset.json";
 import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";

@@ -207,85 +207,34 @@
     min-height: 220px;
   }
 
-  .vrum-coded-hero {
+  .vrum-hero-photo-wrap {
     position: absolute;
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-    opacity: .96;
+  }
+
+  .vrum-hero-photo {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    height: 108%;
+    width: auto;
+    max-width: 78%;
+    object-fit: cover;
+    object-position: right center;
+    opacity: 0.95;
+  }
+
+  .vrum-hero-fade {
+    position: absolute;
+    inset: 0;
     background:
-      linear-gradient(90deg, var(--background) 0 38%, color-mix(in oklab, var(--background) 70%, transparent) 58%, transparent 82%),
-      radial-gradient(180px 150px at 78% 35%, color-mix(in oklab, var(--brand) 28%, transparent), transparent 70%),
-      linear-gradient(180deg, transparent 0 62%, var(--background) 100%);
+      linear-gradient(90deg, var(--background) 0 36%, color-mix(in oklab, var(--background) 78%, transparent) 50%, transparent 72%),
+      linear-gradient(180deg, transparent 0 70%, var(--background) 100%);
   }
 
-  .vrum-coded-panel {
-    position: absolute;
-    border: 1px solid color-mix(in oklab, var(--brand) 28%, transparent);
-    background:
-      repeating-linear-gradient(90deg, color-mix(in oklab, var(--brand) 10%, transparent) 0 1px, transparent 1px 18px),
-      linear-gradient(135deg, color-mix(in oklab, var(--brand) 10%, transparent), transparent 55%);
-    box-shadow: 0 0 26px -14px var(--brand), inset 0 0 18px color-mix(in oklab, var(--brand) 7%, transparent);
-    transform: skewY(-8deg) rotate(-4deg);
-  }
 
-  .vrum-coded-panel-a {
-    right: 6px;
-    top: 45px;
-    width: 142px;
-    height: 88px;
-    border-radius: 10px;
-    opacity: .72;
-  }
-
-  .vrum-coded-panel-b {
-    right: 28px;
-    top: 16px;
-    width: 92px;
-    height: 58px;
-    border-radius: 8px;
-    opacity: .48;
-  }
-
-  .vrum-coded-person {
-    position: absolute;
-    right: 46px;
-    top: 52px;
-    width: 92px;
-    height: 132px;
-    border-radius: 48px 48px 12px 12px;
-    background:
-      radial-gradient(circle at 48% 18%, color-mix(in oklab, white 20%, black 80%) 0 17px, transparent 18px),
-      radial-gradient(circle at 52% 34%, color-mix(in oklab, var(--brand) 18%, transparent), transparent 36px),
-      linear-gradient(155deg, color-mix(in oklab, black 86%, var(--brand) 14%), black 76%);
-    box-shadow: 0 0 44px -18px var(--brand);
-    clip-path: polygon(28% 4%, 62% 2%, 78% 20%, 87% 64%, 77% 100%, 17% 100%, 9% 61%, 15% 22%);
-  }
-
-  .vrum-coded-person::after {
-    content: "";
-    position: absolute;
-    left: 45px;
-    top: 78px;
-    width: 60px;
-    height: 36px;
-    border-radius: 6px;
-    background: linear-gradient(145deg, color-mix(in oklab, white 10%, black 90%), black);
-    border: 1px solid color-mix(in oklab, white 20%, transparent);
-    transform: rotate(-8deg);
-  }
-
-  .vrum-coded-tablet {
-    position: absolute;
-    right: 22px;
-    top: 112px;
-    width: 50px;
-    height: 34px;
-    border-radius: 5px;
-    background: color-mix(in oklab, black 88%, var(--brand) 12%);
-    border: 1px solid color-mix(in oklab, var(--brand) 34%, white 10%);
-    box-shadow: 0 0 18px -10px var(--brand);
-  }
 
   .vrum-top-icon {
     border: 1px solid color-mix(in oklab, var(--brand) 76%, white 7%);

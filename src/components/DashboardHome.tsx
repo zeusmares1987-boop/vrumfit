@@ -47,6 +47,7 @@ function greeting() {
 export function DashboardHome({
   name,
   subtitle,
+  heroImageUrl,
   searchPlaceholder,
   modules,
   stats,
@@ -64,7 +65,7 @@ export function DashboardHome({
 
   return (
     <div className="vrum-dash mx-auto min-h-[100dvh] w-full max-w-[430px] space-y-3 overflow-hidden pb-28">
-      <Hero name={name} subtitle={subtitle} notifCount={notifCount} />
+      <Hero name={name} subtitle={subtitle} notifCount={notifCount} heroImageUrl={heroImageUrl} />
       {alerts}
       {beforeStats}
       {stats.length > 0 && <StatsRow stats={stats} />}
@@ -78,14 +79,19 @@ function Hero({
   name,
   subtitle,
   notifCount,
+  heroImageUrl,
 }: {
   name: string;
   subtitle: string;
   notifCount: number;
+  heroImageUrl: string;
 }) {
   return (
     <section className="vrum-hero relative overflow-hidden pb-2 pt-5">
-      <HeroScene />
+      <div className="vrum-hero-photo-wrap" aria-hidden="true">
+        <img src={heroImageUrl} alt="" className="vrum-hero-photo" />
+        <div className="vrum-hero-fade" />
+      </div>
 
       <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
         <Brand />
@@ -97,24 +103,13 @@ function Hero({
         </div>
       </header>
 
-      <div className="relative mt-12 max-w-[70%]">
-        <h1 className="vrum-greeting text-[27px] font-black leading-[1.08] text-foreground">
+      <div className="relative mt-12 max-w-[68%]">
+        <h1 className="vrum-greeting text-[28px] font-black leading-[1.05] text-foreground">
           {greeting()}, <span className="text-primary">{name}!</span>
         </h1>
         <p className="mt-1.5 max-w-[250px] text-[13px] leading-snug text-muted-foreground">{subtitle}</p>
       </div>
     </section>
-  );
-}
-
-function HeroScene() {
-  return (
-    <div className="vrum-coded-hero" aria-hidden="true">
-      <span className="vrum-coded-panel vrum-coded-panel-a" />
-      <span className="vrum-coded-panel vrum-coded-panel-b" />
-      <span className="vrum-coded-person" />
-      <span className="vrum-coded-tablet" />
-    </div>
   );
 }
 
