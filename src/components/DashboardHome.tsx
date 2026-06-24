@@ -112,6 +112,11 @@ function Hero({
   );
 }
 
+function safeShortLabel(label: string) {
+  if (label.length <= 11) return label;
+  return `${label.slice(0, 8)}...`;
+}
+
 function Brand() {
   return (
     <div className="flex min-w-0 items-center gap-3 md:gap-5">
@@ -158,7 +163,7 @@ function StatCard({ stat }: { stat: DashboardStat }) {
           <stat.icon className="size-4 md:size-8" />
         </div>
         <div className="hidden min-w-0 md:block">
-          <p className="truncate text-[18px] font-semibold leading-tight text-foreground">{stat.label}</p>
+          <p className="truncate text-[18px] font-semibold leading-tight text-foreground">{safeShortLabel(stat.label)}</p>
           <p className="truncate text-[46px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
           <p className="mt-2 truncate text-[17px] leading-none text-muted-foreground">{stat.hint}</p>
         </div>
