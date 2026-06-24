@@ -35,6 +35,7 @@ import { Route as ArquivosRouteImport } from './routes/arquivos'
 import { Route as AnamneseRouteImport } from './routes/anamnese'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as AgendaRouteImport } from './routes/agenda'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BibliotecaIndexRouteImport } from './routes/biblioteca.index'
 import { Route as LojaIdRouteImport } from './routes/loja.$id'
@@ -172,6 +173,11 @@ const AgendaRoute = AgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -205,6 +211,7 @@ const AlunosIdRoute = AlunosIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/agenda': typeof AgendaRoute
   '/alunos': typeof AlunosRouteWithChildren
   '/anamnese': typeof AnamneseRoute
@@ -239,6 +246,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/agenda': typeof AgendaRoute
   '/alunos': typeof AlunosRouteWithChildren
   '/anamnese': typeof AnamneseRoute
@@ -273,6 +281,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/agenda': typeof AgendaRoute
   '/alunos': typeof AlunosRouteWithChildren
   '/anamnese': typeof AnamneseRoute
@@ -309,6 +318,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/agenda'
     | '/alunos'
     | '/anamnese'
@@ -343,6 +353,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/agenda'
     | '/alunos'
     | '/anamnese'
@@ -376,6 +387,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/agenda'
     | '/alunos'
     | '/anamnese'
@@ -411,6 +423,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AgendaRoute: typeof AgendaRoute
   AlunosRoute: typeof AlunosRouteWithChildren
   AnamneseRoute: typeof AnamneseRoute
@@ -623,6 +636,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgendaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -716,6 +736,7 @@ const LojaProRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AgendaRoute: AgendaRoute,
   AlunosRoute: AlunosRouteWithChildren,
   AnamneseRoute: AnamneseRoute,

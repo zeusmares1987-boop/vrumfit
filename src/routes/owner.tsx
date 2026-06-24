@@ -30,8 +30,8 @@ export const Route = createFileRoute("/owner")({
 });
 
 const ownerModules: DashboardModule[] = [
-  { icon: Users, title: "Usuários", description: "Acessos e permissões", to: "/personais", image: tileUsuariosAsset.url },
-  { icon: User, title: "Professores", description: "Equipe e gestão", to: "/trainer", image: tileProfessoresAsset.url },
+  { icon: Settings, title: "Painel do Dono", description: "Configurar tudo do app", to: "/admin", image: tileUsuariosAsset.url },
+  { icon: User, title: "Professores", description: "Equipe e gestão", to: "/personais", image: tileProfessoresAsset.url },
   { icon: User, title: "Alunos", description: "Cadastros e matrículas", to: "/alunos", image: tileAlunosAsset.url },
   { icon: ShoppingBag, title: "Loja", description: "Sua loja integrada", to: "/loja-pro" },
   { icon: Box, title: "Produtos", description: "Catálogo e estoque", to: "/produtos" },
@@ -40,7 +40,7 @@ const ownerModules: DashboardModule[] = [
   { icon: Target, title: "Execução", description: "Biblioteca e técnica", to: "/biblioteca" },
   { icon: Bell, title: "Avisos", description: "Comunicados", to: "/avisos" },
   { icon: Archive, title: "Arquivos", description: "Documentos e downloads", to: "/arquivos" },
-  { icon: Settings, title: "Configurações", description: "Regras do sistema", to: "/config" },
+  { icon: Users, title: "Usuários", description: "Acessos e permissões", to: "/personais", image: tileUsuariosAsset.url },
   { icon: LayoutGrid, title: "Mais", description: "Outras funções", to: "/elite" },
 ];
 
