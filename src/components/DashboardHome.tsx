@@ -84,7 +84,7 @@ function Hero({
   heroImageUrl: string;
 }) {
   return (
-    <section className="dashboard-hero relative -mx-4 min-h-[206px] overflow-hidden px-4 pb-4 pt-7 md:min-h-[345px] md:pb-7 md:pt-10">
+    <section className="dashboard-hero relative -mx-4 min-h-[206px] overflow-hidden px-4 pb-4 pt-7 md:-mx-10 md:min-h-[370px] md:px-10 md:pb-7 md:pt-10">
       <div className="dashboard-hero-grid" aria-hidden="true" />
       <div className="dashboard-hero-figure" aria-hidden="true">
         <img src={heroImageUrl} alt="" className="dashboard-hero-image" loading="eager" />
@@ -101,7 +101,7 @@ function Hero({
         </Link>
       </header>
 
-      <div className="relative mt-14 max-w-[72%] md:mt-24">
+      <div className="relative mt-14 max-w-[72%] md:mt-28">
         <h1 className="dashboard-heading text-[34px] font-black leading-[1.04] tracking-[-0.045em] text-foreground md:text-[58px]">
           {greeting()},{" "}
           <span className="text-primary">{name}!</span>
@@ -158,9 +158,9 @@ function StatCard({ stat }: { stat: DashboardStat }) {
           <stat.icon className="size-4 md:size-8" />
         </div>
         <div className="hidden min-w-0 md:block">
-          <p className="truncate text-[20px] font-semibold leading-tight text-foreground">{stat.label}</p>
+          <p className="truncate text-[18px] font-semibold leading-tight text-foreground">{stat.label}</p>
           <p className="truncate text-[46px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
-          <p className="mt-2 truncate text-[18px] leading-none text-muted-foreground">{stat.hint}</p>
+          <p className="mt-2 truncate text-[17px] leading-none text-muted-foreground">{stat.hint}</p>
         </div>
         <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground/70 md:mt-0 md:size-8" />
       </div>
