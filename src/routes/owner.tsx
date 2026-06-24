@@ -85,7 +85,7 @@ function OwnerPage() {
         subtitle="Controle total do seu negócio."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
-        referenceImageUrl={ownerPremiumImage}
+        
         searchPlaceholder="Buscar módulos, usuários, produtos..."
         stats={ownerStats}
         modules={ownerModules}
