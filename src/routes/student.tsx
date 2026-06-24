@@ -47,11 +47,6 @@ const studentModules: DashboardModule[] = [
   { icon: Settings, title: "Configurações", description: "Ajustes da conta", to: "/config", image: headerGymAsset.url },
 ];
 
-const studentStats: DashboardStat[] = [
-  { icon: Dumbbell, label: "Treinos", value: "4", hint: "Nesta semana", trend: "↑ 2" },
-  { icon: CheckCircle2, label: "Concluídos", value: "18", hint: "No mês", trend: "↑ 9%" },
-  { icon: TrendingUp, label: "Progresso", value: "82%", hint: "Meta atual", trend: "↑ 6%" },
-];
 
 function StudentPage() {
   const { user } = useAuth();
@@ -102,7 +97,52 @@ function StudentPage() {
     onError: (error: Error) => toast.error(error.message || "Falha ao reivindicar."),
   });
 
+  const { data: stats } = useQuery({
+    queryKey: ["student-stats", user?.id],
+    queryFn: async () => {
+      if (!user) return { week: 0, month: 0, lastDays: null as number | null };
+      const now = new Date();
+      const dow = now.getDay();
+      const weekStart = new Date(now); weekStart.setDate(now.getDate() - dow); weekStart.setHours(0, 0, 0, 0);
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+      const [{ count: week }, { count: month }, { data: last }] = await Promise.all([
+        supabase.from("workout_sessions").select("id", { count: "exact", head: true }).eq("student_id", user.id).gte("session_date", iso(weekStart)),
+        supabase.from("workout_sessions").select("id", { count: "exact", head: true }).eq("student_id", user.id).gte("session_date", iso(monthStart)),
+        supabase.from("workout_sessions").select("session_date").eq("student_id", user.id).order("session_date", { ascending: false }).limit(1).maybeSingle(),
+      ]);
+
+      const lastDays = last?.session_date
+        ? Math.floor((now.getTime() - new Date(last.session_date).getTime()) / 86400000)
+        : null;
+      return { week: week ?? 0, month: month ?? 0, lastDays };
+    },
+    enabled: !!user,
+  });
+
+  const { data: notifCount } = useQuery({
+    queryKey: ["student-notif-count", user?.id],
+    queryFn: async () => {
+      if (!user) return 0;
+      const since = new Date(Date.now() - 30 * 86400000).toISOString();
+      const { count } = await supabase
+        .from("notices")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", since)
+        .or(`audience.eq.geral,target_user_id.eq.${user.id}`);
+      return count ?? 0;
+    },
+    enabled: !!user,
+  });
+
   const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Aluno";
+
+  const studentStats: DashboardStat[] = [
+    { icon: Dumbbell, label: "Treinos", value: String(stats?.week ?? 0), hint: "Nesta semana", trend: "" },
+    { icon: CheckCircle2, label: "Concluídos", value: String(stats?.month ?? 0), hint: "No mês", trend: "" },
+    { icon: TrendingUp, label: "Último", value: stats?.lastDays == null ? "—" : stats.lastDays === 0 ? "Hoje" : `${stats.lastDays}d`, hint: "Atrás", trend: "" },
+  ];
 
   return (
     <AppShell hideHeader>
