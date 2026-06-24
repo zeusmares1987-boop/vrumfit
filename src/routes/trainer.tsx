@@ -12,6 +12,7 @@ import tileAlunosAsset from "@/assets/tile-alunos.jpg.asset.json";
 import tileAvaliacoesAsset from "@/assets/tile-avaliacoes.jpg.asset.json";
 import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
 import tileTreinosAsset from "@/assets/tile-treinos.jpg.asset.json";
+import trainerPremiumAsset from "@/assets/refs/vrum-trainer-blue-premium.png.asset.json";
 
 export const Route = createFileRoute("/trainer")({
   head: () => ({ meta: [{ title: "Painel do Personal — VRUMFIT PERSONAL" }] }),
@@ -98,6 +99,7 @@ function TrainerPage() {
         subtitle="Gerencie alunos, treinos e evolução."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
         heroImageUrl={headerGymAsset.url}
+        referenceImageUrl={trainerPremiumAsset.url}
         searchPlaceholder="Buscar alunos, treinos, dietas..."
         stats={trainerStats}
         modules={trainerModules}
