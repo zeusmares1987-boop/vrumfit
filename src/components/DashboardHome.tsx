@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, Search, SlidersHorizontal, User as UserIcon } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export type DashboardModule = {
   icon: ComponentType<{ className?: string }>;
@@ -43,7 +44,7 @@ function greeting() {
 export function DashboardHome({
   name,
   subtitle,
-  avatarUrl: _avatarUrl,
+  avatarUrl,
   heroImageUrl,
   searchPlaceholder,
   modules,
@@ -60,8 +61,8 @@ export function DashboardHome({
   }, [modules, query]);
 
   return (
-    <div className="space-y-5 pb-6">
-      <Hero name={name} subtitle={subtitle} heroImageUrl={heroImageUrl} />
+    <div className="dashboard-home space-y-4 pb-6 md:space-y-5">
+      <Hero name={name} subtitle={subtitle} avatarUrl={avatarUrl} heroImageUrl={heroImageUrl} />
       {alerts}
       {beforeStats}
       {stats.length > 0 && <StatsRow stats={stats} />}
@@ -71,59 +72,84 @@ export function DashboardHome({
   );
 }
 
-function Hero({ name, subtitle, heroImageUrl }: { name: string; subtitle: string; heroImageUrl: string }) {
+function Hero({
+  name,
+  subtitle,
+  avatarUrl: _avatarUrl,
+  heroImageUrl,
+}: {
+  name: string;
+  subtitle: string;
+  avatarUrl: string;
+  heroImageUrl: string;
+}) {
   return (
-    <section className="relative -mx-4 overflow-hidden px-4 pb-2 pt-4">
-      {/* Imagem à direita, fade pra esquerda */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-[58%]">
-        <img src={heroImageUrl} alt="" className="size-full object-cover object-right opacity-60" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
+    <section className="dashboard-hero relative -mx-4 min-h-[206px] overflow-hidden px-4 pb-4 pt-7 md:-mx-10 md:min-h-[370px] md:px-10 md:pb-7 md:pt-10">
+      <div className="dashboard-hero-grid" aria-hidden="true" />
+      <div className="dashboard-hero-figure" aria-hidden="true">
+        <img src={heroImageUrl} alt="" className="dashboard-hero-image" loading="eager" />
       </div>
 
-      {/* Topo: logo + avatar */}
       <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <Brand />
         <Link
           to="/config"
           aria-label="Meu perfil"
-          className="grid size-11 shrink-0 place-items-center rounded-full border-[1.5px] border-primary/70 text-primary backdrop-blur-sm transition hover:bg-primary/10"
+          className="dashboard-profile grid size-[52px] shrink-0 place-items-center rounded-full text-primary transition hover:bg-primary/10"
         >
-          <UserIcon className="size-5" />
+          <UserIcon className="size-6" />
         </Link>
       </header>
 
-      {/* Saudação */}
-      <div className="relative mt-7 max-w-[78%]">
-        <h1 className="text-[34px] font-black leading-[1.05] tracking-tight text-foreground">
+      <div className="relative mt-14 max-w-[72%] md:mt-28">
+        <h1 className="dashboard-heading text-[34px] font-black leading-[1.04] tracking-[-0.045em] text-foreground md:text-[58px]">
           {greeting()},{" "}
           <span className="text-primary">{name}!</span>
         </h1>
-        <p className="mt-2 text-[13px] leading-snug text-muted-foreground">{subtitle}</p>
+        <p className="mt-3 text-[15px] leading-snug text-muted-foreground md:text-[23px]">{subtitle}</p>
       </div>
     </section>
   );
 }
 
+function safeShortLabel(label: string) {
+  if (label.length <= 11) return label;
+  return `${label.slice(0, 8)}...`;
+}
+
 function Brand() {
   return (
-    <div className="flex min-w-0 items-center gap-2">
-      <div className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-[0_0_24px_-6px_var(--color-primary)]">
-        <span className="text-xl font-black italic leading-none">V</span>
-      </div>
+    <div className="flex min-w-0 items-center gap-3 md:gap-5">
+      <VrumMark className="size-[58px] shrink-0 md:size-[93px]" />
       <div className="min-w-0 leading-none">
-        <div className="truncate text-[20px] font-black italic tracking-tight text-foreground">
+        <div className="dashboard-logo-text truncate text-[31px] font-black italic tracking-[-0.08em] text-foreground md:text-[52px]">
           Vrum<span className="text-primary">Fit</span>
         </div>
-        <div className="mt-1 text-[8px] font-bold tracking-[0.4em] text-muted-foreground">PERSONAL</div>
+        <div className="mt-2 pl-5 text-[11px] font-bold tracking-[0.62em] text-foreground/90 md:mt-3 md:pl-9 md:text-[18px]">PERSONAL</div>
       </div>
     </div>
   );
 }
 
+function VrumMark({ className }: { className?: string }) {
+  return (
+    <svg className={cn("dashboard-v-mark", className)} viewBox="0 0 64 64" role="img" aria-label="VrumFit">
+      <defs>
+        <linearGradient id="vrumMarkGradient" x1="9" x2="55" y1="8" y2="58" gradientUnits="userSpaceOnUse">
+          <stop className="dashboard-v-stop-a" />
+          <stop offset="1" className="dashboard-v-stop-b" />
+        </linearGradient>
+      </defs>
+      <path d="M4 10h18l13 21L53 10h7L36 54h-9L4 10Z" fill="url(#vrumMarkGradient)" />
+      <path d="M23 10h16L25 36 17 21l6-11Z" className="dashboard-v-mark-shadow" />
+      <path d="M35 39 50 16h9L40 54h-9l4-15Z" className="dashboard-v-mark-highlight" />
+    </svg>
+  );
+}
+
 function StatsRow({ stats }: { stats: DashboardStat[] }) {
   return (
-    <section className="grid grid-cols-3 gap-2">
+    <section className="grid grid-cols-3 gap-2.5 md:gap-4">
       {stats.map((s) => <StatCard key={s.label} stat={s} />)}
     </section>
   );
@@ -131,37 +157,41 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="relative min-w-0 overflow-hidden rounded-2xl border border-border bg-card/70 p-3 backdrop-blur-sm">
-      <div className="flex items-start gap-2">
-        <div className="grid size-9 shrink-0 place-items-center rounded-full border border-primary/40 bg-primary/10 text-primary">
-          <stat.icon className="size-[18px]" />
+    <article className="dashboard-panel relative min-h-[86px] min-w-0 overflow-hidden rounded-[22px] p-3 md:min-h-[160px] md:rounded-[24px] md:p-7">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-1 md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-5">
+        <div className="dashboard-icon-ring grid size-8 shrink-0 place-items-center rounded-full text-primary md:size-[64px]">
+          <stat.icon className="size-4 md:size-8" />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-[11px] font-medium text-muted-foreground">{stat.label}</p>
-          <p className="truncate text-2xl font-black leading-tight tracking-tight text-foreground">{stat.value}</p>
-          <p className="truncate text-[10px] text-muted-foreground">{stat.hint}</p>
+        <div className="hidden min-w-0 md:block">
+          <p className="truncate text-[18px] font-semibold leading-tight text-foreground">{safeShortLabel(stat.label)}</p>
+          <p className="truncate text-[46px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
+          <p className="mt-2 truncate text-[17px] leading-none text-muted-foreground">{stat.hint}</p>
         </div>
-        <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground/60" />
+        <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground/70 md:mt-0 md:size-8" />
       </div>
-      <div className="pointer-events-none absolute inset-x-4 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+      <div className="mt-2 min-w-0 md:hidden">
+        <p className="truncate text-[10px] font-semibold leading-tight text-foreground">{stat.label}</p>
+        <p className="truncate text-[23px] font-black leading-none tracking-[-0.045em] text-foreground">{stat.value}</p>
+        <p className="mt-1 truncate text-[10px] leading-none text-muted-foreground">{stat.hint}</p>
+      </div>
     </article>
   );
 }
 
 function SearchRow({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+    <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2.5 md:grid-cols-[minmax(0,1fr)_190px] md:gap-6">
       <label className="relative">
-        <Search className="absolute left-4 top-1/2 size-[18px] -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute left-4 top-1/2 size-[29px] -translate-y-1/2 text-muted-foreground md:left-8 md:size-12" />
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="h-12 w-full rounded-2xl border border-border bg-card/70 pl-11 pr-4 text-[13px] text-foreground outline-none backdrop-blur-sm placeholder:text-muted-foreground focus:border-primary/60"
+          className="dashboard-search-box h-[58px] w-full rounded-[19px] pl-[60px] pr-4 text-[15px] text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/70 md:h-[92px] md:rounded-[25px] md:pl-[94px] md:text-[24px]"
         />
       </label>
-      <button type="button" className="grid h-12 shrink-0 grid-flow-col items-center gap-2 rounded-2xl border border-border bg-card/70 px-4 text-[13px] font-semibold text-primary backdrop-blur-sm transition hover:border-primary/50">
-        <SlidersHorizontal className="size-4" />
+      <button type="button" className="dashboard-search-box grid h-[58px] shrink-0 grid-flow-col place-content-center items-center gap-2 rounded-[19px] px-3 text-[15px] font-bold text-primary transition hover:border-primary/60 md:h-[92px] md:gap-5 md:rounded-[25px] md:text-[24px]">
+        <SlidersHorizontal className="size-5 md:size-9" />
         Filtros
       </button>
     </div>
@@ -170,7 +200,7 @@ function SearchRow({ value, onChange, placeholder }: { value: string; onChange: 
 
 function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
   return (
-    <section className="grid grid-cols-2 gap-3">
+    <section className="grid grid-cols-2 gap-3 md:gap-6">
       {modules.map((m) => <ModuleCard key={m.title + m.to} module={m} />)}
     </section>
   );
@@ -180,19 +210,18 @@ function ModuleCard({ module }: { module: DashboardModule }) {
   return (
     <Link
       to={module.to}
-      className="group relative overflow-hidden rounded-2xl border border-border bg-card/70 p-4 backdrop-blur-sm transition active:scale-[0.98] hover:border-primary/55"
+      className="dashboard-module group relative min-h-[136px] overflow-hidden rounded-[24px] p-4 transition active:scale-[0.98] hover:border-primary/55 md:min-h-[210px] md:p-7"
     >
       <div className="flex items-start justify-between">
-        <div className="grid size-12 place-items-center rounded-full border-[1.5px] border-primary/60 bg-primary/5 text-primary">
-          <module.icon className="size-6" />
+        <div className="dashboard-icon-ring grid size-[58px] place-items-center rounded-full text-primary md:size-[82px]">
+          <module.icon className="size-[29px] md:size-10" />
         </div>
-        <ChevronRight className="size-5 text-muted-foreground/60 transition group-hover:translate-x-0.5 group-hover:text-primary" />
+        <ChevronRight className="size-5 text-muted-foreground/70 transition group-hover:translate-x-0.5 group-hover:text-primary md:size-7" />
       </div>
-      <div className="mt-5">
-        <p className="truncate text-[18px] font-extrabold leading-tight text-foreground">{module.title}</p>
-        <p className="mt-1 line-clamp-1 text-[12px] text-muted-foreground">{module.description}</p>
+      <div className="mt-7 md:mt-12">
+        <p className="truncate text-[19px] font-black leading-tight tracking-[-0.035em] text-foreground md:text-[28px]">{module.title}</p>
+        <p className="mt-1 line-clamp-1 text-[13px] text-muted-foreground md:mt-2 md:text-[18px]">{module.description}</p>
       </div>
-      <div className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
     </Link>
   );
 }
