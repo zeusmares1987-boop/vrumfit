@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, CalendarDays, ChevronDown, ChevronRight, LayoutGrid, Search, SlidersHorizontal } from "lucide-react";
+import { ChevronRight, Search, SlidersHorizontal, User as UserIcon } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -44,21 +44,15 @@ function greeting() {
 
 export function DashboardHome({
   name,
-  roleLabel,
-  modeLabel,
   subtitle,
-  avatarUrl,
   heroImageUrl,
-  referenceImageUrl,
   searchPlaceholder,
   modules,
   stats,
-  notifCount = 0,
   alerts,
   beforeStats,
 }: DashboardHomeProps) {
   const [query, setQuery] = useState("");
-  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const visibleModules = useMemo(() => {
     const clean = query.trim().toLowerCase();
@@ -66,125 +60,50 @@ export function DashboardHome({
     return modules.filter((m) => `${m.title} ${m.description}`.toLowerCase().includes(clean));
   }, [modules, query]);
 
-  void referenceImageUrl;
-
-
   return (
-    <div className="dashboard-home dashboard-owner-screen space-y-6 pb-8 md:space-y-8">
-      <Hero
-        name={name}
-        roleLabel={roleLabel}
-        modeLabel={modeLabel}
-        subtitle={subtitle}
-        avatarUrl={avatarUrl}
-        heroImageUrl={heroImageUrl}
-        notifCount={notifCount}
-      />
+    <div className="vrum-dash space-y-5 pb-28">
+      <Hero name={name} subtitle={subtitle} heroImageUrl={heroImageUrl} />
       {alerts}
       {beforeStats}
       {stats.length > 0 && <StatsRow stats={stats} />}
+      <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} />
       <ModuleGrid modules={visibleModules} />
-      {/* manter busca/filtros disponíveis mas escondidos por padrão p/ casar com referência */}
-      <details className="group">
-        <summary className="dashboard-order-button inline-flex cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[13px] font-medium text-primary">
-          <SlidersHorizontal className="size-4" /> Buscar / Filtrar
-        </summary>
-        <div className="mt-4 space-y-3">
-          <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} filtersOpen={filtersOpen} onToggleFilters={() => setFiltersOpen((v) => !v)} />
-          {filtersOpen && <FilterTabs />}
-        </div>
-      </details>
     </div>
   );
 }
 
-
-
-function Hero({
-  name,
-  roleLabel,
-  modeLabel,
-  subtitle,
-  avatarUrl: _avatarUrl,
-  heroImageUrl: _heroImageUrl,
-  notifCount,
-}: {
-  name: string;
-  roleLabel: string;
-  modeLabel: string;
-  subtitle: string;
-  avatarUrl: string;
-  heroImageUrl: string;
-  notifCount: number;
-}) {
-  const isOwner = roleLabel === "Proprietário";
-  const titleName = isOwner ? roleLabel : name;
-
+function Hero({ name, subtitle, heroImageUrl }: { name: string; subtitle: string; heroImageUrl: string }) {
   return (
-    <section className="dashboard-hero relative -mx-4 min-h-[312px] overflow-hidden px-6 pb-6 pt-9 md:-mx-10 md:min-h-[342px] md:px-8 md:pb-8 md:pt-10">
-      <div className="dashboard-hero-grid" aria-hidden="true" />
-      <div className="dashboard-hero-code-scene" aria-hidden="true">
-        <span className="dashboard-code-ring dashboard-code-ring-a" />
-        <span className="dashboard-code-ring dashboard-code-ring-b" />
-        <span className="dashboard-code-core" />
-        <span className="dashboard-code-bar dashboard-code-bar-a" />
-        <span className="dashboard-code-bar dashboard-code-bar-b" />
-        <span className="dashboard-code-bar dashboard-code-bar-c" />
-      </div>
+    <section className="vrum-hero relative -mx-4 overflow-hidden px-4 pb-2 pt-5 md:-mx-10 md:px-10 md:pt-7">
+      <img src={heroImageUrl} alt="" aria-hidden="true" className="vrum-hero-photo" />
+      <div className="vrum-hero-fade" aria-hidden="true" />
 
-      <header className="relative grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 md:gap-5">
+      <header className="relative flex items-start justify-between gap-4">
         <Brand />
-        <Link
-          to="/config"
-          aria-label="Meu perfil"
-          className="dashboard-user-chip hidden min-w-0 items-center gap-3 rounded-full py-2 pl-2 pr-4 md:flex"
-        >
-          <span className="dashboard-mini-avatar">{isOwner ? "G" : roleLabel.slice(0, 1)}</span>
-          <span className="min-w-0 leading-tight">
-            <span className="block truncate text-[23px] font-semibold text-foreground">Gestão</span>
-            <span className="inline-flex items-center gap-2 text-[17px] font-medium text-primary">
-              {modeLabel}
-              <ChevronDown className="size-4" />
-            </span>
-          </span>
-        </Link>
-        <Link to="/config" aria-label="Meu perfil" className="dashboard-avatar-button grid size-[58px] place-items-center overflow-hidden rounded-full md:hidden">
-          <span className="dashboard-mini-avatar">{isOwner ? "G" : roleLabel.slice(0, 1)}</span>
-        </Link>
-        <Link to="/avisos" aria-label="Avisos" className="dashboard-bell relative grid size-[52px] place-items-center rounded-full text-foreground md:size-[58px]">
-          <Bell className="size-7" />
-          {notifCount > 0 && <span className="dashboard-badge">{notifCount > 9 ? "9+" : notifCount}</span>}
+        <Link to="/config" aria-label="Meu perfil" className="vrum-profile-btn grid size-12 place-items-center rounded-full md:size-14">
+          <UserIcon className="size-6 text-primary md:size-7" strokeWidth={1.8} />
         </Link>
       </header>
 
-      <div className="relative mt-10 max-w-[92%] md:mt-12 md:max-w-[70%]">
-        <h1 className="dashboard-heading text-[44px] font-black leading-[1] tracking-[-0.05em] text-foreground md:text-[68px]">
-          {isOwner ? roleLabel : `${greeting()}, `}
-          {!isOwner && <span className="text-primary">{titleName}!</span>}
+      <div className="relative mt-8 max-w-[62%] md:mt-12 md:max-w-[58%]">
+        <h1 className="vrum-greeting text-[40px] font-black leading-[1.02] tracking-[-0.04em] text-foreground md:text-[60px]">
+          {greeting()}, <span className="text-primary">{name}!</span>
         </h1>
-        <p className="mt-3 text-[16px] leading-snug text-muted-foreground md:text-[20px]">
-          {isOwner ? `${greeting()}, ${name}. ${subtitle}` : subtitle}
-        </p>
+        <p className="mt-2 text-[14px] leading-snug text-muted-foreground md:text-[18px]">{subtitle}</p>
       </div>
-
     </section>
   );
 }
 
-function safeShortLabel(label: string) {
-  if (label.length <= 11) return label;
-  return `${label.slice(0, 8)}...`;
-}
-
 function Brand() {
   return (
-    <div className="dashboard-brand flex min-w-0 items-center gap-3 md:gap-4">
-      <VrumMark className="size-[50px] shrink-0 md:size-[72px]" />
+    <div className="flex min-w-0 items-center gap-2 md:gap-3">
+      <VrumMark className="size-10 shrink-0 md:size-14" />
       <div className="min-w-0 leading-none">
-        <div className="dashboard-logo-text truncate text-[34px] font-black italic tracking-[-0.09em] text-foreground md:text-[45px]">
+        <div className="truncate text-[24px] font-black italic tracking-[-0.06em] text-foreground md:text-[34px]">
           Vrum<span className="text-primary">Fit</span>
         </div>
-        <div className="dashboard-logo-sub mt-1.5 pl-6 text-[11px] font-bold tracking-[0.58em] text-foreground/90 md:pl-8 md:text-[15px]">PERSONAL</div>
+        <div className="mt-1 text-[9px] font-bold tracking-[0.5em] text-foreground/85 md:text-[11px]">PERSONAL</div>
       </div>
     </div>
   );
@@ -208,85 +127,45 @@ function VrumMark({ className }: { className?: string }) {
 
 function StatsRow({ stats }: { stats: DashboardStat[] }) {
   return (
-    <section className="grid grid-cols-3 gap-2.5 md:gap-5">
+    <section className="grid grid-cols-3 gap-2.5 md:gap-4">
       {stats.map((s) => <StatCard key={s.label} stat={s} />)}
     </section>
   );
 }
 
-function statSpark(value: string) {
-  const n = Number(value.replace(/\D/g, "")) || 1;
-  const points = Array.from({ length: 9 }, (_, i) => {
-    const seed = (n + 7) * (i + 3);
-    const y = 38 - ((seed * 13) % 24);
-    return `${i * 18},${y}`;
-  });
-  return `M${points.join(" L")}`;
-}
-
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="dashboard-panel relative min-w-0 overflow-hidden rounded-[18px] p-3 md:rounded-[20px] md:p-5">
-      <div className="dashboard-small-ring grid size-[40px] place-items-center rounded-[10px] text-primary md:size-[52px]">
-        <stat.icon className="size-5 md:size-7" />
+    <article className="vrum-card relative overflow-hidden rounded-2xl p-3 md:p-4">
+      <div className="flex items-start gap-2.5 md:gap-3">
+        <div className="vrum-icon-ring grid size-10 shrink-0 place-items-center rounded-full text-primary md:size-12">
+          <stat.icon className="size-5 md:size-6" strokeWidth={1.8} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[11px] font-medium text-muted-foreground md:text-[13px]">{stat.label}</p>
+          <p className="mt-0.5 text-[24px] font-black leading-none tracking-[-0.04em] text-foreground md:text-[32px]">{stat.value}</p>
+          <p className="mt-1 truncate text-[10px] text-muted-foreground md:text-[12px]">{stat.hint}</p>
+        </div>
+        <ChevronRight className="size-4 shrink-0 self-center text-muted-foreground/70" />
       </div>
-      <p className="mt-3 truncate text-[12px] font-medium text-foreground md:text-[16px]">{stat.label}</p>
-      <p className="mt-1 truncate text-[28px] font-black leading-none tracking-[-0.04em] text-foreground md:text-[44px]">{stat.value}</p>
-      <p className="mt-2 truncate text-[11px] leading-tight text-primary md:text-[14px]">
-        <span className="font-bold">{stat.trend ?? "+0%"}</span> <span className="text-muted-foreground">{stat.hint}</span>
-      </p>
     </article>
   );
 }
 
-function SearchRow({ value, onChange, placeholder, filtersOpen, onToggleFilters }: { value: string; onChange: (v: string) => void; placeholder: string; filtersOpen: boolean; onToggleFilters: () => void }) {
+function SearchRow({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_116px] gap-3 md:grid-cols-[minmax(0,1fr)_190px] md:gap-5">
-      <label className="relative">
-        <Search className="absolute left-5 top-1/2 size-8 -translate-y-1/2 text-muted-foreground md:left-7 md:size-9" />
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2.5 md:gap-3">
+      <label className="vrum-card relative flex items-center rounded-2xl px-4 md:px-5">
+        <Search className="size-5 text-muted-foreground md:size-6" strokeWidth={1.8} />
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="dashboard-search-box h-[66px] w-full rounded-[30px] pl-[68px] pr-4 text-[16px] text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/70 md:h-[78px] md:pl-[82px] md:text-[23px]"
+          className="ml-3 h-12 w-full bg-transparent text-[14px] text-foreground outline-none placeholder:text-muted-foreground md:h-14 md:text-[16px]"
         />
       </label>
-      <button type="button" aria-pressed={filtersOpen} onClick={onToggleFilters} className="dashboard-search-box grid h-[66px] shrink-0 grid-flow-col place-content-center items-center gap-2 rounded-[30px] px-3 text-[15px] font-semibold text-primary transition hover:border-primary/60 md:h-[78px] md:gap-4 md:text-[22px]">
-        <SlidersHorizontal className="size-6 md:size-8" />
+      <button type="button" className="vrum-card inline-flex items-center gap-2 rounded-2xl px-4 text-[14px] font-semibold text-primary md:gap-3 md:px-6 md:text-[16px]">
+        <SlidersHorizontal className="size-5 md:size-6" strokeWidth={1.8} />
         Filtros
-      </button>
-    </div>
-  );
-}
-
-function FilterTabs() {
-  const items = [
-    { label: "Visão geral", icon: LayoutGrid },
-    { label: "Hoje", icon: CalendarDays },
-    { label: "Semana", icon: CalendarDays },
-    { label: "Mês", icon: CalendarDays },
-  ];
-
-  return (
-    <div className="no-scrollbar flex gap-3 overflow-x-auto py-1">
-      {items.map((item, index) => (
-        <button key={item.label} type="button" className={cn("dashboard-filter-chip", index === 0 && "dashboard-filter-chip-active")}>
-          <item.icon className="size-5" />
-          {item.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function SectionHeader() {
-  return (
-    <div className="flex items-center justify-between pt-1">
-      <h2 className="dashboard-section-title text-[27px] font-semibold tracking-[-0.04em] text-foreground md:text-[32px]">Módulos</h2>
-      <button type="button" className="dashboard-order-button inline-flex items-center gap-2 rounded-full px-5 py-3 text-[14px] font-medium text-primary md:text-[18px]">
-        <SlidersHorizontal className="size-5" />
-        Ordenar
-        <ChevronDown className="size-5" />
       </button>
     </div>
   );
@@ -294,7 +173,7 @@ function SectionHeader() {
 
 function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
   return (
-    <section className="grid grid-cols-2 gap-3 md:gap-4">
+    <section className="grid grid-cols-2 gap-2.5 md:gap-4">
       {modules.map((m) => <ModuleCard key={m.title + m.to} module={m} />)}
     </section>
   );
@@ -302,21 +181,15 @@ function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
 
 function ModuleCard({ module }: { module: DashboardModule }) {
   return (
-    <Link
-      to={module.to}
-      className="dashboard-module group relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 overflow-hidden rounded-[18px] p-4 transition active:scale-[0.98] hover:border-primary/55 md:gap-4 md:p-5"
-    >
-      <div className="dashboard-module-photo" aria-hidden="true" />
-      <div className="dashboard-module-shade" aria-hidden="true" />
-      <div className="dashboard-module-icon relative z-10 grid size-[56px] shrink-0 place-items-center rounded-full text-primary md:size-[68px]">
-        <module.icon className="size-7 md:size-9" />
+    <Link to={module.to} className="vrum-card relative block overflow-hidden rounded-2xl p-4 transition active:scale-[0.98] md:p-5">
+      <div className="flex items-start justify-between">
+        <div className="vrum-icon-ring grid size-14 place-items-center rounded-full text-primary md:size-16">
+          <module.icon className="size-7 md:size-8" strokeWidth={1.7} />
+        </div>
+        <ChevronRight className="size-5 text-muted-foreground/70 md:size-6" />
       </div>
-      <div className="relative z-10 min-w-0">
-        <p className="truncate text-[18px] font-bold leading-tight tracking-[-0.02em] text-foreground md:text-[22px]">{module.title}</p>
-        <p className="mt-1 line-clamp-1 text-[12px] leading-snug text-muted-foreground md:text-[14px]">{module.description}</p>
-      </div>
-      <ChevronRight className="relative z-10 size-5 shrink-0 text-primary md:size-6" />
+      <p className="mt-6 text-[18px] font-bold leading-tight tracking-[-0.02em] text-foreground md:text-[22px]">{module.title}</p>
+      <p className="mt-1 line-clamp-1 text-[12px] text-muted-foreground md:text-[14px]">{module.description}</p>
     </Link>
   );
 }
-
