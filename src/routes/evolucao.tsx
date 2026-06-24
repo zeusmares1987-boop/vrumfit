@@ -55,24 +55,22 @@ function EvoPage() {
     load();
   }, [user?.id, role]);
 
-  const add = (e: React.FormEvent) => {
+  const add = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !w) return;
     setSaving(true);
     const d = new Date();
     const date = d.toISOString().slice(0, 10);
-    supabase
+    const { error } = await supabase
       .from("progress_entries")
-      .insert({ student_id: user.id, date, weight_kg: Number(w), attended: true })
-      .then(({ error }) => {
-        if (error) toast.error(error.message);
-        else {
-          toast.success("Registro salvo.");
-          setW("");
-          load();
-        }
-      })
-      .finally(() => setSaving(false));
+      .insert({ student_id: user.id, date, weight_kg: Number(w), attended: true });
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Registro salvo.");
+      setW("");
+      await load();
+    }
+    setSaving(false);
   };
 
   const remove = async (id: string) => {
