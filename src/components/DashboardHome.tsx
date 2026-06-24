@@ -65,7 +65,7 @@ export function DashboardHome({
   }, [modules, query]);
 
   return (
-    <div className="dashboard-home dashboard-owner-screen space-y-4 pb-8 md:space-y-5">
+    <div className="dashboard-home dashboard-owner-screen space-y-6 pb-8 md:space-y-8">
       <Hero
         name={name}
         roleLabel={roleLabel}
@@ -75,13 +75,20 @@ export function DashboardHome({
         heroImageUrl={heroImageUrl}
         notifCount={notifCount}
       />
-      <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} filtersOpen={filtersOpen} onToggleFilters={() => setFiltersOpen((v) => !v)} />
-      {filtersOpen && <FilterTabs />}
       {alerts}
       {beforeStats}
       {stats.length > 0 && <StatsRow stats={stats} />}
-      <SectionHeader />
       <ModuleGrid modules={visibleModules} />
+      {/* manter busca/filtros disponíveis mas escondidos por padrão p/ casar com referência */}
+      <details className="group">
+        <summary className="dashboard-order-button inline-flex cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[13px] font-medium text-primary">
+          <SlidersHorizontal className="size-4" /> Buscar / Filtrar
+        </summary>
+        <div className="mt-4 space-y-3">
+          <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} filtersOpen={filtersOpen} onToggleFilters={() => setFiltersOpen((v) => !v)} />
+          {filtersOpen && <FilterTabs />}
+        </div>
+      </details>
     </div>
   );
 }
