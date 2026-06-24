@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, MoreVertical, Search, SlidersHorizontal } from "lucide-react";
+import { ChevronRight, Search, SlidersHorizontal, UserRound } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -46,9 +46,7 @@ function greeting() {
 
 export function DashboardHome({
   name,
-  roleLabel,
   subtitle,
-  heroImageUrl,
   searchPlaceholder,
   modules,
   stats,
@@ -65,12 +63,12 @@ export function DashboardHome({
   }, [modules, query]);
 
   return (
-    <div className="vrum-dash mx-auto min-h-[100dvh] w-full max-w-[430px] space-y-4 overflow-hidden pb-28">
-      <Hero name={name} roleLabel={roleLabel} subtitle={subtitle} heroImageUrl={heroImageUrl} notifCount={notifCount} />
+    <div className="vrum-dash mx-auto min-h-[100dvh] w-full max-w-[430px] space-y-3 overflow-hidden pb-28">
+      <Hero name={name} subtitle={subtitle} notifCount={notifCount} />
       {alerts}
       {beforeStats}
-      <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} />
       {stats.length > 0 && <StatsRow stats={stats} />}
+      <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} />
       <ModuleGrid modules={visibleModules} />
     </div>
   );
@@ -78,44 +76,45 @@ export function DashboardHome({
 
 function Hero({
   name,
-  roleLabel,
   subtitle,
-  heroImageUrl,
   notifCount,
 }: {
   name: string;
-  roleLabel: string;
   subtitle: string;
-  heroImageUrl: string;
   notifCount: number;
 }) {
   return (
-    <section className="vrum-hero relative -mx-4 overflow-hidden px-4 pb-0 pt-7">
-      <img src={heroImageUrl} alt="" aria-hidden="true" className="vrum-hero-photo" />
-      <div className="vrum-hero-fade" aria-hidden="true" />
+    <section className="vrum-hero relative overflow-hidden pb-2 pt-5">
+      <HeroScene />
 
       <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
         <Brand />
         <div className="flex shrink-0 items-center gap-2">
-          <Link to="/avisos" aria-label="Avisos" className="vrum-top-icon relative grid size-11 place-items-center rounded-full">
-            <Bell className="size-5 text-foreground" strokeWidth={1.9} />
+          <Link to="/config" aria-label="Perfil" className="vrum-top-icon relative grid size-10 place-items-center rounded-full">
+            <UserRound className="size-5 text-foreground" strokeWidth={1.9} />
             {notifCount > 0 && <span className="vrum-notif-badge">{Math.min(notifCount, 9)}</span>}
-          </Link>
-          <Link to="/config" aria-label="Mais opções" className="grid size-10 place-items-center rounded-full text-foreground/80">
-            <MoreVertical className="size-6" strokeWidth={2.2} />
           </Link>
         </div>
       </header>
 
-      <div className="relative mt-10 max-w-[66%]">
-        <h1 className="vrum-greeting text-[39px] font-black leading-[1.03] text-foreground">
-          {greeting()},<br /> <span className="text-primary">{roleLabel || name}</span>
+      <div className="relative mt-12 max-w-[70%]">
+        <h1 className="vrum-greeting text-[27px] font-black leading-[1.08] text-foreground">
+          {greeting()}, <span className="text-primary">{name}!</span>
         </h1>
-        <p className="mt-3 max-w-[245px] text-[15px] leading-snug text-muted-foreground">{subtitle}</p>
+        <p className="mt-1.5 max-w-[250px] text-[13px] leading-snug text-muted-foreground">{subtitle}</p>
       </div>
-
-      <div className="vrum-pulse-line relative mt-7" aria-hidden="true" />
     </section>
+  );
+}
+
+function HeroScene() {
+  return (
+    <div className="vrum-coded-hero" aria-hidden="true">
+      <span className="vrum-coded-panel vrum-coded-panel-a" />
+      <span className="vrum-coded-panel vrum-coded-panel-b" />
+      <span className="vrum-coded-person" />
+      <span className="vrum-coded-tablet" />
+    </div>
   );
 }
 
@@ -159,17 +158,18 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <article className="vrum-stat-card relative overflow-hidden rounded-[14px] p-2.5">
-      <div className="flex items-center gap-2">
-        <div className="vrum-mini-ring grid size-7 shrink-0 place-items-center rounded-full text-primary">
-          <stat.icon className="size-3.5" strokeWidth={1.8} />
+    <article className="vrum-stat-card relative overflow-hidden rounded-[15px] p-3">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
+        <div className="vrum-mini-ring grid size-9 shrink-0 place-items-center rounded-full text-primary">
+          <stat.icon className="size-5" strokeWidth={1.75} />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[9px] font-semibold text-muted-foreground">{stat.label}</p>
-          <p className="text-[19px] font-black leading-none text-foreground">{stat.value}</p>
+          <p className="truncate text-[11px] font-semibold text-foreground">{stat.label}</p>
+          <p className="mt-1 text-[24px] font-black leading-none text-foreground">{stat.value}</p>
+          <p className="mt-1 truncate text-[10px] text-muted-foreground">{stat.hint}</p>
         </div>
+        <ChevronRight className="size-4 text-muted-foreground" strokeWidth={2.4} />
       </div>
-      <p className="mt-1 truncate text-[9px] text-muted-foreground">{stat.hint}</p>
     </article>
   );
 }
@@ -177,17 +177,17 @@ function StatCard({ stat }: { stat: DashboardStat }) {
 function SearchRow({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2.5">
-      <label className="vrum-search-box relative flex h-16 items-center rounded-[22px] px-4">
-        <Search className="size-7 shrink-0 text-muted-foreground" strokeWidth={1.8} />
+      <label className="vrum-search-box relative flex h-12 items-center rounded-[14px] px-3.5">
+        <Search className="size-5 shrink-0 text-muted-foreground" strokeWidth={1.8} />
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="ml-3 h-full min-w-0 w-full bg-transparent text-[14px] text-foreground outline-none placeholder:text-muted-foreground"
+          className="ml-2.5 h-full min-w-0 w-full bg-transparent text-[12px] text-foreground outline-none placeholder:text-muted-foreground"
         />
       </label>
-      <button type="button" className="vrum-search-box inline-flex h-16 items-center gap-2 rounded-[22px] px-4 text-[14px] font-semibold text-primary">
-        <SlidersHorizontal className="size-5" strokeWidth={1.8} />
+      <button type="button" className="vrum-search-box inline-flex h-12 items-center gap-2 rounded-[14px] px-3.5 text-[12px] font-semibold text-primary">
+        <SlidersHorizontal className="size-4" strokeWidth={1.9} />
         Filtros
       </button>
     </div>
@@ -196,20 +196,21 @@ function SearchRow({ value, onChange, placeholder }: { value: string; onChange: 
 
 function ModuleGrid({ modules }: { modules: DashboardModule[] }) {
   return (
-    <section className="grid grid-cols-3 gap-x-3 gap-y-6 pt-1">
-      {modules.map((m) => <ModuleCard key={m.title + m.to} module={m} />)}
+    <section className="grid grid-cols-2 gap-3 pt-1">
+      {modules.map((m) => <ModuleCard key={m.to} module={m} />)}
     </section>
   );
 }
 
 function ModuleCard({ module }: { module: DashboardModule }) {
   return (
-    <Link to={module.to} className="group block min-w-0 text-center transition active:scale-[0.96]">
-      <div className="vrum-launcher-ring mx-auto grid size-[86px] place-items-center rounded-full text-primary">
-        <module.icon className="size-11" strokeWidth={1.65} />
+    <Link to={module.to} className="vrum-module-card group relative block min-h-[116px] overflow-hidden rounded-[16px] p-4 text-left transition active:scale-[0.98]">
+      <div className="vrum-module-ring grid size-12 place-items-center rounded-full text-primary">
+        <module.icon className="size-7" strokeWidth={1.75} />
       </div>
-      <p className="mt-2 truncate text-[16px] font-bold leading-tight text-foreground">{module.title}</p>
-      <p className="mx-auto mt-0.5 line-clamp-2 max-w-[108px] text-[11px] leading-tight text-muted-foreground">{module.description}</p>
+      <ChevronRight className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" strokeWidth={2.3} />
+      <p className="mt-3 truncate pr-5 text-[18px] font-bold leading-tight text-foreground">{module.title}</p>
+      <p className="mt-1 line-clamp-2 pr-4 text-[12px] leading-tight text-muted-foreground">{module.description}</p>
     </Link>
   );
 }
