@@ -117,12 +117,20 @@ function Hero({
   heroImageUrl: string;
   notifCount: number;
 }) {
-  const titleName = roleLabel === "Proprietário" ? roleLabel : name;
+  const isOwner = roleLabel === "Proprietário";
+  const titleName = isOwner ? roleLabel : name;
 
   return (
     <section className="dashboard-hero relative -mx-4 min-h-[312px] overflow-hidden px-6 pb-6 pt-9 md:-mx-10 md:min-h-[342px] md:px-8 md:pb-8 md:pt-10">
       <div className="dashboard-hero-grid" aria-hidden="true" />
-      <div className="dashboard-hero-figure" aria-hidden="true" />
+      <div className="dashboard-hero-code-scene" aria-hidden="true">
+        <span className="dashboard-code-ring dashboard-code-ring-a" />
+        <span className="dashboard-code-ring dashboard-code-ring-b" />
+        <span className="dashboard-code-core" />
+        <span className="dashboard-code-bar dashboard-code-bar-a" />
+        <span className="dashboard-code-bar dashboard-code-bar-b" />
+        <span className="dashboard-code-bar dashboard-code-bar-c" />
+      </div>
 
       <header className="relative grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 md:gap-5">
         <Brand />
@@ -131,9 +139,9 @@ function Hero({
           aria-label="Meu perfil"
           className="dashboard-user-chip hidden min-w-0 items-center gap-3 rounded-full py-2 pl-2 pr-4 md:flex"
         >
-          <span className="dashboard-mini-avatar">{roleLabel.slice(0, 1)}</span>
+          <span className="dashboard-mini-avatar">{isOwner ? "G" : roleLabel.slice(0, 1)}</span>
           <span className="min-w-0 leading-tight">
-            <span className="block truncate text-[23px] font-semibold text-foreground">{roleLabel}</span>
+            <span className="block truncate text-[23px] font-semibold text-foreground">Gestão</span>
             <span className="inline-flex items-center gap-2 text-[17px] font-medium text-primary">
               {modeLabel}
               <ChevronDown className="size-4" />
@@ -141,7 +149,7 @@ function Hero({
           </span>
         </Link>
         <Link to="/config" aria-label="Meu perfil" className="dashboard-avatar-button grid size-[58px] place-items-center overflow-hidden rounded-full md:hidden">
-          <span className="dashboard-mini-avatar">{roleLabel.slice(0, 1)}</span>
+          <span className="dashboard-mini-avatar">{isOwner ? "G" : roleLabel.slice(0, 1)}</span>
         </Link>
         <Link to="/avisos" aria-label="Avisos" className="dashboard-bell relative grid size-[52px] place-items-center rounded-full text-foreground md:size-[58px]">
           <Bell className="size-7" />
@@ -151,11 +159,11 @@ function Hero({
 
       <div className="relative mt-10 max-w-[92%] md:mt-12 md:max-w-[70%]">
         <h1 className="dashboard-heading text-[44px] font-black leading-[1] tracking-[-0.05em] text-foreground md:text-[68px]">
-          {roleLabel === "Proprietário" ? roleLabel : `${greeting()}, `}
-          {roleLabel !== "Proprietário" && <span className="text-primary">{titleName}!</span>}
+          {isOwner ? roleLabel : `${greeting()}, `}
+          {!isOwner && <span className="text-primary">{titleName}!</span>}
         </h1>
         <p className="mt-3 text-[16px] leading-snug text-muted-foreground md:text-[20px]">
-          {roleLabel === "Proprietário" ? `${greeting()}, ${name}.` : subtitle}
+          {isOwner ? `${greeting()}, ${name}. ${subtitle}` : subtitle}
         </p>
       </div>
 
