@@ -274,6 +274,9 @@ function TreinosPage() {
                 <button onClick={() => exportPdf(week, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
                   <FileDown className="size-3" /> PDF semana {week.week}
                 </button>
+                <button onClick={handleSaveWeek} disabled={saving} className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50">
+                  {saving ? "Salvando…" : "Salvar semana"}
+                </button>
               </div>
             </div>
 
