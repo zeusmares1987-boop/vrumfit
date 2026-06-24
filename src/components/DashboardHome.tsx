@@ -47,6 +47,7 @@ function greeting() {
 export function DashboardHome({
   name,
   subtitle,
+  heroImageUrl,
   searchPlaceholder,
   modules,
   stats,
@@ -64,7 +65,7 @@ export function DashboardHome({
 
   return (
     <div className="vrum-dash mx-auto min-h-[100dvh] w-full max-w-[430px] space-y-3 overflow-hidden pb-28">
-      <Hero name={name} subtitle={subtitle} notifCount={notifCount} />
+      <Hero name={name} subtitle={subtitle} notifCount={notifCount} heroImageUrl={heroImageUrl} />
       {alerts}
       {beforeStats}
       {stats.length > 0 && <StatsRow stats={stats} />}
