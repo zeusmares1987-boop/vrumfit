@@ -223,6 +223,10 @@
     overflow: hidden;
     opacity: .96;
     mask-image: linear-gradient(90deg, transparent 0%, black 22%, black 84%, transparent 100%);
+    background:
+      radial-gradient(190px 120px at 70% 34%, color-mix(in oklab, var(--brand) 18%, transparent), transparent 72%),
+      repeating-linear-gradient(92deg, color-mix(in oklab, var(--brand) 12%, transparent) 0 2px, transparent 2px 42px),
+      linear-gradient(100deg, transparent, color-mix(in oklab, var(--surface) 62%, transparent));
   }
 
   @media (min-width: 768px) {
@@ -231,22 +235,30 @@
     }
   }
 
-  .dashboard-hero-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 67% 24%;
-    filter: saturate(1.1) contrast(1.08) brightness(.54) sepia(.12);
-  }
-
   .dashboard-hero-figure::before {
     content: "";
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     background:
       linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 86%, transparent) 22%, transparent 58%),
       linear-gradient(180deg, color-mix(in oklab, var(--background) 22%, transparent) 0%, transparent 44%, var(--background) 100%);
+  }
+
+  .dashboard-hero-figure::after {
+    content: "";
+    position: absolute;
+    right: 8%;
+    bottom: 0;
+    width: min(52%, 310px);
+    height: 82%;
+    z-index: 1;
+    background:
+      radial-gradient(circle at 48% 16%, color-mix(in oklab, var(--foreground) 20%, black 80%) 0 13%, transparent 14%),
+      radial-gradient(ellipse at 46% 53%, color-mix(in oklab, var(--foreground) 14%, black 86%) 0 36%, transparent 37%),
+      linear-gradient(82deg, transparent 0 22%, color-mix(in oklab, var(--foreground) 12%, black 88%) 23% 42%, transparent 43%),
+      linear-gradient(278deg, transparent 0 21%, color-mix(in oklab, var(--foreground) 12%, black 88%) 22% 42%, transparent 43%);
+    filter: drop-shadow(0 0 38px color-mix(in oklab, var(--brand) 32%, transparent));
   }
 
   .dashboard-hero::after {
@@ -271,8 +283,18 @@
     backdrop-filter: blur(12px);
   }
 
-  .dashboard-user-chip img,
-  .dashboard-avatar-button img {
+  .dashboard-mini-avatar {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 9999px;
+    color: var(--primary-foreground);
+    background:
+      radial-gradient(circle at 35% 26%, color-mix(in oklab, white 22%, transparent), transparent 24%),
+      linear-gradient(145deg, color-mix(in oklab, var(--brand) 88%, white 4%), color-mix(in oklab, var(--brand) 62%, black 38%));
+    font-size: 24px;
+    font-weight: 900;
     box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand) 58%, transparent), 0 0 25px -8px var(--brand);
   }
 
@@ -407,20 +429,30 @@
     isolation: isolate;
   }
 
-  .dashboard-module-image {
+  .dashboard-module-photo {
     position: absolute;
     inset: 0;
     z-index: -2;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    filter: saturate(.95) contrast(1.1) brightness(.52) sepia(.08);
-    opacity: .78;
+    background:
+      radial-gradient(110px 90px at 82% 18%, color-mix(in oklab, var(--brand) 18%, transparent), transparent 72%),
+      linear-gradient(118deg, transparent 0 38%, color-mix(in oklab, var(--brand) 10%, transparent) 39% 40%, transparent 41%),
+      radial-gradient(140px 90px at 34% 86%, color-mix(in oklab, white 9%, transparent), transparent 68%),
+      linear-gradient(135deg, color-mix(in oklab, var(--surface) 34%, black 66%), color-mix(in oklab, black 92%, transparent));
+    opacity: .92;
     transform: scale(1.04);
     transition: transform .28s ease, opacity .28s ease;
   }
 
-  .dashboard-module:hover .dashboard-module-image {
+  .dashboard-module:nth-child(2n) .dashboard-module-photo {
+    background:
+      radial-gradient(130px 90px at 76% 28%, color-mix(in oklab, var(--brand) 20%, transparent), transparent 72%),
+      repeating-linear-gradient(88deg, transparent 0 25px, color-mix(in oklab, white 5%, transparent) 26px 27px, transparent 28px 52px),
+      linear-gradient(145deg, color-mix(in oklab, var(--surface) 38%, black 62%), color-mix(in oklab, black 90%, transparent));
+  }
+
+  .dashboard-module:hover .dashboard-module-photo {
     transform: scale(1.08);
     opacity: .9;
   }
