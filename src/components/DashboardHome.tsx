@@ -159,15 +159,14 @@ function StatsRow({ stats }: { stats: DashboardStat[] }) {
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
     <article className="vrum-stat-card relative min-h-[76px] overflow-hidden rounded-[14px] p-2">
-      <div className="vrum-mini-ring absolute left-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-primary">
-        <stat.icon className="size-4" strokeWidth={1.75} />
+      <div className="vrum-mini-ring absolute left-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full text-primary">
+        <stat.icon className="size-3.5" strokeWidth={1.75} />
       </div>
-      <div className="ml-10 min-w-0 pr-2.5">
+      <div className="ml-9 min-w-0 pr-1">
           <p className="truncate text-[9px] font-semibold text-foreground">{stat.label}</p>
           <p className="mt-0.5 text-[22px] font-black leading-none text-foreground">{stat.value}</p>
-          <p className="mt-0.5 truncate text-[9px] text-muted-foreground">{stat.hint}</p>
+          <p className="mt-0.5 truncate text-[8px] text-muted-foreground">{stat.hint}</p>
       </div>
-      <ChevronRight className="absolute right-1.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" strokeWidth={2.4} />
     </article>
   );
 }
