@@ -75,7 +75,7 @@ function OwnerPage() {
     enabled: !!user,
   });
 
-  const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "Proprietário";
+  const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? "José";
   const ownerStats: DashboardStat[] = [
     { icon: Users, label: "Professores", value: String(dashboard?.trainers ?? 0), hint: "Ativos" },
     { icon: User, label: "Alunos", value: String(dashboard?.students ?? 0), hint: "Matriculados" },
@@ -86,7 +86,7 @@ function OwnerPage() {
     <AppShell hideHeader>
       <DashboardHome
         name={firstName}
-        roleLabel="Proprietário"
+        roleLabel=""
         modeLabel="Modo gestor"
         subtitle="Tenha controle total do seu negócio."
         avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
