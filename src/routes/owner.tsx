@@ -13,7 +13,7 @@ import tileFinanceiroAsset from "@/assets/tile-financeiro.jpg.asset.json";
 import tilePlanosAsset from "@/assets/tile-planos.jpg.asset.json";
 import tileProfessoresAsset from "@/assets/tile-professores.jpg.asset.json";
 import tileUsuariosAsset from "@/assets/tile-usuarios.jpg.asset.json";
-import ownerPremiumImage from "@/assets/refs/vrum-owner-blue-premium.png";
+
 
 export const Route = createFileRoute("/owner")({
   head: () => ({
