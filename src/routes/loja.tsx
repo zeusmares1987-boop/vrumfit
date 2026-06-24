@@ -4,7 +4,7 @@ import { AppShell, Card } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Store, Tag, Dumbbell, Search } from "lucide-react";
+import { Store, Tag, Dumbbell, Search, ChevronRight } from "lucide-react";
 
 type Offer = {
   id: string;
@@ -107,29 +107,39 @@ function Loja() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {filtered.map((p) => (
           <Link
             key={p.id}
             to="/loja/$id"
             params={{ id: p.id }}
-            className="group relative rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition text-left aspect-[3/4]"
+            className="group overflow-hidden rounded-2xl border border-white/10 bg-card/70 text-left transition hover:border-primary/50"
           >
-            {p.cover_url ? (
-              <img src={p.cover_url} alt={p.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-            ) : (
-              <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(ellipse_at_top,theme(colors.primary/30),black)]">
-                <Dumbbell className="size-10 text-primary/70" />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10" />
-            <div className="relative h-full p-3 flex flex-col justify-end">
-              <p className="text-[9px] uppercase tracking-[0.2em] text-primary/90 font-bold mb-1 flex items-center gap-1">
-                <Tag className="size-2.5" /> {OFFER_LABEL[p.offer_type] ?? p.category ?? "Oferta"}
+            <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+              {p.cover_url ? (
+                <img src={p.cover_url} alt={p.title} loading="lazy" className="h-full w-full object-cover" />
+              ) : (
+                <div className="grid h-full place-items-center bg-primary/10">
+                  <Dumbbell className="size-10 text-primary/70" />
+                </div>
+              )}
+              <span className="absolute left-2 top-2 rounded-full bg-background/80 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-primary backdrop-blur">
+                {OFFER_LABEL[p.offer_type] ?? p.category ?? "Oferta"}
+              </span>
+            </div>
+
+            <div className="space-y-2 p-3">
+              <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] text-primary/90">
+                <Tag className="size-3" /> Produto disponível
               </p>
-              <p className="text-[13px] font-extrabold leading-tight line-clamp-2">{p.title}</p>
-              {p.short_desc && <p className="text-[10px] text-white/65 line-clamp-2 mt-0.5">{p.short_desc}</p>}
-              <p className="text-base font-extrabold text-primary mt-1.5">R$ {(p.price_cents / 100).toFixed(2)}</p>
+              <h2 className="line-clamp-2 text-base font-extrabold leading-tight text-foreground">{p.title}</h2>
+              {p.short_desc && <p className="line-clamp-2 text-[12px] leading-snug text-muted-foreground">{p.short_desc}</p>}
+              <div className="flex items-center justify-between gap-3 pt-1">
+                <p className="text-lg font-extrabold text-primary">R$ {(p.price_cents / 100).toFixed(2)}</p>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-foreground">
+                  Ver <ChevronRight className="size-4 text-primary" />
+                </span>
+              </div>
             </div>
           </Link>
         ))}

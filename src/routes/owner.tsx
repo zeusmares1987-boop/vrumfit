@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Archive, Bell, Box, ClipboardList, LayoutGrid, Settings, ShoppingBag, Target, User, Users, Wallet } from "lucide-react";
+import { Archive, Bell, Box, ClipboardList, Eye, LayoutGrid, Settings, ShoppingBag, Target, User, Users, Wallet } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
@@ -97,7 +97,31 @@ function OwnerPage() {
         stats={ownerStats}
         modules={ownerModules}
         notifCount={dashboard?.notices ?? 0}
+        beforeStats={<RolePreviewLinks />}
       />
     </AppShell>
+  );
+}
+
+function RolePreviewLinks() {
+  return (
+    <section className="grid grid-cols-2 gap-2">
+      <Link to="/trainer" className="rounded-2xl border border-primary/35 bg-primary/10 p-3 active:scale-[0.98]">
+        <div className="mb-2 flex items-center gap-2 text-primary">
+          <Eye className="size-4" />
+          <span className="text-[10px] font-black uppercase tracking-[0.16em]">Ver como</span>
+        </div>
+        <p className="text-[17px] font-black leading-none text-foreground">Professor</p>
+        <p className="mt-1 text-[11px] leading-tight text-muted-foreground">Tela do personal</p>
+      </Link>
+      <Link to="/student" className="rounded-2xl border border-primary/35 bg-primary/10 p-3 active:scale-[0.98]">
+        <div className="mb-2 flex items-center gap-2 text-primary">
+          <Eye className="size-4" />
+          <span className="text-[10px] font-black uppercase tracking-[0.16em]">Ver como</span>
+        </div>
+        <p className="text-[17px] font-black leading-none text-foreground">Aluno</p>
+        <p className="mt-1 text-[11px] leading-tight text-muted-foreground">Tela do treino</p>
+      </Link>
+    </section>
   );
 }
