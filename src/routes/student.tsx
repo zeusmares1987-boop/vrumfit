@@ -129,8 +129,9 @@ function StudentPage() {
       const { count } = await supabase
         .from("notices")
         .select("id", { count: "exact", head: true })
+        .eq("status", "ativo")
         .gte("created_at", since)
-        .or(`audience.eq.geral,target_user_id.eq.${user.id}`);
+        .or(`audience.in.(todos,alunos),target_user_id.eq.${user.id}`);
       return count ?? 0;
     },
     enabled: !!user,
