@@ -7,7 +7,7 @@ import { DashboardHome, type DashboardModule, type DashboardStat } from "@/compo
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
-import headerGymAsset from "@/assets/header-gym.jpg.asset.json";
+import heroOwnerAsset from "@/assets/hero/hero-owner.png.asset.json";
 import tileAlunosAsset from "@/assets/tile-alunos.jpg.asset.json";
 import tileFinanceiroAsset from "@/assets/tile-financeiro.jpg.asset.json";
 import tilePlanosAsset from "@/assets/tile-planos.jpg.asset.json";
