@@ -129,6 +129,11 @@ function Cfg() {
             <Field label="Telefone">
               <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="(11) 99999-9999" />
             </Field>
+            {showCref && (
+              <Field label="CREF (registro profissional)">
+                <input value={form.cref} onChange={(e) => setForm({ ...form, cref: e.target.value })} className={inputCls} placeholder="000000-G/SP" />
+              </Field>
+            )}
             <button disabled={saving} className={btnPrimary}>{saving ? "SALVANDO…" : "SALVAR PERFIL"}</button>
           </form>
         )}
