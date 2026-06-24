@@ -293,7 +293,7 @@ function ModuleCard({ module }: { module: DashboardModule }) {
       <div className="dashboard-module-photo" aria-hidden="true" />
       <div className="dashboard-module-shade" aria-hidden="true" />
       <div className="dashboard-module-icon relative z-10 mt-2 grid size-[58px] place-items-center rounded-[14px] text-primary md:size-[72px]">
-        <module.icon className="size-8 md:size-10" strokeWidth={1.6} />
+        <module.icon className="size-8 md:size-10" />
       </div>
       <div className="relative z-10 mt-4">
         <p className="text-[15px] font-bold leading-tight tracking-[-0.02em] text-foreground md:text-[20px]">{module.title}</p>
