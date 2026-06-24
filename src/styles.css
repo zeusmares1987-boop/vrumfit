@@ -54,7 +54,7 @@
   --secondary: oklch(0.22 0.008 260);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.22 0.008 260);
-  --muted-foreground: oklch(0.68 0.012 260);
+  --muted-foreground: oklch(0.74 0.014 260);
   --accent: oklch(0.22 0.008 260);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.62 0.22 25);
@@ -71,14 +71,62 @@
 @layer base {
   * { border-color: var(--color-border); }
   html, body, #root { height: 100%; }
+  html { scroll-behavior: smooth; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     background-image:
       radial-gradient(1200px 600px at 15% -10%, color-mix(in oklab, var(--brand) 14%, transparent), transparent 60%),
       radial-gradient(900px 500px at 110% 10%, color-mix(in oklab, var(--brand) 8%, transparent), transparent 60%);
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--brand) 55%, transparent);
+    color: var(--brand-foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--brand) 70%, transparent);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  a, button, [role="button"], input, textarea, select, summary {
+    transition: color .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .2s ease, transform .12s ease, opacity .18s ease;
+  }
+
+  button:not(:disabled):active, [role="button"]:not([aria-disabled="true"]):active {
+    transform: scale(0.98);
+  }
+
+  button:disabled, [aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--foreground) 12%, transparent);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--brand) 45%, transparent);
+    background-clip: padding-box;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
