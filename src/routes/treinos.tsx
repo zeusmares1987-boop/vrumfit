@@ -424,6 +424,24 @@ function TreinosPage() {
                           <p className="text-[12px] mt-1">{d.cardio}</p>
                         </div>
                       )}
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!user) return;
+                          const { error } = await supabase.from("workout_sessions").insert({
+                            student_id: user.id,
+                            session_date: new Date().toISOString().slice(0, 10),
+                            duration_min: sessionMinutes,
+                            notes: `${d.name} · S${week.week} · ${d.exercises.length} ex`,
+                          });
+                          if (error) toast.error("Não foi possível registrar: " + error.message);
+                          else toast.success(`Treino "${d.name}" registrado ✓`);
+                        }}
+                        className="w-full bg-primary text-primary-foreground rounded-xl py-2.5 text-[12px] font-bold hover:opacity-90 transition"
+                      >
+                        ✓ Concluir treino
+                      </button>
                     </div>
                   )}
                 </Card>
