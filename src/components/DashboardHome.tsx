@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import dashboardBackdrop from "@/assets/dashboard-backdrop.jpg";
 import { ChevronRight, Search, SlidersHorizontal, UserRound } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
 
@@ -79,10 +80,15 @@ export function DashboardHome({
 }
 
 function DashboardBackdrop({ src }: { src: string }) {
+  const fallbackSrc = dashboardBackdrop;
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    if (event.currentTarget.src !== fallbackSrc) event.currentTarget.src = fallbackSrc;
+  };
+
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-x-[-22px] top-0 z-0 h-[390px] overflow-hidden">
-      <img src={src} alt="" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-85 blur-[18px] saturate-125" />
-      <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover opacity-22 saturate-125" />
+      <img src={src || fallbackSrc} alt="" width={1280} height={768} onError={handleImageError} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-85 blur-[18px] saturate-125" />
+      <img src={fallbackSrc} alt="" width={1280} height={768} className="absolute inset-0 h-full w-full object-cover opacity-28 saturate-125" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/55 to-background" />
       <div className="absolute inset-0 bg-gradient-to-r from-background/78 via-background/20 to-background/62" />
     </div>
