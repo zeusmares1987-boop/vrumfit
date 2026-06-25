@@ -74,23 +74,23 @@ export function useStudentContext(): { ctx: StudentContext; isLoading: boolean }
       if (!user) return emptyCtx();
       const [stu, ana, ass] = await Promise.all([
         supabase.from("students").select("birth_date,height_cm,weight_kg,objective").eq("user_id", user.id).maybeSingle(),
-        supabase.from("anamneses").select("activity_history,goal").eq("user_id", user.id).maybeSingle(),
+        supabase.from("anamneses").select("activity_history,goal,sex,activity_factor,experience_level").eq("user_id", user.id).maybeSingle(),
         supabase.from("assessments").select("weight_kg,height_cm,date").eq("student_id", user.id).order("date", { ascending: false }).limit(1).maybeSingle(),
       ]);
       const s = stu.data;
-      const a = ana.data;
+      const a = ana.data as any;
       const av = ass.data;
       const obj = (s?.objective as string | null) ?? null;
       return {
-        sex: null,
+        sex: (a?.sex as "M" | "F" | null) ?? null,
         age: yearsBetween(s?.birth_date) ?? null,
         weightKg: (av?.weight_kg as number | null) ?? (s?.weight_kg as number | null) ?? null,
         heightCm: (av?.height_cm as number | null) ?? (s?.height_cm as number | null) ?? null,
         objective: obj,
-        activityFactor: inferActivity(a?.activity_history),
+        activityFactor: (a?.activity_factor as number | null) ?? inferActivity(a?.activity_history),
         goalDiet: mapObjectiveToDiet(obj),
         goalWorkout: mapObjectiveToWorkout(obj),
-        level: inferLevel(a?.activity_history),
+        level: (a?.experience_level as StudentContext["level"]) ?? inferLevel(a?.activity_history),
       };
     },
   });

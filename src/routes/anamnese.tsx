@@ -140,6 +140,52 @@ function AnamnesePage() {
         <div className="grid place-items-center min-h-[30dvh]"><div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div>
       ) : (
         <form onSubmit={(e) => { e.preventDefault(); save.mutate(); }} className="space-y-3">
+          <Group title="Perfil físico (usado pelo cálculo)">
+            <div>
+              <p className="text-[12px] text-white/70 mb-1">Sexo biológico</p>
+              <div className="flex gap-2">
+                {[{ v: "M" as const, l: "Masculino" }, { v: "F" as const, l: "Feminino" }].map((o) => (
+                  <button key={o.v} type="button" onClick={() => set("sex", o.v)}
+                    className={`flex-1 h-10 rounded-xl border text-sm font-bold ${f.sex === o.v ? "bg-primary text-primary-foreground border-primary" : "bg-black/30 border-white/10 text-white/70"}`}>
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-[12px] text-white/70 mb-1">Nível de atividade física diária</p>
+              <div className="grid grid-cols-1 gap-1.5">
+                {[
+                  { v: 1.2, l: "Sedentário (escritório, sem treino)" },
+                  { v: 1.375, l: "Leve (1–3x/sem)" },
+                  { v: 1.55, l: "Moderado (3–5x/sem)" },
+                  { v: 1.725, l: "Intenso (6–7x/sem)" },
+                  { v: 1.9, l: "Atleta (2x dia / trabalho físico)" },
+                ].map((o) => (
+                  <button key={o.v} type="button" onClick={() => set("activity_factor", o.v)}
+                    className={`h-10 rounded-xl border text-[13px] font-semibold px-3 text-left ${f.activity_factor === o.v ? "bg-primary text-primary-foreground border-primary" : "bg-black/30 border-white/10 text-white/70"}`}>
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-[12px] text-white/70 mb-1">Experiência em treino</p>
+              <div className="flex gap-2">
+                {[
+                  { v: "iniciante" as const, l: "Iniciante" },
+                  { v: "intermediario" as const, l: "Intermediário" },
+                  { v: "avancado" as const, l: "Avançado" },
+                ].map((o) => (
+                  <button key={o.v} type="button" onClick={() => set("experience_level", o.v)}
+                    className={`flex-1 h-10 rounded-xl border text-[13px] font-bold ${f.experience_level === o.v ? "bg-primary text-primary-foreground border-primary" : "bg-black/30 border-white/10 text-white/70"}`}>
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </Group>
+
           <Group title="Saúde">
             <BoolField label="Tem algum problema de saúde?" value={f.has_health_issues} onChange={(v) => set("has_health_issues", v)} />
             {f.has_health_issues && <TextArea label="Quais?" value={f.health_issues} onChange={(v) => set("health_issues", v)} />}
