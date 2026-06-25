@@ -453,7 +453,7 @@ function TreinosPage() {
                             notes: `${d.name} · S${week.week} · ${d.exercises.length} ex`,
                           });
                           if (error) toast.error("Não foi possível registrar: " + error.message);
-                          else toast.success(`Treino "${d.name}" registrado ✓`);
+                          else { toast.success(`Treino "${d.name}" registrado ✓`); refetchSessions(); }
                         }}
                         className="w-full bg-primary text-primary-foreground rounded-xl py-2.5 text-[12px] font-bold hover:opacity-90 transition"
                       >
