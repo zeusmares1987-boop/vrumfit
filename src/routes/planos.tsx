@@ -273,25 +273,62 @@ function Planos() {
               </section>
             )}
 
-            {activeCat === "loja" && (
-              <Section
-                icon={Store}
-                title="Plano da Loja"
-                subtitle="Venda mentorias, PDFs, treinos prontos e materiais"
-                plans={lojaPlans}
-                extra={effectiveAudience === "personal" ? (
-                  <Link to="/loja-pro/config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
-                    <span className="grid size-9 place-items-center rounded-lg bg-primary/15">
-                      <Settings className="size-4 text-primary" />
+            {activeCat === "loja" && (() => {
+              const lojaPeriods = (["mensal", "trimestral", "anual"] as PeriodTab[]).filter((per) =>
+                lojaPlans.some((p) => (p.period ?? "").toLowerCase() === per)
+              );
+              const activeLojaPeriod: PeriodTab = lojaPeriods.includes(period)
+                ? period
+                : (lojaPeriods[0] ?? "mensal");
+              const lojaForPeriod = lojaPlans.filter((p) => (p.period ?? "").toLowerCase() === activeLojaPeriod);
+              const extra = effectiveAudience === "personal" ? (
+                <Link to="/loja-pro/config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
+                  <span className="grid size-9 place-items-center rounded-lg bg-primary/15">
+                    <Settings className="size-4 text-primary" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold">Editar minha vitrine</p>
+                    <p className="text-[11px] text-muted-foreground">Nome, bio, contato e publicações</p>
+                  </div>
+                </Link>
+              ) : null;
+              return (
+                <section className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-xl bg-primary/15 border border-primary/30">
+                      <Store className="size-5 text-primary" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold">Editar minha vitrine</p>
-                      <p className="text-[11px] text-muted-foreground">Nome, bio, contato e publicações</p>
+                      <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Plano da Loja</p>
+                      <p className="text-xs text-muted-foreground">Venda mentorias, PDFs, treinos prontos e materiais</p>
                     </div>
-                  </Link>
-                ) : undefined}
-              />
-            )}
+                  </div>
+                  {extra}
+                  {lojaPeriods.length > 1 && (
+                    <div className="grid grid-cols-3 gap-1 p-1 rounded-2xl glass border border-primary/20">
+                      {lojaPeriods.map((per) => {
+                        const active = per === activeLojaPeriod;
+                        return (
+                          <button
+                            key={per}
+                            onClick={() => setPeriod(per)}
+                            className={`py-2 px-2 rounded-xl text-xs font-bold transition ${
+                              active ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            {PERIOD_LABEL[per]}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    {lojaForPeriod.map((p, i) => renderCard(p, i === 0 && lojaForPeriod.length >= 2))}
+                  </div>
+                </section>
+              );
+            })()}
+
           </div>
         );
       })()}
