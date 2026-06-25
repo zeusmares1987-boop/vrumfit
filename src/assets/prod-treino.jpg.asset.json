@@ -1,9 +1,7 @@
 {
   "version": 1,
   "asset_id": "40fd34e4-5485-4ed3-b6c1-d64e04ac0fbc",
-  "project_id": "498242b0-bf57-43f1-aefd-fa678def4147",
-  "url": "/__l5e/assets-v1/40fd34e4-5485-4ed3-b6c1-d64e04ac0fbc/prod-treino.jpg",
-  "r2_key": "a/v1/498242b0-bf57-43f1-aefd-fa678def4147/40fd34e4-5485-4ed3-b6c1-d64e04ac0fbc/prod-treino.jpg",
+  "url": "/assets-vrumfit/prod-treino.jpg",
   "original_filename": "prod-treino.jpg",
   "size": 47130,
   "content_type": "image/jpeg",

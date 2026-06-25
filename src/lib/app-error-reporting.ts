@@ -14,13 +14,13 @@ type AppErrorBridge = {
 
 declare global {
   interface Window {
-    __lovableEvents?: AppErrorBridge;
+    __appEvents?: AppErrorBridge;
   }
 }
 
 export function reportAppError(error: unknown, context: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
-  window.__lovableEvents?.captureException?.(
+  window.__appEvents?.captureException?.(
     error,
     {
       source: "react_error_boundary",

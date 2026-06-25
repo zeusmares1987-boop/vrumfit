@@ -1,9 +1,7 @@
 {
   "version": 1,
   "asset_id": "777c9c1d-aada-424b-b1b1-ed76d899aa32",
-  "project_id": "498242b0-bf57-43f1-aefd-fa678def4147",
-  "url": "/__l5e/assets-v1/777c9c1d-aada-424b-b1b1-ed76d899aa32/tile-treinos.jpg",
-  "r2_key": "a/v1/498242b0-bf57-43f1-aefd-fa678def4147/777c9c1d-aada-424b-b1b1-ed76d899aa32/tile-treinos.jpg",
+  "url": "/assets-vrumfit/tile-treinos.jpg",
   "original_filename": "tile-treinos.jpg",
   "size": 28280,
   "content_type": "image/jpeg",
