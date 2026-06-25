@@ -140,6 +140,7 @@ function DietaPage() {
       />
 
       <AnamneseNudge />
+      <LastSavedBadge kind="diet" />
 
       <Card>
         <form onSubmit={submit} className="space-y-4">

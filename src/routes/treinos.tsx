@@ -193,6 +193,7 @@ function TreinosPage() {
       />
 
       <AnamneseNudge />
+      <LastSavedBadge kind="workout" />
 
       <Link to="/biblioteca" className="flex items-center gap-2 h-11 px-4 rounded-2xl border border-primary/40 bg-primary/10 text-primary text-[13px] font-semibold hover:bg-primary/15 transition">
         <BookOpen className="size-4" /> Abrir biblioteca VrumFit
