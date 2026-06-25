@@ -294,37 +294,36 @@ function TreinosPage() {
       {plan && week && (
         <>
           <Card>
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div>
-                <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Plano de {plan.length} semanas</h3>
-                <p className="text-sm font-bold mt-0.5">{goal} · {level} · {frequency}x/sem</p>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                <Link to="/historico" className="glass rounded-lg px-2.5 py-1.5 text-[10px] text-primary font-semibold hover:bg-primary/15 transition">
-                  Histórico →
-                </Link>
-                <button
-                  onClick={() => { if (confirm("Limpar plano gerado?")) setPlan(null); }}
-                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] text-muted-foreground hover:text-foreground transition"
-                >
-                  Limpar
-                </button>
-                <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
-                  <Download className="size-3" /> TXT
-                </button>
-                <button onClick={() => exportPdf(week, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
-                  <FileDown className="size-3" /> PDF semana {week.week}
-                </button>
-                <button
-                  onClick={handleSaveWeek}
-                  disabled={saving || !gate.canSaveWorkout}
-                  title={!gate.canSaveWorkout ? (gate.reason ?? "Plano não inclui salvar") : "Salvar semana"}
-                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50"
-                >
-                  {saving ? "Salvando…" : gate.canSaveWorkout ? "Salvar semana" : "🔒 Salvar"}
-                </button>
-              </div>
+            <div className="mb-3">
+              <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Plano · {plan.length} semanas</h3>
+              <p className="text-sm font-bold mt-0.5 capitalize">{goal} · {level} · {frequency}x/sem</p>
             </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => exportPdf(week, goal, studentName)} className="h-10 rounded-xl bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:opacity-95 transition">
+                <FileDown className="size-3.5" /> PDF semana {week.week}
+              </button>
+              <button
+                onClick={handleSaveWeek}
+                disabled={saving || !gate.canSaveWorkout}
+                title={!gate.canSaveWorkout ? (gate.reason ?? "Plano não inclui salvar") : "Salvar semana"}
+                className="h-10 rounded-xl glass text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 disabled:opacity-50 hover:text-primary transition"
+              >
+                {saving ? "Salvando…" : gate.canSaveWorkout ? "Salvar" : "🔒 Salvar"}
+              </button>
+              <button onClick={() => exportTxt(plan)} className="h-10 rounded-xl glass text-[11px] font-semibold flex items-center justify-center gap-1.5 text-muted-foreground hover:text-foreground transition">
+                <Download className="size-3.5" /> TXT
+              </button>
+              <Link to="/historico" className="h-10 rounded-xl glass text-[11px] font-semibold text-primary flex items-center justify-center gap-1.5 hover:bg-primary/15 transition">
+                Histórico →
+              </Link>
+              <button
+                onClick={() => { if (confirm("Limpar plano gerado?")) setPlan(null); }}
+                className="col-span-2 h-9 rounded-xl glass text-[10px] font-semibold text-muted-foreground hover:text-destructive transition"
+              >
+                Limpar plano
+              </button>
+            </div>
+
 
             <div className="mt-3 flex gap-1.5 overflow-x-auto no-scrollbar">
               {plan.map((w) => (

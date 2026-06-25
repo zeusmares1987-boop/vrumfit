@@ -2,6 +2,7 @@ import { Link, Navigate, useNavigate, useRouterState } from "@tanstack/react-rou
 import { Home, CalendarDays, BarChart3, MessageCircle, LayoutGrid, LogOut, ChevronLeft } from "lucide-react";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import { useRealtimePush } from "@/hooks/useRealtimePush";
+import { cn } from "@/lib/utils";
 import type { ReactNode, InputHTMLAttributes } from "react";
 
 export function AppShell({
@@ -134,7 +135,7 @@ export const btnPrimary =
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-2xl bg-card/60 border border-primary/15 backdrop-blur-sm shadow-[0_10px_30px_-20px_black] ${className}`}>
+    <div className={cn("rounded-2xl bg-card/60 border border-primary/15 backdrop-blur-sm shadow-[0_10px_30px_-20px_black] p-4", className)}>
       {children}
     </div>
   );
