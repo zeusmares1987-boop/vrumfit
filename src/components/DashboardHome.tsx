@@ -115,14 +115,10 @@ function Hero({
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="vrum-brand-chip grid size-10 place-items-center rounded-xl">
-        <img
-          src={vrumMarkAsset.url}
-          alt=""
-          aria-hidden="true"
-          className="h-6 w-6 object-contain"
-          draggable={false}
-        />
+      <span className="vrum-brand-chip grid size-10 place-items-center rounded-xl" aria-hidden="true">
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 5l8 14L20 5" className="text-primary" stroke="currentColor" />
+        </svg>
       </span>
       <div className="leading-none">
         <div className="text-[19px] font-black italic tracking-tight text-foreground">
