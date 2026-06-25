@@ -28,7 +28,8 @@ function ensureDomain(html) {
   return html
     .replace(/https?:\/\/[^"'<>\s]+\.lovable\.app/g, `https://${domain}`)
     .replace(/https?:\/\/lovableproject\.com/g, `https://${domain}`)
-    .replace(/https?:\/\/[^"'<>\s]+\.lovableproject\.com/g, `https://${domain}`);
+    .replace(/https?:\/\/[^"'<>\s]+\.lovableproject\.com/g, `https://${domain}`)
+    .replace(/\0/g, "\\u0000");
 }
 
 const { default: handler } = await import("../dist/server/index.mjs");
