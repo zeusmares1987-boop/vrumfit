@@ -82,7 +82,7 @@ function TreinosPage() {
   const [weeks, setWeeks] = useState(6);
   const [oneRM, setOneRM] = useState<number | "">("");
   const [injuries, setInjuries] = useState<string[]>([]);
-  const [plan, setPlan] = useState<WeekPlan[] | null>(null);
+  const [plan, setPlan] = useLocalState<WeekPlan[] | null>("vrumfit:last-workout", null);
   const [activeWeek, setActiveWeek] = useState(1);
   const [openDay, setOpenDay] = useState<number | null>(0);
 
