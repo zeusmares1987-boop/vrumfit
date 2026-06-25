@@ -30,7 +30,7 @@ function Planos() {
   const subscribe = async (planId: string) => {
     setPaying(planId);
     try {
-      const r = await checkout({ data: { planId } });
+      const r = await checkout({ data: { planId, origin: window.location.origin } });
       window.location.href = r.url;
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Falha no pagamento";
