@@ -62,7 +62,7 @@ function Checkout() {
   const pay = useServerFn(processMpPayment);
   const [data, setData] = useState<InitData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "processing" | "approved" | "pending" | "rejected">("loading");
-  const [tab, setTab] = useState<"card" | "pix">("card");
+  const [tab, setTab] = useState<"card" | "pix">("pix");
   const [pix, setPix] = useState<PixData>(null);
   const [error, setError] = useState<string | null>(null);
   const brickRef = useRef<{ unmount: () => void } | null>(null);
