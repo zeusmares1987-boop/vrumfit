@@ -79,6 +79,7 @@ function Hero({
   name,
   subtitle,
   notifCount,
+  heroImageUrl,
 }: {
   name: string;
   subtitle: string;
@@ -86,7 +87,20 @@ function Hero({
   heroImageUrl: string;
 }) {
   return (
-    <section className="relative pb-3 pt-5">
+    <section className="relative -mx-4 overflow-hidden px-4 pb-6 pt-5">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-cover bg-center opacity-40"
+        style={{ backgroundImage: `url(${heroImageUrl})`, filter: "blur(28px) saturate(120%)", transform: "scale(1.15)" }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "linear-gradient(180deg, color-mix(in oklab, var(--background) 55%, transparent) 0%, color-mix(in oklab, var(--background) 75%, transparent) 55%, var(--background) 100%)",
+        }}
+      />
       <header className="flex items-center justify-between">
         <Brand />
         <Link
@@ -111,6 +125,7 @@ function Hero({
     </section>
   );
 }
+
 
 function Brand() {
   return (
