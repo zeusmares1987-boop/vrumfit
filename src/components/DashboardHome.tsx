@@ -115,26 +115,25 @@ function Hero({
 
 function Brand() {
   return (
-    <div className="flex min-w-0 items-center gap-1.5">
-      <VrumMark className="size-8 shrink-0" />
-      <div className="min-w-0 leading-none">
-        <div className="truncate text-[22px] font-black italic text-foreground">
+    <div className="flex items-center gap-2.5">
+      <span className="vrum-brand-chip grid size-10 place-items-center rounded-xl">
+        <img
+          src={vrumMarkAsset.url}
+          alt=""
+          aria-hidden="true"
+          className="h-6 w-6 object-contain"
+          draggable={false}
+        />
+      </span>
+      <div className="leading-none">
+        <div className="text-[19px] font-black italic tracking-tight text-foreground">
           Vrum<span className="text-primary">Fit</span>
         </div>
-        <div className="mt-1 text-[9px] font-bold tracking-[0.42em] text-foreground/85">PERSONAL</div>
+        <div className="mt-1 text-[9px] font-bold tracking-[0.34em] text-muted-foreground">
+          PERSONAL
+        </div>
       </div>
     </div>
-  );
-}
-
-function VrumMark({ className }: { className?: string }) {
-  return (
-    <img
-      src={vrumMarkAsset.url}
-      alt="VrumFit"
-      className={cn("dashboard-v-mark object-contain", className)}
-      draggable={false}
-    />
   );
 }
 
