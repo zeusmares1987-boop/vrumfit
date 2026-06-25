@@ -41,6 +41,14 @@ function DietaPage() {
   const [budget, setBudget] = useState<Budget>("medio");
   const [restrictions, setRestrictions] = useState<DietRestriction[]>([]);
   const [plan, setPlan] = useLocalState<DietPlan | null>("vrumfit:last-diet", null);
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const [doneMap, setDoneMap] = useLocalState<Record<string, number[]>>("vrumfit:diet-done", {});
+  const doneToday = doneMap[todayKey] ?? [];
+  const toggleMealDone = (i: number) => {
+    const cur = doneMap[todayKey] ?? [];
+    const next = cur.includes(i) ? cur.filter((x) => x !== i) : [...cur, i];
+    setDoneMap({ ...doneMap, [todayKey]: next });
+  };
   const [openMeal, setOpenMeal] = useState<number | null>(0);
   const [showShop, setShowShop] = useState(false);
 
