@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Users, Dumbbell, Camera, CalendarDays, CheckCircle2, TrendingUp, ClipboardList } from "lucide-react";
+import { Users, Dumbbell, Camera, CalendarDays, CheckCircle2, TrendingUp, ClipboardList, Sparkles } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule, type DashboardStat } from "@/components/DashboardHome";
