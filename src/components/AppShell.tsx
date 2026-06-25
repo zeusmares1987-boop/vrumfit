@@ -54,29 +54,33 @@ export function AppShell({
   return (
     <div className="min-h-[100dvh] bg-background font-display text-foreground pb-24">
       {!hideHeader && (
-        <header className="sticky top-0 z-40 bg-gradient-to-b from-black/90 to-black/60 backdrop-blur-md border-b border-white/5">
-          <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
-            {showBack && (
-              <button onClick={onBack} aria-label="Voltar" title="Voltar" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white transition shrink-0">
-                <ChevronLeft className="size-5" />
-              </button>
-            )}
-            <Link to={home} className="flex items-center gap-2 shrink-0">
-              <div className="leading-tight">
-                <div className="text-[15px] font-extrabold tracking-tight">
-                  <span className="text-white">VRUM</span><span className="text-primary">FIT</span>
+        <header className="sticky top-0 z-40 bg-gradient-to-b from-background/95 to-background/60 backdrop-blur-xl border-b border-primary/15">
+          <div className="max-w-md md:max-w-[941px] mx-auto px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              {showBack && (
+                <button onClick={onBack} aria-label="Voltar" title="Voltar" className="size-9 grid place-items-center rounded-xl bg-muted/40 hover:bg-primary/20 text-muted-foreground hover:text-primary transition shrink-0">
+                  <ChevronLeft className="size-5" />
+                </button>
+              )}
+              <Link to={home} className="flex items-center gap-2 shrink-0">
+                <div className="leading-tight">
+                  <div className="text-[15px] font-extrabold tracking-tight">
+                    <span className="text-foreground">VRUM</span><span className="text-primary drop-shadow-[0_0_8px_var(--color-primary)]">FIT</span>
+                  </div>
+                  <div className="text-[9px] font-semibold tracking-[0.3em] text-primary/80">PERSONAL</div>
                 </div>
-                <div className="text-[9px] font-semibold tracking-[0.3em] text-primary/80">PERSONAL</div>
-              </div>
-            </Link>
-            <div className="flex-1 min-w-0">
-              {title && <h1 className="text-sm font-semibold truncate">{title}</h1>}
-              {subtitle && <p className="text-[11px] text-white/55 truncate">{subtitle}</p>}
+              </Link>
             </div>
-            {rightAction ?? action}
-            <button onClick={onSignOut} title="Sair" className="size-9 grid place-items-center rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition">
-              <LogOut className="size-4" />
-            </button>
+            <div className="min-w-0">
+              {title && <h1 className="text-sm font-semibold truncate">{title}</h1>}
+              {subtitle && <p className="text-[11px] text-muted-foreground truncate">{subtitle}</p>}
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {rightAction ?? action}
+              <button onClick={onSignOut} title="Sair" aria-label="Sair" className="size-9 grid place-items-center rounded-xl bg-muted/40 hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition">
+                <LogOut className="size-4" />
+              </button>
+            </div>
           </div>
         </header>
       )}
@@ -123,14 +127,14 @@ function BottomNav({ role }: { role: "dono" | "personal" | "aluno" | null }) {
 /* ============ Helpers de UI compartilhados pelas rotas ============ */
 
 export const inputCls =
-  "w-full h-11 rounded-xl bg-black/40 border border-white/10 px-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-primary/60 focus:bg-black/55 transition";
+  "w-full h-11 rounded-xl bg-background/60 border border-border px-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:bg-background/80 transition";
 
 export const btnPrimary =
-  "h-11 px-4 rounded-xl text-sm font-semibold text-white transition active:scale-[0.99] bg-gradient-to-b from-[#ffb060] via-[#ff7a18] to-[#c0470a] shadow-[0_10px_28px_-10px_rgba(255,120,30,0.6),inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-2px_0_rgba(0,0,0,0.25)] disabled:opacity-60";
+  "h-11 px-4 rounded-xl text-sm font-bold uppercase tracking-wider text-primary-foreground transition active:scale-[0.99] bg-gradient-to-b from-primary to-[color-mix(in_oklab,var(--brand)_70%,black)] shadow-[0_10px_28px_-10px_color-mix(in_oklab,var(--brand)_70%,transparent),inset_0_1px_0_color-mix(in_oklab,white_22%,transparent)] hover:shadow-[0_14px_32px_-10px_color-mix(in_oklab,var(--brand)_85%,transparent)] disabled:opacity-60";
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm ${className}`}>
+    <div className={`rounded-2xl bg-card/60 border border-primary/15 backdrop-blur-sm shadow-[0_10px_30px_-20px_black] ${className}`}>
       {children}
     </div>
   );
@@ -147,9 +151,9 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <div className="text-[11px] font-semibold tracking-wide text-white/70 uppercase mb-1.5">{label}</div>
+      <div className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase mb-1.5">{label}</div>
       {children}
-      {hint && <div className="text-[11px] text-white/45 mt-1">{hint}</div>}
+      {hint && <div className="text-[11px] text-muted-foreground/70 mt-1">{hint}</div>}
     </label>
   );
 }
