@@ -54,7 +54,7 @@ function ResetPasswordPage() {
     password.length < 6 ? 1 :
     password.length < 10 || !/[0-9]/.test(password) ? 2 : 3;
   const strengthLabel = ["", "Fraca", "Média", "Forte"][strength];
-  const strengthColor = ["bg-white/10", "bg-red-500", "bg-amber-500", "bg-emerald-500"][strength];
+  const strengthColor = ["bg-muted", "bg-destructive", "bg-primary/70", "bg-success"][strength];
 
   return (
     <main className="min-h-[100dvh] bg-black text-white flex flex-col">
@@ -114,7 +114,7 @@ function ResetPasswordPage() {
           </button>
 
           {!ready && (
-            <p className="text-[11px] text-amber-400/90 text-center">
+            <p className="text-[11px] text-destructive text-center">
               Link inválido ou expirado. <Link to="/auth" className="underline">Solicitar novo</Link>.
             </p>
           )}

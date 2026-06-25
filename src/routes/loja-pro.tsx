@@ -196,8 +196,8 @@ function Panel() {
       />
 
       {!plan && (
-        <Card className="p-3 flex items-start gap-3 border-amber-500/40">
-          <AlertCircle className="size-4 text-amber-400 shrink-0 mt-0.5" />
+        <Card className="p-3 flex items-start gap-3 border-destructive/40 bg-destructive/5">
+          <AlertCircle className="size-4 text-destructive shrink-0 mt-0.5" />
           <div className="text-[12px] leading-snug">
             Você não tem o plano <b>Ofertas do Professor</b> ativo. Assine em{" "}
             <Link to="/planos" className="text-primary underline">/planos</Link> para publicar até 5 anúncios.
@@ -258,7 +258,7 @@ function Panel() {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold truncate">{o.title}</p>
                 <p className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
-                  <span className={`px-1.5 py-0.5 rounded ${o.status === "ativo" ? "bg-emerald-500/20 text-emerald-300" : "bg-white/10 text-white/60"}`}>{o.status}</span>
+                  <span className={`px-1.5 py-0.5 rounded ${o.status === "ativo" ? "bg-success/20 text-success" : "bg-muted/40 text-muted-foreground"}`}>{o.status}</span>
                   <span>R$ {(o.price_cents / 100).toFixed(2)}</span>
                   <span className="inline-flex items-center gap-0.5"><Eye className="size-2.5" />{o.wa_clicks ?? 0}</span>
                 </p>
