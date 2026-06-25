@@ -30,6 +30,8 @@ function Planos() {
   const nav = useNavigate();
   const [audience, setAudience] = useState<PlanAudience | null>(null);
   const [period, setPeriod] = useState<PeriodTab>("mensal");
+  const [category, setCategory] = useState<"app" | "loja">("app");
+
   const subscribe = (planId: string) => {
     nav({ to: "/checkout/$planId", params: { planId } });
   };
@@ -202,11 +204,38 @@ function Planos() {
           : (availablePeriods[0] ?? "mensal");
         const appForPeriod = appPlans.filter((p) => (p.period ?? "").toLowerCase() === activePeriod);
 
+        const cats: Array<{ id: "app" | "loja"; label: string; icon: typeof Store; count: number }> = [];
+        if (appPlans.length > 0) cats.push({ id: "app", label: "App", icon: Smartphone, count: appPlans.length });
+        if (lojaPlans.length > 0 || effectiveAudience === "personal") cats.push({ id: "loja", label: "Loja", icon: Store, count: lojaPlans.length });
+        const activeCat: "app" | "loja" = cats.some((c) => c.id === category) ? category : (cats[0]?.id ?? "app");
+
         return (
-          <div className="space-y-6">
-            {appPlans.length > 0 && (
+          <div className="space-y-5">
+            {cats.length > 1 && (
+              <div className="grid grid-cols-2 gap-1 p-1 rounded-2xl glass border border-primary/20">
+                {cats.map((c) => {
+                  const active = c.id === activeCat;
+                  const Icon = c.icon;
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => setCategory(c.id)}
+                      className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                        active ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <Icon className="size-4" />
+                      <span>{c.label}</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-primary-foreground/20" : "bg-primary/15 text-primary"}`}>{c.count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {activeCat === "app" && appPlans.length > 0 && (
               <section className="space-y-3">
-                <div className="flex items-center gap-3 pt-2">
+                <div className="flex items-center gap-3">
                   <span className="grid size-10 place-items-center rounded-xl bg-primary/15 border border-primary/30">
                     <Smartphone className="size-5 text-primary" />
                   </span>
@@ -244,26 +273,29 @@ function Planos() {
               </section>
             )}
 
-            <Section
-              icon={Store}
-              title="Plano da Loja"
-              subtitle="Venda mentorias, PDFs, treinos prontos e materiais"
-              plans={lojaPlans}
-              extra={effectiveAudience === "personal" ? (
-                <Link to="/loja-pro/config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
-                  <span className="grid size-9 place-items-center rounded-lg bg-primary/15">
-                    <Settings className="size-4 text-primary" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold">Editar minha vitrine</p>
-                    <p className="text-[11px] text-muted-foreground">Nome, bio, contato e publicações</p>
-                  </div>
-                </Link>
-              ) : undefined}
-            />
+            {activeCat === "loja" && (
+              <Section
+                icon={Store}
+                title="Plano da Loja"
+                subtitle="Venda mentorias, PDFs, treinos prontos e materiais"
+                plans={lojaPlans}
+                extra={effectiveAudience === "personal" ? (
+                  <Link to="/loja-pro/config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
+                    <span className="grid size-9 place-items-center rounded-lg bg-primary/15">
+                      <Settings className="size-4 text-primary" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold">Editar minha vitrine</p>
+                      <p className="text-[11px] text-muted-foreground">Nome, bio, contato e publicações</p>
+                    </div>
+                  </Link>
+                ) : undefined}
+              />
+            )}
           </div>
         );
       })()}
+
 
     </AppShell>
   );
