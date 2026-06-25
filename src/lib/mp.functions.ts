@@ -4,12 +4,12 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const createMpCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { planId: string }) =>
-    z.object({ planId: z.string().uuid() }).parse(data),
+  .inputValidator((data: { planId: string; origin?: string }) =>
+    z.object({ planId: z.string().uuid(), origin: z.string().url().optional() }).parse(data),
   )
   .handler(async ({ data, context }) => {
     const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
-    const appUrl = process.env.APP_URL || "https://vrumvrum.art.br";
+    const appUrl = data.origin || process.env.APP_URL || "https://vrumvrum.art.br";
     if (!token) throw new Error("PAYMENT_UNAVAILABLE");
 
     const { supabase, userId } = context;
