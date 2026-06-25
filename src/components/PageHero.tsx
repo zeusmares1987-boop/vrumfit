@@ -28,21 +28,21 @@ export function PageHero({
         <div className="absolute -top-16 -right-16 size-56 rounded-full bg-primary/30 blur-3xl" />
       </div>
       <div className="relative p-5">
-        <div className="flex items-start justify-between gap-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
           <div className="min-w-0">
             {eyebrow && (
               <p className="text-[10px] uppercase tracking-[0.32em] text-primary font-bold">{eyebrow}</p>
             )}
             <div className="mt-1 flex items-center gap-2.5">
               {Icon && (
-                <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/20 border border-primary/40 backdrop-blur-sm">
+                <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/20 border border-primary/40 backdrop-blur-sm shadow-[0_0_24px_-8px_var(--brand)]">
                   <Icon className="size-5 text-primary" />
                 </span>
               )}
-              <h1 className="truncate text-2xl font-black tracking-tight text-white">{title}</h1>
+              <h1 className="truncate text-2xl font-black tracking-tight text-foreground">{title}</h1>
             </div>
             {subtitle && (
-              <p className="mt-1.5 text-[12px] text-white/70 leading-snug">{subtitle}</p>
+              <p className="mt-1.5 text-[12px] text-muted-foreground leading-snug">{subtitle}</p>
             )}
           </div>
           {action && <div className="shrink-0">{action}</div>}
@@ -50,9 +50,9 @@ export function PageHero({
         {stats && stats.length > 0 && (
           <div className="mt-4 grid grid-cols-3 gap-2">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-3 py-2">
-                <p className="text-[9px] uppercase tracking-widest text-white/60">{s.label}</p>
-                <p className="text-base font-extrabold text-white mt-0.5">{s.value}</p>
+              <div key={s.label} className="rounded-2xl border border-primary/15 bg-background/40 backdrop-blur-sm px-3 py-2">
+                <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{s.label}</p>
+                <p className="text-base font-extrabold text-foreground mt-0.5 truncate">{s.value}</p>
               </div>
             ))}
           </div>
