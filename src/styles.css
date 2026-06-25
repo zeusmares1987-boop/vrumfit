@@ -242,6 +242,11 @@
       linear-gradient(180deg, transparent 0 70%, var(--background) 100%);
   }
 
+  .vrum-brand-chip {
+    border: 1px solid color-mix(in oklab, var(--brand) 60%, white 8%);
+    background: linear-gradient(160deg, color-mix(in oklab, var(--brand) 18%, black 80%), color-mix(in oklab, black 92%, transparent));
+    box-shadow: 0 0 18px -8px var(--brand), inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+  }
 
 
   .vrum-top-icon {
