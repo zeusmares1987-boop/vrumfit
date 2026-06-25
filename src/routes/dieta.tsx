@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useStudentContext } from "@/lib/student-context";
 import { saveDietPlan } from "@/lib/plan-persistence";
+import { usePlanGate } from "@/lib/plan-gate";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -83,9 +84,14 @@ function DietaPage() {
     setOpenMeal(0);
   };
 
+  const { gate } = usePlanGate();
   const [saving, setSaving] = useState(false);
   const handleSave = async () => {
     if (!plan || !user) return;
+    if (!gate.canSaveDiet) {
+      toast.error(gate.reason ?? "Seu plano não permite salvar dietas.");
+      return;
+    }
     setSaving(true);
     try {
       const { data: stu } = await supabase.from("students").select("personal_id").eq("user_id", user.id).maybeSingle();
@@ -219,8 +225,13 @@ function DietaPage() {
                 <button onClick={() => exportPdf(plan, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
                   <FileDown className="size-3" /> PDF VrumFit
                 </button>
-                <button onClick={handleSave} disabled={saving} className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50">
-                  {saving ? "Salvando…" : "Salvar no perfil"}
+                <button
+                  onClick={handleSave}
+                  disabled={saving || !gate.canSaveDiet}
+                  title={!gate.canSaveDiet ? (gate.reason ?? "Plano não inclui salvar") : "Salvar no perfil"}
+                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50"
+                >
+                  {saving ? "Salvando…" : gate.canSaveDiet ? "Salvar no perfil" : "🔒 Salvar"}
                 </button>
               </div>
             </div>
