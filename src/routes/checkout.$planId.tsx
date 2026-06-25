@@ -109,7 +109,6 @@ function Checkout() {
           customization: {
             paymentMethods: {
               creditCard: "all",
-              debitCard: "all",
               bankTransfer: "all",
               maxInstallments: 12,
             },
