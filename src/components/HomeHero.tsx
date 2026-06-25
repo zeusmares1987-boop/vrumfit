@@ -125,7 +125,7 @@ function EcgLine() {
     <div className="relative px-4 -mt-1 pb-3">
       <svg
         viewBox="0 0 400 28"
-        className="w-full h-6 text-primary drop-shadow-[0_0_8px_rgba(255,120,30,0.55)]"
+        className="w-full h-6 text-primary drop-shadow-[0_0_8px_rgba(46,107,255,0.6)]"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"

@@ -19,7 +19,7 @@ export function NeonTile({ icon: Icon, label, hint, to }: NeonTileItem) {
       className="group flex flex-col items-center text-center gap-2 py-2 transition active:scale-[0.97]"
     >
       <div className="neon-ring relative grid place-items-center">
-        <Icon className="size-7 text-primary drop-shadow-[0_0_6px_rgba(255,120,30,0.65)] transition group-hover:scale-110" />
+        <Icon className="size-7 text-primary drop-shadow-[0_0_6px_rgba(46,107,255,0.7)] transition group-hover:scale-110" />
       </div>
       <div className="px-1">
         <p className="text-[13px] font-extrabold leading-tight text-white">{label}</p>
