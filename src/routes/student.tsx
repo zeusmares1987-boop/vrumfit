@@ -8,6 +8,7 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule } from "@/components/DashboardHome";
 import { WeekFrequency } from "@/components/WeekFrequency";
+import { ShareProgressButton } from "@/components/ShareProgressButton";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import heroStudentAsset from "@/assets/hero/hero-student.jpg.asset.json";
@@ -181,6 +182,7 @@ function StudentPage() {
                 <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
               </Link>
             )}
+            <ShareProgressButton className="w-full" />
           </div>
         )}
       />
