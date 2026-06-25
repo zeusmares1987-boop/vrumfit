@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       anamneses: {
         Row: {
+          activity_factor: number | null
           activity_history: string | null
           allergies: string | null
           completed_at: string | null
@@ -23,6 +24,7 @@ export type Database = {
           doctor_clearance: boolean | null
           drinks: boolean | null
           emergency_contact: string | null
+          experience_level: string | null
           goal: string | null
           has_health_issues: boolean | null
           health_issues: string | null
@@ -30,6 +32,7 @@ export type Database = {
           medications: string | null
           notes: string | null
           personal_id: string | null
+          sex: string | null
           sleep_hours: number | null
           smokes: boolean | null
           stress_level: number | null
@@ -38,6 +41,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          activity_factor?: number | null
           activity_history?: string | null
           allergies?: string | null
           completed_at?: string | null
@@ -45,6 +49,7 @@ export type Database = {
           doctor_clearance?: boolean | null
           drinks?: boolean | null
           emergency_contact?: string | null
+          experience_level?: string | null
           goal?: string | null
           has_health_issues?: boolean | null
           health_issues?: string | null
@@ -52,6 +57,7 @@ export type Database = {
           medications?: string | null
           notes?: string | null
           personal_id?: string | null
+          sex?: string | null
           sleep_hours?: number | null
           smokes?: boolean | null
           stress_level?: number | null
@@ -60,6 +66,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          activity_factor?: number | null
           activity_history?: string | null
           allergies?: string | null
           completed_at?: string | null
@@ -67,6 +74,7 @@ export type Database = {
           doctor_clearance?: boolean | null
           drinks?: boolean | null
           emergency_contact?: string | null
+          experience_level?: string | null
           goal?: string | null
           has_health_issues?: boolean | null
           health_issues?: string | null
@@ -74,6 +82,7 @@ export type Database = {
           medications?: string | null
           notes?: string | null
           personal_id?: string | null
+          sex?: string | null
           sleep_hours?: number | null
           smokes?: boolean | null
           stress_level?: number | null

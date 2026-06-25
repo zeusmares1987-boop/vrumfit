@@ -58,7 +58,8 @@ function DietaPage() {
   const prefilled = useRef(false);
   useEffect(() => {
     if (prefilled.current) return;
-    if (ctx.age || ctx.weightKg || ctx.heightCm || ctx.goalDiet || ctx.activityFactor) {
+    if (ctx.age || ctx.weightKg || ctx.heightCm || ctx.goalDiet || ctx.activityFactor || ctx.sex) {
+      if (ctx.sex) setSex(ctx.sex);
       if (ctx.age) setAge(ctx.age);
       if (ctx.weightKg) setWeight(ctx.weightKg);
       if (ctx.heightCm) setHeight(ctx.heightCm);
