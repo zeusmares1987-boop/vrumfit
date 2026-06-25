@@ -123,7 +123,7 @@ function StudentPage() {
         roleLabel="Aluno"
         modeLabel="Modo treino"
         subtitle="Acompanhe seu treino e sua evolução."
-        avatarUrl={profile?.avatar_url ?? undefined}
+        avatarUrl={profile?.avatar_url ?? ""}
         heroImageUrl={heroStudentAsset.url}
         searchPlaceholder="Buscar treino, dieta, exercícios..."
         stats={[]}
