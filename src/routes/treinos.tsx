@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo, useEffect, useRef } from "react";
+import { useLocalState } from "@/hooks/use-local-state";
 import { toast } from "sonner";
 import { useStudentContext } from "@/lib/student-context";
 import { saveWorkoutWeek } from "@/lib/plan-persistence";
