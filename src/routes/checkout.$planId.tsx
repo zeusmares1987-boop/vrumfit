@@ -109,12 +109,8 @@ function Checkout() {
           customization: {
             paymentMethods: {
               creditCard: "all",
-              debitCard: "all",
-              bankTransfer: ["pix"],
+              bankTransfer: "all",
               maxInstallments: 12,
-              mercadoPago: "none",
-              ticket: "none",
-              atm: "none",
             },
             visual: { style: { theme: "dark" } },
           },
