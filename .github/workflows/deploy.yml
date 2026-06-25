@@ -21,9 +21,6 @@ jobs:
       - name: Baixar código
         uses: actions/checkout@v4
 
-      - name: Preparar GitHub Pages
-        uses: actions/configure-pages@v5
-
       - name: Instalar Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -37,6 +34,11 @@ jobs:
 
       - name: Gerar app
         run: bun run build:github
+
+      - name: Garantir domínio
+        run: |
+          echo "vrumvrum.art.br" > dist/client/CNAME
+          touch dist/client/.nojekyll
 
       - name: Enviar arquivos
         uses: actions/upload-pages-artifact@v3
