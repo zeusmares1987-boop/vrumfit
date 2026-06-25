@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { AnamneseNudge } from "@/components/AnamneseNudge";
+import { LastSavedBadge } from "@/components/LastSavedBadge";
 import { RequireAuth } from "@/components/RequireAuth";
 import { StoredImage } from "@/components/StoredImage";
 import { useAuth } from "@/lib/auth";
@@ -192,6 +193,7 @@ function TreinosPage() {
       />
 
       <AnamneseNudge />
+      <LastSavedBadge kind="workout" />
 
       <Link to="/biblioteca" className="flex items-center gap-2 h-11 px-4 rounded-2xl border border-primary/40 bg-primary/10 text-primary text-[13px] font-semibold hover:bg-primary/15 transition">
         <BookOpen className="size-4" /> Abrir biblioteca VrumFit
@@ -278,7 +280,7 @@ function TreinosPage() {
             <div className="flex flex-wrap gap-2">
               {["lombar", "ombro", "joelho", "cotovelo", "punho"].map((k) => (
                 <button key={k} type="button" onClick={() => toggleInjury(k)}
-                  className={`px-3 py-1.5 rounded-full text-[11px] font-semibold capitalize ${injuries.includes(k) ? "bg-red-500/80 text-white" : "glass text-muted-foreground"}`}>
+                  className={`px-3 py-1.5 rounded-full text-[11px] font-semibold capitalize ${injuries.includes(k) ? "bg-destructive text-destructive-foreground" : "glass text-muted-foreground"}`}>
                   {k}
                 </button>
               ))}

@@ -8,6 +8,7 @@ import { usePlanGate } from "@/lib/plan-gate";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { AnamneseNudge } from "@/components/AnamneseNudge";
+import { LastSavedBadge } from "@/components/LastSavedBadge";
 import { RequireAuth } from "@/components/RequireAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -139,6 +140,7 @@ function DietaPage() {
       />
 
       <AnamneseNudge />
+      <LastSavedBadge kind="diet" />
 
       <Card>
         <form onSubmit={submit} className="space-y-4">
