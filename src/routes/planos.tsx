@@ -10,7 +10,7 @@ import { createMpCheckout } from "@/lib/mp.functions";
 import { Check, Plus, Trash2, X, CreditCard, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-type Plan = { id: string; name: string; price_cents: number; period: string; benefits: string[] | null; status: string };
+type Plan = { id: string; name: string; price_cents: number; period: string; benefits: string[] | null; status: string; role_target: string | null };
 
 export const Route = createFileRoute("/planos")({
   head: () => ({ meta: [{ title: "Planos — VRUMFIT" }] }),
