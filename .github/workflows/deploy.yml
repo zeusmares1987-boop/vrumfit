@@ -21,6 +21,9 @@ jobs:
       - name: Baixar código
         uses: actions/checkout@v4
 
+      - name: Preparar GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Instalar Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -28,6 +31,9 @@ jobs:
 
       - name: Instalar pacotes
         run: bun install --frozen-lockfile
+
+      - name: Limpar build antigo
+        run: rm -rf dist
 
       - name: Gerar app
         run: bun run build:github
