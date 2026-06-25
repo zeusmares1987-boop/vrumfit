@@ -75,6 +75,10 @@ function DietaPage() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (age < 12 || age > 90) return toast.error("Idade deve estar entre 12 e 90 anos.");
+    if (weight < 30 || weight > 250) return toast.error("Peso deve estar entre 30 e 250 kg.");
+    if (height < 120 || height > 230) return toast.error("Altura deve estar entre 120 e 230 cm.");
+    if (bf !== "" && (Number(bf) < 3 || Number(bf) > 60)) return toast.error("% gordura deve estar entre 3 e 60.");
     const input: DietInput = {
       sex, age, weightKg: weight, heightCm: height,
       bodyFatPct: bf ? Number(bf) : undefined,

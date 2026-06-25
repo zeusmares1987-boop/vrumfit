@@ -108,6 +108,10 @@ function TreinosPage() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (age < 12 || age > 90) return toast.error("Idade deve estar entre 12 e 90 anos.");
+    if (weight < 30 || weight > 250) return toast.error("Peso deve estar entre 30 e 250 kg.");
+    if (height < 120 || height > 230) return toast.error("Altura deve estar entre 120 e 230 cm.");
+    if (oneRM !== "" && (Number(oneRM) < 10 || Number(oneRM) > 500)) return toast.error("1RM deve estar entre 10 e 500 kg.");
     const input: WorkoutPlanInput = {
       sex, age, weightKg: weight, heightCm: height,
       goal, level, frequency, sessionMinutes,
