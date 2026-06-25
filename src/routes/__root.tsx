@@ -126,8 +126,8 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   useEffect(() => {
-    // Carrega o pool extra de alimentos e exercícios (1471 + 1014) uma única vez.
     import("../lib/library-loader").then((m) => m.loadDbLibraries());
+    import("../lib/register-sw").then((m) => m.registerServiceWorker());
   }, []);
 
   return (
