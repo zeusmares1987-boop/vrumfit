@@ -87,6 +87,22 @@ function TreinosPage() {
   const [activeWeek, setActiveWeek] = useState(1);
   const [openDay, setOpenDay] = useState<number | null>(0);
 
+  // Aderência: contagem de treinos concluídos nos últimos 7 dias
+  const { data: completedCount = 0, refetch: refetchSessions } = useQuery({
+    queryKey: ["sessions-7d", user?.id],
+    enabled: !!user,
+    staleTime: 30_000,
+    queryFn: async () => {
+      if (!user) return 0;
+      const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+      const { count } = await supabase.from("workout_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("student_id", user.id)
+        .gte("session_date", since);
+      return count ?? 0;
+    },
+  });
+
   // Pré-preenchimento automático a partir do contexto do aluno (Fase 2)
   const { ctx } = useStudentContext();
   const prefilled = useRef(false);
