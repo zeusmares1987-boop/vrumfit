@@ -119,7 +119,7 @@ function Planos() {
         </Card>
       )}
 
-      {list.length === 0 ? (
+      {visible.length === 0 ? (
         <EmptyState
           icon={CreditCard}
           title="Sem planos cadastrados"
