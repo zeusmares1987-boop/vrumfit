@@ -41,7 +41,7 @@ async function renderRoute(route) {
         "x-forwarded-proto": "https",
       },
     });
-  const response = await handler.fetch(request, {}, {});
+  const response = await handler.fetch(request, {}, { waitUntil: () => {} });
 
   if (!response.ok && response.status !== 404) {
     throw new Error(`Falha ao gerar ${route}: HTTP ${response.status}`);
