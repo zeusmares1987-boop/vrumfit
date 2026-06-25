@@ -87,6 +87,22 @@ function TreinosPage() {
   const [activeWeek, setActiveWeek] = useState(1);
   const [openDay, setOpenDay] = useState<number | null>(0);
 
+  // Aderência: contagem de treinos concluídos nos últimos 7 dias
+  const { data: completedCount = 0, refetch: refetchSessions } = useQuery({
+    queryKey: ["sessions-7d", user?.id],
+    enabled: !!user,
+    staleTime: 30_000,
+    queryFn: async () => {
+      if (!user) return 0;
+      const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+      const { count } = await supabase.from("workout_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("student_id", user.id)
+        .gte("session_date", since);
+      return count ?? 0;
+    },
+  });
+
   // Pré-preenchimento automático a partir do contexto do aluno (Fase 2)
   const { ctx } = useStudentContext();
   const prefilled = useRef(false);
@@ -305,10 +321,11 @@ function TreinosPage() {
               ))}
             </div>
 
-            <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-4 gap-2">
               <Mini icon={Zap} label="RIR alvo" value={String(week.rirTarget)} />
               <Mini icon={Clock} label="Sessão" value={`${sessionMinutes}m`} />
               <Mini icon={Flame} label="Status" value={week.isDeload ? "Deload" : "Carga"} />
+              <Mini icon={Dumbbell} label="Feitos/7d" value={String(completedCount)} />
             </div>
           </Card>
 
@@ -424,6 +441,24 @@ function TreinosPage() {
                           <p className="text-[12px] mt-1">{d.cardio}</p>
                         </div>
                       )}
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!user) return;
+                          const { error } = await supabase.from("workout_sessions").insert({
+                            student_id: user.id,
+                            session_date: new Date().toISOString().slice(0, 10),
+                            duration_min: sessionMinutes,
+                            notes: `${d.name} · S${week.week} · ${d.exercises.length} ex`,
+                          });
+                          if (error) toast.error("Não foi possível registrar: " + error.message);
+                          else { toast.success(`Treino "${d.name}" registrado ✓`); refetchSessions(); }
+                        }}
+                        className="w-full bg-primary text-primary-foreground rounded-xl py-2.5 text-[12px] font-bold hover:opacity-90 transition"
+                      >
+                        ✓ Concluir treino
+                      </button>
                     </div>
                   )}
                 </Card>
