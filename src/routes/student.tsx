@@ -123,7 +123,7 @@ function StudentPage() {
         roleLabel="Aluno"
         modeLabel="Modo treino"
         subtitle="Acompanhe seu treino e sua evolução."
-        avatarUrl={profile?.avatar_url || avatarOwnerAsset.url}
+        avatarUrl={profile?.avatar_url ?? undefined}
         heroImageUrl={heroStudentAsset.url}
         searchPlaceholder="Buscar treino, dieta, exercícios..."
         stats={[]}
@@ -131,19 +131,7 @@ function StudentPage() {
         notifCount={notifCount ?? 0}
         alerts={(
           <div className="space-y-3">
-            {hasOwner === false && (
-              <button onClick={() => claim.mutate()} disabled={claim.isPending}
-                className="flex w-full items-center gap-3 rounded-2xl border border-primary/50 bg-primary/10 p-3 text-left transition hover:bg-primary/15 disabled:opacity-60">
-                <div className="grid size-10 place-items-center rounded-xl border border-primary/50 bg-primary/20 text-primary">
-                  <Crown className="size-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-bold text-primary">Sou o Dono deste app</p>
-                  <p className="text-[11px] text-muted-foreground">Toque para virar Proprietário.</p>
-                </div>
-                <ChevronRight className="size-4 shrink-0 text-primary" />
-              </button>
-            )}
+
 
             {anamnese !== undefined && !anamnese?.completed_at && (
               <Link to="/anamnese" className="flex w-full items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 p-3 transition hover:bg-primary/15">
