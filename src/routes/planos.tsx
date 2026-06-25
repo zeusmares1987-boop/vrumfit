@@ -21,16 +21,23 @@ export const Route = createFileRoute("/planos")({
   ),
 });
 
+type PeriodTab = "mensal" | "trimestral" | "anual";
+const PERIOD_LABEL: Record<PeriodTab, string> = { mensal: "Mensal", trimestral: "Trimestral", anual: "Anual" };
+const PERIOD_HINT: Record<PeriodTab, string> = { mensal: "Pague mês a mês", trimestral: "Economize ~10%", anual: "Melhor custo-benefício" };
+
 function Planos() {
   const { role } = useAuth();
   const nav = useNavigate();
   const [audience, setAudience] = useState<PlanAudience | null>(null);
+  const [period, setPeriod] = useState<PeriodTab>("mensal");
   const subscribe = (planId: string) => {
     nav({ to: "/checkout/$planId", params: { planId } });
   };
   const [list, setList] = useState<Plan[]>([]);
   const [show, setShow] = useState(false);
   const [form, setForm] = useState({ name: "", price: "", period: "mensal", benefits: "" });
+
+
 
   useEffect(() => {
     const saved = window.localStorage.getItem("vrumfit:plans-audience");
@@ -187,20 +194,62 @@ function Planos() {
           );
         };
 
+        const availablePeriods = (["mensal", "trimestral", "anual"] as PeriodTab[]).filter((per) =>
+          appPlans.some((p) => (p.period ?? "").toLowerCase() === per)
+        );
+        const activePeriod: PeriodTab = availablePeriods.includes(period)
+          ? period
+          : (availablePeriods[0] ?? "mensal");
+        const appForPeriod = appPlans.filter((p) => (p.period ?? "").toLowerCase() === activePeriod);
+
         return (
           <div className="space-y-6">
-            <Section
-              icon={Smartphone}
-              title="Plano do App"
-              subtitle={effectiveAudience === "personal" ? "Uso do sistema, alunos, treinos e dietas" : "Acesso completo aos recursos do aluno"}
-              plans={appPlans}
-            />
+            {appPlans.length > 0 && (
+              <section className="space-y-3">
+                <div className="flex items-center gap-3 pt-2">
+                  <span className="grid size-10 place-items-center rounded-xl bg-primary/15 border border-primary/30">
+                    <Smartphone className="size-5 text-primary" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Plano do App</p>
+                    <p className="text-xs text-muted-foreground">
+                      {effectiveAudience === "personal" ? "Uso do sistema, alunos, treinos e dietas" : "Acesso completo aos recursos do aluno"}
+                    </p>
+                  </div>
+                </div>
+
+                {availablePeriods.length > 1 && (
+                  <div className="grid grid-cols-3 gap-1 p-1 rounded-2xl glass border border-primary/20">
+                    {availablePeriods.map((per) => {
+                      const active = per === activePeriod;
+                      return (
+                        <button
+                          key={per}
+                          onClick={() => setPeriod(per)}
+                          className={`py-2 px-2 rounded-xl text-xs font-bold transition ${
+                            active ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30" : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {PERIOD_LABEL[per]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                <p className="text-[11px] text-muted-foreground -mt-1 px-1">{PERIOD_HINT[activePeriod]}</p>
+
+                <div className="space-y-3">
+                  {appForPeriod.map((p, i) => renderCard(p, i === 0 && appForPeriod.length >= 2 && activePeriod === "anual"))}
+                </div>
+              </section>
+            )}
+
             <Section
               icon={Store}
               title="Plano da Loja"
               subtitle="Venda mentorias, PDFs, treinos prontos e materiais"
               plans={lojaPlans}
-              extra={effectiveAudience === "personal" && lojaPlans.length > 0 ? (
+              extra={effectiveAudience === "personal" ? (
                 <Link to="/loja-pro/config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
                   <span className="grid size-9 place-items-center rounded-lg bg-primary/15">
                     <Settings className="size-4 text-primary" />
@@ -215,6 +264,7 @@ function Planos() {
           </div>
         );
       })()}
+
     </AppShell>
   );
 }
