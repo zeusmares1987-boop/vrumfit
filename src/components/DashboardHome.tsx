@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import dashboardBackdrop from "@/assets/dashboard-backdrop.jpg";
 import { ChevronRight, Search, SlidersHorizontal, UserRound } from "lucide-react";
-import { useMemo, useState, type ComponentType, type ReactNode } from "react";
+import { useMemo, useState, type ComponentType, type ReactNode, type SyntheticEvent } from "react";
 
 
 type IconProps = { className?: string; strokeWidth?: number };
@@ -64,13 +65,34 @@ export function DashboardHome({
   }, [modules, query]);
 
   return (
-    <div className="vrum-dash mx-auto min-h-[100dvh] w-full max-w-[430px] space-y-3 overflow-hidden pb-28">
-      <Hero name={name} subtitle={subtitle} notifCount={notifCount} heroImageUrl={heroImageUrl} />
-      {alerts}
-      {beforeStats}
-      {stats.length > 0 && <StatsRow stats={stats} />}
-      <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} />
-      <ModuleGrid modules={visibleModules} />
+    <div className="vrum-dash relative mx-auto min-h-[100dvh] w-full max-w-[430px] overflow-hidden pb-28">
+      <DashboardBackdrop src={heroImageUrl} />
+      <div className="relative z-10 space-y-3">
+        <Hero name={name} subtitle={subtitle} notifCount={notifCount} />
+        {alerts}
+        {beforeStats}
+        {stats.length > 0 && <StatsRow stats={stats} />}
+        <SearchRow value={query} onChange={setQuery} placeholder={searchPlaceholder} />
+        <ModuleGrid modules={visibleModules} />
+      </div>
+    </div>
+  );
+}
+
+function DashboardBackdrop({ src }: { src: string }) {
+  const fallbackSrc = dashboardBackdrop;
+  const handleImageError = (event: SyntheticEvent<HTMLImageElement>) => {
+    if (event.currentTarget.dataset.fallbackApplied) return;
+    event.currentTarget.dataset.fallbackApplied = "true";
+    event.currentTarget.src = fallbackSrc;
+  };
+
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-x-[-22px] top-0 z-0 h-[390px] overflow-hidden">
+      <img src={src || fallbackSrc} alt="" width={1280} height={768} onError={handleImageError} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-85 blur-[18px] saturate-125" />
+      <img src={fallbackSrc} alt="" width={1280} height={768} className="absolute inset-0 h-full w-full object-cover opacity-28 saturate-125" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/55 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/78 via-background/20 to-background/62" />
     </div>
   );
 }
@@ -79,24 +101,14 @@ function Hero({
   name,
   subtitle,
   notifCount,
-  heroImageUrl,
 }: {
   name: string;
   subtitle: string;
   notifCount: number;
-  heroImageUrl: string;
 }) {
   return (
-    <section className="relative -mx-1 overflow-hidden rounded-3xl border border-white/10 px-4 pb-6 pt-5">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        <img
-          src={heroImageUrl}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-background" />
-        <div className="absolute -top-16 -right-16 size-56 rounded-full bg-primary/25 blur-3xl" />
-      </div>
+    <section className="relative px-1 pb-6 pt-5">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-10 size-52 rounded-full bg-primary/20 blur-3xl" />
       <header className="flex items-center justify-between">
         <Brand />
         <Link
