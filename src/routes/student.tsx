@@ -59,31 +59,6 @@ function StudentPage() {
     enabled: !!user,
   });
 
-  const { data: hasOwner, refetch: refetchHasOwner } = useQuery({
-    queryKey: ["has-owner"],
-    queryFn: async () => {
-      const { count } = await supabase.from("user_roles").select("user_id", { count: "exact", head: true }).eq("role", "dono");
-      return (count ?? 0) > 0;
-    },
-  });
-
-  const claim = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.rpc("claim_ownership");
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: async (ok) => {
-      if (ok) {
-        toast.success("Você agora é o Dono! Recarregando...");
-        await refetchHasOwner();
-        setTimeout(() => window.location.assign("/owner"), 700);
-      } else {
-        toast.error("Já existe um dono cadastrado.");
-      }
-    },
-    onError: (e: Error) => toast.error(e.message || "Falha ao reivindicar."),
-  });
 
   const { data: todayWorkout } = useQuery({
     queryKey: ["student-today-workout", user?.id],
