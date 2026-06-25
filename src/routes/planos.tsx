@@ -88,9 +88,9 @@ function Planos() {
         subtitle="Ofertas e benefícios da sua academia"
         icon={CreditCard}
         stats={[
-          { label: "Planos", value: list.length },
+          { label: "Planos", value: visible.length },
           { label: "A partir de", value: cheapest ? `R$ ${(cheapest / 100).toFixed(0)}` : "—" },
-          { label: "Ativos", value: list.filter((p) => p.status === "ativo").length },
+          { label: "Ativos", value: visible.filter((p) => p.status === "ativo").length },
         ]}
         action={canEdit ? (
           <button
