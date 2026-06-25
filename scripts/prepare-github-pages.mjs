@@ -34,15 +34,14 @@ function ensureDomain(html) {
 const { default: handler } = await import("../dist/server/index.mjs");
 
 async function renderRoute(route) {
-  const response = await handler.fetch(
-    new Request(`https://${domain}${route}`, {
+  const request = new Request(`https://${domain}${route}`, {
       headers: {
         host: domain,
         "x-forwarded-host": domain,
         "x-forwarded-proto": "https",
       },
-    }),
-  );
+    });
+  const response = await handler.fetch(request, {}, {});
 
   if (!response.ok && response.status !== 404) {
     throw new Error(`Falha ao gerar ${route}: HTTP ${response.status}`);
