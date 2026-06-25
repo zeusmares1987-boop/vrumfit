@@ -234,36 +234,35 @@ function DietaPage() {
           </Card>
 
           <Card>
-            <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
-              <div>
-                <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Cardápio ({plan.meals.length} refeições)</h3>
-                <p className="text-[11px] text-primary font-semibold mt-0.5">
-                  ✓ {doneToday.length}/{plan.meals.length} feitas hoje
-                </p>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={() => { if (confirm("Limpar plano gerado?")) setPlan(null); }}
-                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] text-muted-foreground hover:text-foreground transition"
-                >
-                  Limpar
-                </button>
-                <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
-                  <Download className="size-3" /> TXT
-                </button>
-                <button onClick={() => exportPdf(plan, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
-                  <FileDown className="size-3" /> PDF VrumFit
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={saving || !gate.canSaveDiet}
-                  title={!gate.canSaveDiet ? (gate.reason ?? "Plano não inclui salvar") : "Salvar no perfil"}
-                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50"
-                >
-                  {saving ? "Salvando…" : gate.canSaveDiet ? "Salvar no perfil" : "🔒 Salvar"}
-                </button>
-              </div>
+            <div className="mb-3">
+              <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Cardápio · {plan.meals.length} refeições</h3>
+              <p className="text-[11px] text-primary font-semibold mt-0.5">
+                ✓ {doneToday.length}/{plan.meals.length} feitas hoje
+              </p>
             </div>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button onClick={() => exportPdf(plan, goal, studentName)} className="h-10 rounded-xl bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 hover:opacity-95 transition">
+                <FileDown className="size-3.5" /> PDF
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving || !gate.canSaveDiet}
+                title={!gate.canSaveDiet ? (gate.reason ?? "Plano não inclui salvar") : "Salvar no perfil"}
+                className="h-10 rounded-xl glass text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 disabled:opacity-50 hover:text-primary transition"
+              >
+                {saving ? "Salvando…" : gate.canSaveDiet ? "Salvar" : "🔒 Salvar"}
+              </button>
+              <button onClick={() => exportTxt(plan)} className="h-10 rounded-xl glass text-[11px] font-semibold flex items-center justify-center gap-1.5 hover:text-foreground transition text-muted-foreground">
+                <Download className="size-3.5" /> TXT
+              </button>
+              <button
+                onClick={() => { if (confirm("Limpar plano gerado?")) setPlan(null); }}
+                className="h-10 rounded-xl glass text-[11px] font-semibold text-muted-foreground hover:text-destructive transition"
+              >
+                Limpar
+              </button>
+            </div>
+
 
             <ol className="space-y-2">
               {plan.meals.map((m, i) => {
