@@ -201,7 +201,7 @@ function Planos() {
               subtitle="Venda mentorias, PDFs, treinos prontos e materiais"
               plans={lojaPlans}
               extra={effectiveAudience === "personal" && lojaPlans.length > 0 ? (
-                <Link to="/loja-pro.config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
+                <Link to="/loja-pro/config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
                   <span className="grid size-9 place-items-center rounded-lg bg-primary/15">
                     <Settings className="size-4 text-primary" />
                   </span>
