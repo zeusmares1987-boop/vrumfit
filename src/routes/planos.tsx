@@ -30,6 +30,8 @@ function Planos() {
   const nav = useNavigate();
   const [audience, setAudience] = useState<PlanAudience | null>(null);
   const [period, setPeriod] = useState<PeriodTab>("mensal");
+  const [category, setCategory] = useState<"app" | "loja">("app");
+
   const subscribe = (planId: string) => {
     nav({ to: "/checkout/$planId", params: { planId } });
   };
