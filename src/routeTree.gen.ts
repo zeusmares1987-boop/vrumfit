@@ -40,6 +40,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BibliotecaIndexRouteImport } from './routes/biblioteca.index'
 import { Route as LojaIdRouteImport } from './routes/loja.$id'
 import { Route as LojaProConfigRouteImport } from './routes/loja-pro.config'
+import { Route as CheckoutPlanIdRouteImport } from './routes/checkout.$planId'
 import { Route as BibliotecaIdRouteImport } from './routes/biblioteca.$id'
 import { Route as AlunosIdRouteImport } from './routes/alunos.$id'
 import { Route as ApiPublicMpWebhookRouteImport } from './routes/api/public/mp-webhook'
@@ -199,6 +200,11 @@ const LojaProConfigRoute = LojaProConfigRouteImport.update({
   path: '/config',
   getParentRoute: () => LojaProRoute,
 } as any)
+const CheckoutPlanIdRoute = CheckoutPlanIdRouteImport.update({
+  id: '/checkout/$planId',
+  path: '/checkout/$planId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BibliotecaIdRoute = BibliotecaIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/treinos': typeof TreinosRoute
   '/alunos/$id': typeof AlunosIdRoute
   '/biblioteca/$id': typeof BibliotecaIdRoute
+  '/checkout/$planId': typeof CheckoutPlanIdRoute
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
   '/biblioteca/': typeof BibliotecaIndexRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/treinos': typeof TreinosRoute
   '/alunos/$id': typeof AlunosIdRoute
   '/biblioteca/$id': typeof BibliotecaIdRoute
+  '/checkout/$planId': typeof CheckoutPlanIdRoute
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
   '/biblioteca': typeof BibliotecaIndexRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/treinos': typeof TreinosRoute
   '/alunos/$id': typeof AlunosIdRoute
   '/biblioteca/$id': typeof BibliotecaIdRoute
+  '/checkout/$planId': typeof CheckoutPlanIdRoute
   '/loja-pro/config': typeof LojaProConfigRoute
   '/loja/$id': typeof LojaIdRoute
   '/biblioteca/': typeof BibliotecaIndexRoute
@@ -356,6 +365,7 @@ export interface FileRouteTypes {
     | '/treinos'
     | '/alunos/$id'
     | '/biblioteca/$id'
+    | '/checkout/$planId'
     | '/loja-pro/config'
     | '/loja/$id'
     | '/biblioteca/'
@@ -391,6 +401,7 @@ export interface FileRouteTypes {
     | '/treinos'
     | '/alunos/$id'
     | '/biblioteca/$id'
+    | '/checkout/$planId'
     | '/loja-pro/config'
     | '/loja/$id'
     | '/biblioteca'
@@ -427,6 +438,7 @@ export interface FileRouteTypes {
     | '/treinos'
     | '/alunos/$id'
     | '/biblioteca/$id'
+    | '/checkout/$planId'
     | '/loja-pro/config'
     | '/loja/$id'
     | '/biblioteca/'
@@ -462,6 +474,7 @@ export interface RootRouteChildren {
   SuporteRoute: typeof SuporteRoute
   TrainerRoute: typeof TrainerRoute
   TreinosRoute: typeof TreinosRoute
+  CheckoutPlanIdRoute: typeof CheckoutPlanIdRoute
   ApiPublicMpWebhookRoute: typeof ApiPublicMpWebhookRoute
 }
 
@@ -684,6 +697,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaProConfigRouteImport
       parentRoute: typeof LojaProRoute
     }
+    '/checkout/$planId': {
+      id: '/checkout/$planId'
+      path: '/checkout/$planId'
+      fullPath: '/checkout/$planId'
+      preLoaderRoute: typeof CheckoutPlanIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/biblioteca/$id': {
       id: '/biblioteca/$id'
       path: '/$id'
@@ -783,6 +803,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuporteRoute: SuporteRoute,
   TrainerRoute: TrainerRoute,
   TreinosRoute: TreinosRoute,
+  CheckoutPlanIdRoute: CheckoutPlanIdRoute,
   ApiPublicMpWebhookRoute: ApiPublicMpWebhookRoute,
 }
 export const routeTree = rootRouteImport
