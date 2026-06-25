@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Dumbbell, Apple, Target, CalendarDays, TrendingUp, CheckCircle2,
-  ChevronRight, Crown, ClipboardList, Flame, Clock, BadgeCheck, ShoppingBag,
+  ChevronRight, Crown, ClipboardList, Flame, Clock, BadgeCheck, ShoppingBag, Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -36,6 +36,7 @@ const studentModules: DashboardModule[] = [
   { icon: Target, title: "Execução", description: "Como fazer certo", to: "/biblioteca", image: tileExecucaoAsset.url },
   { icon: TrendingUp, title: "Progresso", description: "Sua evolução", to: "/evolucao", image: tileProgressoAsset.url },
   { icon: CheckCircle2, title: "Check-in", description: "Registrar presença", to: "/historico" },
+  { icon: Sparkles, title: "Planos", description: "Liberar tudo", to: "/planos" },
 ];
 
 function StudentPage() {
