@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { User, Lock, Eye, EyeOff, Mail, Phone, ArrowLeft, Dumbbell } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth, roleHomePath } from "@/lib/auth";
 import { bootstrapMasterOwner } from "@/lib/master-owner.functions";
 import heroLoginAsset from "@/assets/hero-login.jpg.asset.json";
@@ -112,13 +111,15 @@ function AuthPage() {
 
   const onGoogle = async () => {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin },
+    });
+    if (error) {
       setBusy(false);
       toast.error("Falha ao entrar com Google.");
       return;
     }
-    if (result.redirected) return;
     setBusy(false);
   };
 
