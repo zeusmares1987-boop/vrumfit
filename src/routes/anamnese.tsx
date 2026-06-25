@@ -19,6 +19,9 @@ export const Route = createFileRoute("/anamnese")({
 });
 
 type Form = {
+  sex: "M" | "F" | null;
+  activity_factor: number | null;
+  experience_level: "iniciante" | "intermediario" | "avancado" | null;
   has_health_issues: boolean | null;
   health_issues: string;
   medications: string;
@@ -37,6 +40,7 @@ type Form = {
 };
 
 const empty: Form = {
+  sex: null, activity_factor: null, experience_level: null,
   has_health_issues: null, health_issues: "", medications: "", surgeries: "",
   injuries: "", allergies: "", smokes: null, drinks: null, sleep_hours: "",
   stress_level: null, activity_history: "", goal: "", emergency_contact: "",
@@ -62,6 +66,9 @@ function AnamnesePage() {
   useEffect(() => {
     if (data) {
       setF({
+        sex: (data as any).sex ?? null,
+        activity_factor: (data as any).activity_factor ?? null,
+        experience_level: (data as any).experience_level ?? null,
         has_health_issues: data.has_health_issues,
         health_issues: data.health_issues ?? "",
         medications: data.medications ?? "",
@@ -88,6 +95,9 @@ function AnamnesePage() {
       const payload = {
         user_id: user.id,
         personal_id: stu?.personal_id ?? null,
+        sex: f.sex,
+        activity_factor: f.activity_factor,
+        experience_level: f.experience_level,
         has_health_issues: f.has_health_issues,
         health_issues: f.health_issues || null,
         medications: f.medications || null,
