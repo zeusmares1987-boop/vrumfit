@@ -1,0 +1,20 @@
+{
+  "name": "VrumFit Personal",
+  "short_name": "VrumFit",
+  "description": "Gestão profissional de treinos, dietas e alunos.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0b",
+  "theme_color": "#0a0a0b",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Treinos", "url": "/student", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Loja", "url": "/loja", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
