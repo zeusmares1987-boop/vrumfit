@@ -280,7 +280,7 @@ function TreinosPage() {
             <div className="flex flex-wrap gap-2">
               {["lombar", "ombro", "joelho", "cotovelo", "punho"].map((k) => (
                 <button key={k} type="button" onClick={() => toggleInjury(k)}
-                  className={`px-3 py-1.5 rounded-full text-[11px] font-semibold capitalize ${injuries.includes(k) ? "bg-red-500/80 text-white" : "glass text-muted-foreground"}`}>
+                  className={`px-3 py-1.5 rounded-full text-[11px] font-semibold capitalize ${injuries.includes(k) ? "bg-destructive text-destructive-foreground" : "glass text-muted-foreground"}`}>
                   {k}
                 </button>
               ))}
