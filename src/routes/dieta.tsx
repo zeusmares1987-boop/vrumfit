@@ -41,6 +41,14 @@ function DietaPage() {
   const [budget, setBudget] = useState<Budget>("medio");
   const [restrictions, setRestrictions] = useState<DietRestriction[]>([]);
   const [plan, setPlan] = useLocalState<DietPlan | null>("vrumfit:last-diet", null);
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const [doneMap, setDoneMap] = useLocalState<Record<string, number[]>>("vrumfit:diet-done", {});
+  const doneToday = doneMap[todayKey] ?? [];
+  const toggleMealDone = (i: number) => {
+    const cur = doneMap[todayKey] ?? [];
+    const next = cur.includes(i) ? cur.filter((x) => x !== i) : [...cur, i];
+    setDoneMap({ ...doneMap, [todayKey]: next });
+  };
   const [openMeal, setOpenMeal] = useState<number | null>(0);
   const [showShop, setShowShop] = useState(false);
 
@@ -222,7 +230,12 @@ function DietaPage() {
 
           <Card>
             <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
-              <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Cardápio ({plan.meals.length} refeições)</h3>
+              <div>
+                <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Cardápio ({plan.meals.length} refeições)</h3>
+                <p className="text-[11px] text-primary font-semibold mt-0.5">
+                  ✓ {doneToday.length}/{plan.meals.length} feitas hoje
+                </p>
+              </div>
               <div className="flex gap-2">
                 <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
                   <Download className="size-3" /> TXT
@@ -244,16 +257,27 @@ function DietaPage() {
             <ol className="space-y-2">
               {plan.meals.map((m, i) => {
                 const open = openMeal === i;
+                const isDone = doneToday.includes(i);
                 return (
-                  <li key={i} className="border border-white/5 rounded-xl overflow-hidden">
-                    <button onClick={() => setOpenMeal(open ? null : i)} className="w-full flex items-center justify-between p-3 text-left">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-widest text-primary font-bold">{m.time} · {m.totals.kcal} kcal</p>
-                        <p className="text-sm font-bold mt-0.5">{m.title}</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">P{m.totals.p} · C{m.totals.c} · G{m.totals.f}</p>
-                      </div>
-                      {open ? <ChevronUp className="size-4 text-muted-foreground" /> : <ChevronDown className="size-4 text-muted-foreground" />}
-                    </button>
+                  <li key={i} className={`border rounded-xl overflow-hidden transition ${isDone ? "border-primary/50 bg-primary/5" : "border-white/5"}`}>
+                    <div className="flex items-center gap-2 p-3">
+                      <button
+                        type="button"
+                        onClick={() => toggleMealDone(i)}
+                        title={isDone ? "Desmarcar" : "Marcar como feita"}
+                        className={`size-6 rounded-md border-2 grid place-items-center shrink-0 transition ${isDone ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground/40 hover:border-primary"}`}
+                      >
+                        {isDone && <span className="text-[12px] font-bold leading-none">✓</span>}
+                      </button>
+                      <button onClick={() => setOpenMeal(open ? null : i)} className="flex-1 flex items-center justify-between text-left">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-primary font-bold">{m.time} · {m.totals.kcal} kcal</p>
+                          <p className={`text-sm font-bold mt-0.5 ${isDone ? "line-through text-muted-foreground" : ""}`}>{m.title}</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">P{m.totals.p} · C{m.totals.c} · G{m.totals.f}</p>
+                        </div>
+                        {open ? <ChevronUp className="size-4 text-muted-foreground" /> : <ChevronDown className="size-4 text-muted-foreground" />}
+                      </button>
+                    </div>
                     {open && (
                       <div className="px-3 pb-3 space-y-2">
                         {m.items.map((it, j) => {
