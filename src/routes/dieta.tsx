@@ -251,22 +251,46 @@ function DietaPage() {
                     </button>
                     {open && (
                       <div className="px-3 pb-3 space-y-2">
-                        {m.items.map((it, j) => (
-                          <div key={j} className="glass rounded-lg p-2.5">
-                            <div className="flex items-center justify-between">
-                              <p className="text-[12px] font-semibold">{it.food.name}</p>
-                              <p className="text-[10px] font-mono text-primary">{it.grams} g</p>
-                            </div>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">
-                              {it.kcal} kcal · P{it.p} C{it.c} G{it.f} · medida: {it.food.measure}
-                            </p>
-                            {m.substitutionsByItem[j].length > 0 && (
-                              <p className="text-[10px] text-muted-foreground mt-1">
-                                <span className="text-primary font-semibold">Troca por:</span> {m.substitutionsByItem[j].join(" · ")}
+                        {m.items.map((it, j) => {
+                          const subs = m.substitutionsByItem[j] ?? [];
+                          return (
+                            <div key={j} className="glass rounded-lg p-2.5">
+                              <div className="flex items-center justify-between gap-2">
+                                <p className="text-[12px] font-semibold flex-1 truncate">{it.food.name}</p>
+                                <p className="text-[10px] font-mono text-primary shrink-0">{it.grams} g</p>
+                              </div>
+                              <p className="text-[10px] text-muted-foreground mt-0.5">
+                                {it.kcal} kcal · P{it.p} C{it.c} G{it.f} · medida: {it.food.measure}
                               </p>
-                            )}
-                          </div>
-                        ))}
+                              {subs.length > 0 && (
+                                <details className="mt-1 group">
+                                  <summary className="cursor-pointer list-none text-[10px] text-primary font-semibold inline-flex items-center gap-1">
+                                    🔁 Trocar ({subs.length})
+                                  </summary>
+                                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                                    {subs.map((s, k) => (
+                                      <button
+                                        key={k}
+                                        type="button"
+                                        onClick={() => {
+                                          if (!plan) return;
+                                          const next = structuredClone(plan) as DietPlan;
+                                          next.meals[i].items[j] = { ...next.meals[i].items[j], food: { ...next.meals[i].items[j].food, name: s } };
+                                          next.meals[i].substitutionsByItem[j] = [it.food.name, ...subs.filter((x) => x !== s)];
+                                          setPlan(next);
+                                        }}
+                                        className="px-2 py-1 rounded-full text-[10px] glass hover:bg-primary/15 hover:text-primary transition"
+                                      >
+                                        {s}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  <p className="mt-1 text-[9px] text-muted-foreground">Macros equivalentes (mesmo grupo).</p>
+                                </details>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </li>
