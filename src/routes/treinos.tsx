@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useStudentContext } from "@/lib/student-context";
 import { saveWorkoutWeek } from "@/lib/plan-persistence";
+import { usePlanGate } from "@/lib/plan-gate";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
@@ -124,9 +125,14 @@ function TreinosPage() {
 
   const week = plan?.find((w) => w.week === activeWeek);
 
+  const { gate } = usePlanGate();
   const [saving, setSaving] = useState(false);
   const handleSaveWeek = async () => {
     if (!week || !user) return;
+    if (!gate.canSaveWorkout) {
+      toast.error(gate.reason ?? "Seu plano não permite salvar treinos.");
+      return;
+    }
     setSaving(true);
     try {
       const { data: stu } = await supabase.from("students").select("personal_id").eq("user_id", user.id).maybeSingle();
@@ -274,8 +280,13 @@ function TreinosPage() {
                 <button onClick={() => exportPdf(week, goal, studentName)} className="bg-primary text-primary-foreground rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1">
                   <FileDown className="size-3" /> PDF semana {week.week}
                 </button>
-                <button onClick={handleSaveWeek} disabled={saving} className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50">
-                  {saving ? "Salvando…" : "Salvar semana"}
+                <button
+                  onClick={handleSaveWeek}
+                  disabled={saving || !gate.canSaveWorkout}
+                  title={!gate.canSaveWorkout ? (gate.reason ?? "Plano não inclui salvar") : "Salvar semana"}
+                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1 disabled:opacity-50"
+                >
+                  {saving ? "Salvando…" : gate.canSaveWorkout ? "Salvar semana" : "🔒 Salvar"}
                 </button>
               </div>
             </div>
