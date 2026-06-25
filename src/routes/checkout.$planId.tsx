@@ -6,7 +6,7 @@ import { PageHero } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { createMpCheckout, processMpPayment } from "@/lib/mp.functions";
 import { useAuth } from "@/lib/auth";
-import { CreditCard, CheckCircle2, Clock, ArrowLeft, Copy } from "lucide-react";
+import { CreditCard, CheckCircle2, Clock, ArrowLeft, Copy, QrCode } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout/$planId")({
@@ -62,6 +62,7 @@ function Checkout() {
   const pay = useServerFn(processMpPayment);
   const [data, setData] = useState<InitData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "processing" | "approved" | "pending" | "rejected">("loading");
+  const [tab, setTab] = useState<"card" | "pix">("card");
   const [pix, setPix] = useState<PixData>(null);
   const [error, setError] = useState<string | null>(null);
   const brickRef = useRef<{ unmount: () => void } | null>(null);
@@ -89,8 +90,9 @@ function Checkout() {
     };
   }, [planId, init]);
 
-  // Mount Bricks
+  // Mount Bricks (cartão apenas)
   useEffect(() => {
+    if (tab !== "card") return;
     if (status !== "ready" || !data || !window.MercadoPago || !containerRef.current) return;
     let cancelled = false;
     (async () => {
@@ -101,17 +103,13 @@ function Checkout() {
           brickRef.current.unmount();
           brickRef.current = null;
         }
-        const controller = await bricks.create("payment", "vrum-mp-brick", {
+        const controller = await bricks.create("cardPayment", "vrum-mp-brick", {
           initialization: {
             amount: data.amount,
             payer: { email: user?.email ?? "" },
           },
           customization: {
-            paymentMethods: {
-              creditCard: "all",
-              bankTransfer: "all",
-              maxInstallments: 12,
-            },
+            paymentMethods: { maxInstallments: 12 },
             visual: { style: { theme: "dark" } },
           },
           callbacks: {
@@ -132,9 +130,6 @@ function Checkout() {
                 if (r.status === "approved") {
                   setStatus("approved");
                   toast.success("Pagamento aprovado!");
-                } else if (r.pix) {
-                  setPix(r.pix);
-                  setStatus("pending");
                 } else {
                   setStatus("pending");
                   toast.message("Pagamento em análise");
@@ -164,7 +159,33 @@ function Checkout() {
         brickRef.current = null;
       }
     };
-  }, [status, data, user?.email, pay]);
+  }, [status, data, user?.email, pay, tab]);
+
+  const gerarPix = async () => {
+    if (!data || !user?.email) return;
+    setStatus("processing");
+    try {
+      const r = await pay({
+        data: {
+          subscriptionId: data.subscriptionId,
+          payment_method_id: "pix",
+          payer: { email: user.email },
+        },
+      });
+      if (r.pix) {
+        setPix(r.pix);
+        setStatus("pending");
+      } else if (r.status === "approved") {
+        setStatus("approved");
+      } else {
+        setStatus("pending");
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Falha ao gerar Pix";
+      toast.error(msg);
+      setStatus("ready");
+    }
+  };
 
   const copyPix = async () => {
     if (!pix?.qrCode) return;
@@ -224,12 +245,19 @@ function Checkout() {
             />
           )}
           {pix.qrCode && (
-            <button
-              onClick={copyPix}
-              className="inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/15 px-4 py-2 text-xs font-bold"
-            >
-              <Copy className="size-3.5" /> COPIAR CÓDIGO PIX
-            </button>
+            <>
+              <textarea
+                readOnly
+                value={pix.qrCode}
+                className="w-full h-24 text-[10px] bg-white/5 border border-white/10 rounded-xl p-2 font-mono"
+              />
+              <button
+                onClick={copyPix}
+                className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2 text-xs font-bold"
+              >
+                <Copy className="size-3.5" /> COPIAR CÓDIGO PIX
+              </button>
+            </>
           )}
           <p className="text-xs text-muted-foreground">
             A assinatura é ativada automaticamente após a confirmação do pagamento.
@@ -245,14 +273,59 @@ function Checkout() {
         </Card>
       )}
 
-      <div className={status === "ready" || status === "processing" ? "block" : "hidden"}>
-        <Card className="p-2">
-          <div id="vrum-mp-brick" ref={containerRef} />
-        </Card>
-        {status === "processing" && (
-          <p className="text-center text-xs text-muted-foreground mt-2">Processando pagamento…</p>
-        )}
-      </div>
+      {(status === "ready" || status === "processing") && (
+        <>
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <button
+              onClick={() => setTab("card")}
+              className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition border ${
+                tab === "card"
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-white/5 border-white/10 hover:bg-white/10"
+              }`}
+            >
+              <CreditCard className="size-4" /> CARTÃO
+            </button>
+            <button
+              onClick={() => setTab("pix")}
+              className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition border ${
+                tab === "pix"
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-white/5 border-white/10 hover:bg-white/10"
+              }`}
+            >
+              <QrCode className="size-4" /> PIX
+            </button>
+          </div>
+
+          {tab === "card" && (
+            <Card className="p-2">
+              <div id="vrum-mp-brick" ref={containerRef} />
+            </Card>
+          )}
+
+          {tab === "pix" && (
+            <Card className="p-6 text-center space-y-4">
+              <QrCode className="size-12 mx-auto text-primary" />
+              <p className="font-bold">Pague em segundos com Pix</p>
+              <p className="text-xs text-muted-foreground">
+                Geramos o QR Code aqui mesmo. Sem e-mail, sem etapas extras.
+              </p>
+              <button
+                onClick={gerarPix}
+                disabled={status === "processing"}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground px-6 py-3 text-sm font-bold disabled:opacity-50"
+              >
+                {status === "processing" ? "GERANDO…" : "GERAR QR CODE PIX"}
+              </button>
+            </Card>
+          )}
+
+          {status === "processing" && (
+            <p className="text-center text-xs text-muted-foreground mt-2">Processando pagamento…</p>
+          )}
+        </>
+      )}
     </AppShell>
   );
 }
