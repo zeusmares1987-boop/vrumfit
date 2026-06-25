@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useLocalState } from "@/hooks/use-local-state";
 import { toast } from "sonner";
 import { useStudentContext } from "@/lib/student-context";
 import { saveDietPlan } from "@/lib/plan-persistence";
@@ -39,7 +40,7 @@ function DietaPage() {
   const [meals, setMeals] = useState(5);
   const [budget, setBudget] = useState<Budget>("medio");
   const [restrictions, setRestrictions] = useState<DietRestriction[]>([]);
-  const [plan, setPlan] = useState<DietPlan | null>(null);
+  const [plan, setPlan] = useLocalState<DietPlan | null>("vrumfit:last-diet", null);
   const [openMeal, setOpenMeal] = useState<number | null>(0);
   const [showShop, setShowShop] = useState(false);
 

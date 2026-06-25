@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo, useEffect, useRef } from "react";
+import { useLocalState } from "@/hooks/use-local-state";
 import { toast } from "sonner";
 import { useStudentContext } from "@/lib/student-context";
 import { saveWorkoutWeek } from "@/lib/plan-persistence";
@@ -82,7 +83,7 @@ function TreinosPage() {
   const [weeks, setWeeks] = useState(6);
   const [oneRM, setOneRM] = useState<number | "">("");
   const [injuries, setInjuries] = useState<string[]>([]);
-  const [plan, setPlan] = useState<WeekPlan[] | null>(null);
+  const [plan, setPlan] = useLocalState<WeekPlan[] | null>("vrumfit:last-workout", null);
   const [activeWeek, setActiveWeek] = useState(1);
   const [openDay, setOpenDay] = useState<number | null>(0);
 
