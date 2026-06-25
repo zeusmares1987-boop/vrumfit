@@ -92,11 +92,10 @@ function Hero({
         <img
           src={heroImageUrl}
           alt=""
-          loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/55 to-black/85" />
-        <div className="absolute -top-16 -right-16 size-56 rounded-full bg-primary/30 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-background" />
+        <div className="absolute -top-16 -right-16 size-56 rounded-full bg-primary/25 blur-3xl" />
       </div>
       <header className="flex items-center justify-between">
         <Brand />
