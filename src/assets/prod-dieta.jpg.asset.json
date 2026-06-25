@@ -1,9 +1,7 @@
 {
   "version": 1,
   "asset_id": "213943d7-cde5-40f2-b1f5-5093311ca3ac",
-  "project_id": "498242b0-bf57-43f1-aefd-fa678def4147",
-  "url": "/__l5e/assets-v1/213943d7-cde5-40f2-b1f5-5093311ca3ac/prod-dieta.jpg",
-  "r2_key": "a/v1/498242b0-bf57-43f1-aefd-fa678def4147/213943d7-cde5-40f2-b1f5-5093311ca3ac/prod-dieta.jpg",
+  "url": "/assets-vrumfit/prod-dieta.jpg",
   "original_filename": "prod-dieta.jpg",
   "size": 47186,
   "content_type": "image/jpeg",

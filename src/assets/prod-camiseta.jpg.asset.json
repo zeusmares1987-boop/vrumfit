@@ -1,9 +1,7 @@
 {
   "version": 1,
   "asset_id": "ee943a87-409a-4cf0-a6a5-c319b9608021",
-  "project_id": "498242b0-bf57-43f1-aefd-fa678def4147",
-  "url": "/__l5e/assets-v1/ee943a87-409a-4cf0-a6a5-c319b9608021/prod-camiseta.jpg",
-  "r2_key": "a/v1/498242b0-bf57-43f1-aefd-fa678def4147/ee943a87-409a-4cf0-a6a5-c319b9608021/prod-camiseta.jpg",
+  "url": "/assets-vrumfit/prod-camiseta.jpg",
   "original_filename": "prod-camiseta.jpg",
   "size": 23460,
   "content_type": "image/jpeg",
