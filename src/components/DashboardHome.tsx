@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import dashboardBackdrop from "@/assets/dashboard-backdrop.jpg";
 import { ChevronRight, Search, SlidersHorizontal, UserRound } from "lucide-react";
-import { useMemo, useState, type ComponentType, type ReactNode } from "react";
+import { useMemo, useState, type ComponentType, type ReactNode, type SyntheticEvent } from "react";
 
 
 type IconProps = { className?: string; strokeWidth?: number };
@@ -81,8 +81,10 @@ export function DashboardHome({
 
 function DashboardBackdrop({ src }: { src: string }) {
   const fallbackSrc = dashboardBackdrop;
-  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    if (event.currentTarget.src !== fallbackSrc) event.currentTarget.src = fallbackSrc;
+  const handleImageError = (event: SyntheticEvent<HTMLImageElement>) => {
+    if (event.currentTarget.dataset.fallbackApplied) return;
+    event.currentTarget.dataset.fallbackApplied = "true";
+    event.currentTarget.src = fallbackSrc;
   };
 
   return (
