@@ -127,7 +127,8 @@ function Planos() {
         />
       ) : (
         <div className="space-y-3">
-          {list.map((p, idx) => {
+          {visible.map((p, idx) => {
+            const featured = idx === 1 && visible.length >= 2;
             const featured = idx === 1 && list.length >= 2;
             return (
               <Card key={p.id} className={`p-4 relative overflow-hidden ${featured ? "border-primary/60 bg-gradient-to-br from-primary/10 to-transparent" : ""}`}>
