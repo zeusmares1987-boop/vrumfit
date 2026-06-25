@@ -1,8 +1,19 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const clientDir = "dist/client";
 const domain = "vrumvrum.art.br";
+const routes = [
+  "/",
+  "/auth",
+  "/login",
+  "/reset-password",
+  "/student",
+  "/trainer",
+  "/owner",
+  "/admin",
+  "/planos",
+];
 
 async function fileExists(path) {
   try {
@@ -13,51 +24,46 @@ async function fileExists(path) {
   }
 }
 
-async function findClientEntry() {
-  const assetsDir = join(clientDir, "assets");
-  const files = await readdir(assetsDir);
-  const entry = files.find((file) => /^index-[\w-]+\.js$/.test(file));
-  if (!entry) throw new Error("Arquivo inicial do app não encontrado.");
-  return `/assets/${entry}`;
+function ensureDomain(html) {
+  return html
+    .replace(/https?:\/\/[^"'<>\s]+\.lovable\.app/g, `https://${domain}`)
+    .replace(/https?:\/\/lovableproject\.com/g, `https://${domain}`)
+    .replace(/https?:\/\/[^"'<>\s]+\.lovableproject\.com/g, `https://${domain}`);
 }
 
-const clientEntry = await findClientEntry();
-const html = `<!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>VRUMFIT PERSONAL — Plataforma de Personal Trainers</title>
-    <meta name="description" content="VRUMFIT PERSONAL: gestão profissional de alunos, treinos, dietas e avaliações para personal trainers." />
-    <meta name="theme-color" content="#0a0a0b" />
-    <meta property="og:title" content="VRUMFIT PERSONAL" />
-    <meta property="og:description" content="Plataforma profissional para personal trainers." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://${domain}" />
-    <meta property="og:site_name" content="VrumFit Personal" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="VrumFit" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="canonical" href="https://${domain}" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" />
-    <script type="module" src="${clientEntry}"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
-`;
+const { default: handler } = await import("../dist/server/index.mjs");
+
+async function renderRoute(route) {
+  const response = await handler.fetch(
+    new Request(`https://${domain}${route}`, {
+      headers: {
+        host: domain,
+        "x-forwarded-host": domain,
+        "x-forwarded-proto": "https",
+      },
+    }),
+  );
+
+  if (!response.ok && response.status !== 404) {
+    throw new Error(`Falha ao gerar ${route}: HTTP ${response.status}`);
+  }
+
+  return ensureDomain(await response.text());
+}
 
 await mkdir(clientDir, { recursive: true });
-await writeFile(join(clientDir, "index.html"), html);
-await writeFile(join(clientDir, "404.html"), html);
+
+let fallbackHtml = "";
+for (const route of routes) {
+  const html = await renderRoute(route);
+  if (route === "/") fallbackHtml = html;
+
+  const outputDir = route === "/" ? clientDir : join(clientDir, route.slice(1));
+  await mkdir(outputDir, { recursive: true });
+  await writeFile(join(outputDir, "index.html"), html);
+}
+
+await writeFile(join(clientDir, "404.html"), fallbackHtml || (await renderRoute("/")));
 await writeFile(join(clientDir, "CNAME"), `${domain}\n`);
 await writeFile(join(clientDir, ".nojekyll"), "");
 
