@@ -21,16 +21,23 @@ export const Route = createFileRoute("/planos")({
   ),
 });
 
+type PeriodTab = "mensal" | "trimestral" | "anual";
+const PERIOD_LABEL: Record<PeriodTab, string> = { mensal: "Mensal", trimestral: "Trimestral", anual: "Anual" };
+const PERIOD_HINT: Record<PeriodTab, string> = { mensal: "Pague mês a mês", trimestral: "Economize ~10%", anual: "Melhor custo-benefício" };
+
 function Planos() {
   const { role } = useAuth();
   const nav = useNavigate();
   const [audience, setAudience] = useState<PlanAudience | null>(null);
+  const [period, setPeriod] = useState<PeriodTab>("mensal");
   const subscribe = (planId: string) => {
     nav({ to: "/checkout/$planId", params: { planId } });
   };
   const [list, setList] = useState<Plan[]>([]);
   const [show, setShow] = useState(false);
   const [form, setForm] = useState({ name: "", price: "", period: "mensal", benefits: "" });
+
+
 
   useEffect(() => {
     const saved = window.localStorage.getItem("vrumfit:plans-audience");
