@@ -29,12 +29,10 @@ export const Route = createFileRoute("/student")({
 const studentModules: DashboardModule[] = [
   { icon: Dumbbell, title: "Meu Treino", description: "Séries e exercícios", to: "/treinos", image: tileTreinosAsset.url },
   { icon: Apple, title: "Dieta", description: "Refeições e água", to: "/dieta", image: tileDietaAsset.url },
-  { icon: Dumbbell, title: "Gerar Treino", description: "1 grátis por dia", to: "/treinos" },
-  { icon: Apple, title: "Gerar Dieta", description: "1 grátis por dia", to: "/dieta" },
-  { icon: ShoppingBag, title: "Loja", description: "Produtos e suplementos", to: "/loja" },
   { icon: Target, title: "Execução", description: "Como fazer certo", to: "/biblioteca", image: tileExecucaoAsset.url },
   { icon: TrendingUp, title: "Progresso", description: "Sua evolução", to: "/evolucao", image: tileProgressoAsset.url },
-  { icon: CheckCircle2, title: "Check-in", description: "Registrar presença", to: "/historico" },
+  { icon: History, title: "Histórico", description: "Treinos concluídos", to: "/historico" },
+  { icon: ShoppingBag, title: "Loja", description: "Produtos e suplementos", to: "/loja", image: tileLojaAsset.url },
   { icon: Sparkles, title: "Planos", description: "Liberar tudo", to: "/planos" },
 ];
 
