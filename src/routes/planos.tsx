@@ -10,7 +10,7 @@ import { createMpCheckout } from "@/lib/mp.functions";
 import { Check, Plus, Trash2, X, CreditCard, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-type Plan = { id: string; name: string; price_cents: number; period: string; benefits: string[] | null; status: string };
+type Plan = { id: string; name: string; price_cents: number; period: string; benefits: string[] | null; status: string; role_target: string | null };
 
 export const Route = createFileRoute("/planos")({
   head: () => ({ meta: [{ title: "Planos — VRUMFIT" }] }),
@@ -69,7 +69,16 @@ function Planos() {
   };
 
   const canEdit = role === "dono";
-  const cheapest = list.length ? Math.min(...list.map((p) => p.price_cents)) : 0;
+  const visible = canEdit
+    ? list
+    : list.filter((p) => {
+        const t = p.role_target;
+        if (!t || t === "todos") return true;
+        if (role === "personal") return t === "professor" || t === "personal";
+        if (role === "aluno") return t === "aluno";
+        return false;
+      });
+  const cheapest = visible.length ? Math.min(...visible.map((p) => p.price_cents)) : 0;
 
   return (
     <AppShell title="Planos">
@@ -79,9 +88,9 @@ function Planos() {
         subtitle="Ofertas e benefícios da sua academia"
         icon={CreditCard}
         stats={[
-          { label: "Planos", value: list.length },
+          { label: "Planos", value: visible.length },
           { label: "A partir de", value: cheapest ? `R$ ${(cheapest / 100).toFixed(0)}` : "—" },
-          { label: "Ativos", value: list.filter((p) => p.status === "ativo").length },
+          { label: "Ativos", value: visible.filter((p) => p.status === "ativo").length },
         ]}
         action={canEdit ? (
           <button
@@ -110,7 +119,7 @@ function Planos() {
         </Card>
       )}
 
-      {list.length === 0 ? (
+      {visible.length === 0 ? (
         <EmptyState
           icon={CreditCard}
           title="Sem planos cadastrados"
@@ -118,8 +127,9 @@ function Planos() {
         />
       ) : (
         <div className="space-y-3">
-          {list.map((p, idx) => {
-            const featured = idx === 1 && list.length >= 2;
+          {visible.map((p, idx) => {
+            const featured = idx === 1 && visible.length >= 2;
+            
             return (
               <Card key={p.id} className={`p-4 relative overflow-hidden ${featured ? "border-primary/60 bg-gradient-to-br from-primary/10 to-transparent" : ""}`}>
                 {featured && (
