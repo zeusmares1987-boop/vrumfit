@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import dashboardBackdrop from "@/assets/dashboard-backdrop.jpg";
 import { ChevronRight, Search, SlidersHorizontal, UserRound } from "lucide-react";
-import { useMemo, useState, type ComponentType, type ReactNode, type SyntheticEvent } from "react";
+import { useEffect, useMemo, useState, type ComponentType, type ReactNode, type SyntheticEvent } from "react";
 
 
 type IconProps = { className?: string; strokeWidth?: number };
@@ -47,6 +47,8 @@ function greeting() {
 
 export function DashboardHome({
   name,
+  roleLabel,
+  modeLabel,
   subtitle,
   heroImageUrl,
   searchPlaceholder,
@@ -57,6 +59,19 @@ export function DashboardHome({
   beforeStats,
 }: DashboardHomeProps) {
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const normalizedRole = `${roleLabel} ${modeLabel}`.toLowerCase();
+    const audience = normalizedRole.includes("aluno")
+      ? "aluno"
+      : normalizedRole.includes("personal") || normalizedRole.includes("professor")
+        ? "personal"
+        : normalizedRole.includes("gestor") || normalizedRole.includes("dono")
+          ? "dono"
+          : null;
+
+    if (audience) window.localStorage.setItem("vrumfit:plans-audience", audience);
+  }, [roleLabel, modeLabel]);
 
   const visibleModules = useMemo(() => {
     const clean = query.trim().toLowerCase();

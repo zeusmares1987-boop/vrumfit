@@ -11,6 +11,7 @@ import { Check, Plus, Trash2, X, CreditCard, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 type Plan = { id: string; name: string; price_cents: number; period: string; benefits: string[] | null; status: string; role_target: string | null };
+type PlanAudience = "dono" | "personal" | "aluno";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({ meta: [{ title: "Planos — VRUMFIT" }] }),
@@ -25,6 +26,7 @@ function Planos() {
   const { role } = useAuth();
   const checkout = useServerFn(createMpCheckout);
   const [paying, setPaying] = useState<string | null>(null);
+  const [audience, setAudience] = useState<PlanAudience | null>(null);
   const subscribe = async (planId: string) => {
     setPaying(planId);
     try {
@@ -39,6 +41,11 @@ function Planos() {
   const [list, setList] = useState<Plan[]>([]);
   const [show, setShow] = useState(false);
   const [form, setForm] = useState({ name: "", price: "", period: "mensal", benefits: "" });
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("vrumfit:plans-audience");
+    if (saved === "aluno" || saved === "personal" || saved === "dono") setAudience(saved);
+  }, []);
 
   const load = async () => {
     const { data, error } = await supabase.from("plans").select("*").order("price_cents");
@@ -68,14 +75,14 @@ function Planos() {
     setList(list.filter((x) => x.id !== id));
   };
 
-  const canEdit = role === "dono";
+  const effectiveAudience: PlanAudience | null = role === "dono" ? audience ?? "dono" : role;
+  const canEdit = role === "dono" && effectiveAudience === "dono";
   const visible = canEdit
     ? list
     : list.filter((p) => {
-        const t = p.role_target;
-        if (!t || t === "todos") return true;
-        if (role === "personal") return t === "professor" || t === "personal";
-        if (role === "aluno") return t === "aluno";
+        const t = (p.role_target ?? "").toLowerCase();
+        if (effectiveAudience === "personal") return t === "professor" || t === "personal";
+        if (effectiveAudience === "aluno") return t === "aluno";
         return false;
       });
   const cheapest = visible.length ? Math.min(...visible.map((p) => p.price_cents)) : 0;
