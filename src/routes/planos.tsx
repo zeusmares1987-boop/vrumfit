@@ -5,7 +5,8 @@ import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Check, Plus, Trash2, X, CreditCard, Sparkles } from "lucide-react";
+import { Check, Plus, Trash2, X, CreditCard, Sparkles, Store, Smartphone, Settings } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 type Plan = { id: string; name: string; price_cents: number; period: string; benefits: string[] | null; status: string; role_target: string | null };
@@ -121,55 +122,99 @@ function Planos() {
           title="Sem planos cadastrados"
           hint={canEdit ? "Toque no + para criar o primeiro plano." : "Aguarde o gestor configurar planos."}
         />
-      ) : (
-        <div className="space-y-3">
-          {visible.map((p, idx) => {
-            const featured = idx === 1 && visible.length >= 2;
-            
-            return (
-              <Card key={p.id} className={`p-4 relative overflow-hidden ${featured ? "border-primary/60 bg-gradient-to-br from-primary/10 to-transparent" : ""}`}>
-                {featured && (
-                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-2xl flex items-center gap-1">
-                    <Sparkles className="size-2.5" /> Mais escolhido
-                  </div>
-                )}
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">{p.name}</p>
-                    <p className="text-3xl font-extrabold mt-1 leading-none">
-                      R$ {(p.price_cents / 100).toFixed(2)}
-                      <span className="text-xs text-muted-foreground font-medium ml-1">/{p.period}</span>
-                    </p>
-                  </div>
-                  {canEdit && (
-                    <button onClick={() => remove(p.id)} className="text-muted-foreground hover:text-destructive p-1.5">
-                      <Trash2 className="size-4" />
-                    </button>
-                  )}
+      ) : (() => {
+        const isLoja = (p: Plan) => /oferta|loja|vitrine|mentor/i.test(p.name);
+        const appPlans = visible.filter((p) => !isLoja(p));
+        const lojaPlans = visible.filter(isLoja);
+
+        const renderCard = (p: Plan, featured: boolean) => (
+          <Card key={p.id} className={`p-4 relative overflow-hidden ${featured ? "border-primary/60 bg-gradient-to-br from-primary/10 to-transparent" : ""}`}>
+            {featured && (
+              <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-2xl flex items-center gap-1">
+                <Sparkles className="size-2.5" /> Mais escolhido
+              </div>
+            )}
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">{p.name}</p>
+                <p className="text-3xl font-extrabold mt-1 leading-none">
+                  R$ {(p.price_cents / 100).toFixed(2)}
+                  <span className="text-xs text-muted-foreground font-medium ml-1">/{p.period}</span>
+                </p>
+              </div>
+              {canEdit && (
+                <button onClick={() => remove(p.id)} className="text-muted-foreground hover:text-destructive p-1.5">
+                  <Trash2 className="size-4" />
+                </button>
+              )}
+            </div>
+            <ul className="space-y-1.5">
+              {(p.benefits ?? []).map((f) => (
+                <li key={f} className="flex items-start gap-2 text-xs">
+                  <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-primary/20">
+                    <Check className="size-2.5 text-primary" strokeWidth={3} />
+                  </span>
+                  <span className="text-foreground/90">{f}</span>
+                </li>
+              ))}
+            </ul>
+            {!canEdit && p.status === "ativo" && p.price_cents > 0 && (
+              <button onClick={() => subscribe(p.id)} className={`${btnPrimary} mt-4`}>
+                ASSINAR COM PIX OU CARTÃO
+              </button>
+            )}
+          </Card>
+        );
+
+        const Section = ({ icon: Icon, title, subtitle, plans, extra }: { icon: typeof Store; title: string; subtitle: string; plans: Plan[]; extra?: React.ReactNode }) => {
+          if (plans.length === 0 && !extra) return null;
+          return (
+            <section className="space-y-3">
+              <div className="flex items-center gap-3 pt-2">
+                <span className="grid size-10 place-items-center rounded-xl bg-primary/15 border border-primary/30">
+                  <Icon className="size-5 text-primary" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">{title}</p>
+                  <p className="text-xs text-muted-foreground">{subtitle}</p>
                 </div>
-                <ul className="space-y-1.5">
-                  {(p.benefits ?? []).map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-xs">
-                      <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-primary/20">
-                        <Check className="size-2.5 text-primary" strokeWidth={3} />
-                      </span>
-                      <span className="text-foreground/90">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                {!canEdit && p.status === "ativo" && p.price_cents > 0 && (
-                  <button
-                    onClick={() => subscribe(p.id)}
-                    className={`${btnPrimary} mt-4`}
-                  >
-                    ASSINAR COM PIX OU CARTÃO
-                  </button>
-                )}
-              </Card>
-            );
-          })}
-        </div>
-      )}
+              </div>
+              {extra}
+              <div className="space-y-3">
+                {plans.map((p, i) => renderCard(p, i === 1 && plans.length >= 2))}
+              </div>
+            </section>
+          );
+        };
+
+        return (
+          <div className="space-y-6">
+            <Section
+              icon={Smartphone}
+              title="Plano do App"
+              subtitle={effectiveAudience === "personal" ? "Uso do sistema, alunos, treinos e dietas" : "Acesso completo aos recursos do aluno"}
+              plans={appPlans}
+            />
+            <Section
+              icon={Store}
+              title="Plano da Loja"
+              subtitle="Venda mentorias, PDFs, treinos prontos e materiais"
+              plans={lojaPlans}
+              extra={effectiveAudience === "personal" && lojaPlans.length > 0 ? (
+                <Link to="/loja-pro/config" className="flex items-center gap-3 p-3 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition">
+                  <span className="grid size-9 place-items-center rounded-lg bg-primary/15">
+                    <Settings className="size-4 text-primary" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold">Editar minha vitrine</p>
+                    <p className="text-[11px] text-muted-foreground">Nome, bio, contato e publicações</p>
+                  </div>
+                </Link>
+              ) : undefined}
+            />
+          </div>
+        );
+      })()}
     </AppShell>
   );
 }
