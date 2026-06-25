@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight, Search, SlidersHorizontal, UserRound } from "lucide-react";
 import { useMemo, useState, type ComponentType, type ReactNode } from "react";
 
-import vrumMarkAsset from "@/assets/vrum-mark.png.asset.json";
 
 type IconProps = { className?: string; strokeWidth?: number };
 
