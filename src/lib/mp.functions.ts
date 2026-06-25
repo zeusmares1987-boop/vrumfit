@@ -2,16 +2,16 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+// Initialize transparent checkout: creates pending subscription and returns
+// the data the Mercado Pago Bricks SDK needs to mount on the client.
 export const createMpCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { planId: string; origin?: string }) =>
-    z.object({ planId: z.string().uuid(), origin: z.string().url().optional() }).parse(data),
+  .inputValidator((data: { planId: string }) =>
+    z.object({ planId: z.string().uuid() }).parse(data),
   )
   .handler(async ({ data, context }) => {
-    const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
-    const appUrl = data.origin || process.env.APP_URL || "https://vrumvrum.art.br";
-    if (!token) throw new Error("PAYMENT_UNAVAILABLE");
-
+    const publicKey = process.env.MERCADO_PAGO_PUBLIC_KEY;
+    if (!publicKey) throw new Error("PAYMENT_UNAVAILABLE");
     const { supabase, userId } = context;
 
     const { data: plan, error: planErr } = await supabase
@@ -28,40 +28,101 @@ export const createMpCheckout = createServerFn({ method: "POST" })
       .single();
     if (subErr || !sub) throw new Error(subErr?.message || "Falha ao criar assinatura");
 
-    const res = await fetch("https://api.mercadopago.com/checkout/preferences", {
+    return {
+      subscriptionId: sub.id,
+      publicKey,
+      amount: plan.price_cents / 100,
+      title: `VRUMFIT — ${plan.name}`,
+    };
+  });
+
+// Process payment using the token + payment_method_id produced by Bricks.
+// Supports credit_card, debit_card and pix.
+export const processMpPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: {
+    subscriptionId: string;
+    token?: string;
+    issuer_id?: string;
+    payment_method_id: string;
+    installments?: number;
+    payer: { email: string; identification?: { type: string; number: string } };
+  }) =>
+    z.object({
+      subscriptionId: z.string().uuid(),
+      token: z.string().optional(),
+      issuer_id: z.string().optional(),
+      payment_method_id: z.string(),
+      installments: z.number().int().positive().optional(),
+      payer: z.object({
+        email: z.string().email(),
+        identification: z.object({ type: z.string(), number: z.string() }).optional(),
+      }),
+    }).parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+    const appUrl = process.env.APP_URL || "https://vrumvrum.art.br";
+    if (!accessToken) throw new Error("PAYMENT_UNAVAILABLE");
+    const { supabase, userId } = context;
+
+    const { data: sub, error: subErr } = await supabase
+      .from("subscriptions")
+      .select("id, user_id, plan:plan_id(name, price_cents)")
+      .eq("id", data.subscriptionId)
+      .maybeSingle();
+    if (subErr || !sub) throw new Error("Assinatura não encontrada");
+    if (sub.user_id !== userId) throw new Error("FORBIDDEN");
+    const plan = sub.plan as unknown as { name: string; price_cents: number } | null;
+    if (!plan) throw new Error("Plano não encontrado");
+
+    const body: Record<string, unknown> = {
+      transaction_amount: plan.price_cents / 100,
+      description: `VRUMFIT — ${plan.name}`,
+      payment_method_id: data.payment_method_id,
+      payer: data.payer,
+      external_reference: sub.id,
+      notification_url: `${appUrl}/api/public/mp-webhook`,
+    };
+    if (data.token) body.token = data.token;
+    if (data.issuer_id) body.issuer_id = data.issuer_id;
+    if (data.installments) body.installments = data.installments;
+
+    const res = await fetch("https://api.mercadopago.com/v1/payments", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
+        "X-Idempotency-Key": `${sub.id}-${Date.now()}`,
       },
-      body: JSON.stringify({
-        items: [
-          {
-            title: `VRUMFIT — ${plan.name}`,
-            quantity: 1,
-            currency_id: "BRL",
-            unit_price: plan.price_cents / 100,
-          },
-        ],
-        external_reference: sub.id,
-        payment_methods: { excluded_payment_types: [{ id: "ticket" }] },
-        back_urls: {
-          success: `${appUrl}/planos?sub=ok`,
-          failure: `${appUrl}/planos?sub=erro`,
-          pending: `${appUrl}/planos?sub=pendente`,
-        },
-        auto_return: "approved",
-        notification_url: `${appUrl}/api/public/mp-webhook`,
-      }),
+      body: JSON.stringify(body),
     });
-
+    const json = (await res.json()) as {
+      id?: number;
+      status?: string;
+      status_detail?: string;
+      point_of_interaction?: {
+        transaction_data?: { qr_code?: string; qr_code_base64?: string; ticket_url?: string };
+      };
+      message?: string;
+    };
     if (!res.ok) {
-      const t = await res.text();
-      console.error("MP preference error", t);
-      throw new Error("PAYMENT_UNAVAILABLE");
+      console.error("MP payment error", json);
+      throw new Error(json.message || "Pagamento recusado");
     }
-    const pref = (await res.json()) as { init_point?: string; sandbox_init_point?: string };
-    const url = pref.init_point || pref.sandbox_init_point;
-    if (!url) throw new Error("PAYMENT_UNAVAILABLE");
-    return { url, subscriptionId: sub.id };
+    if (json.status === "approved") {
+      await supabase.from("subscriptions").update({ status: "ativo" as never }).eq("id", sub.id);
+    }
+    return {
+      id: json.id,
+      status: json.status,
+      statusDetail: json.status_detail,
+      pix: json.point_of_interaction?.transaction_data
+        ? {
+            qrCode: json.point_of_interaction.transaction_data.qr_code,
+            qrCodeBase64: json.point_of_interaction.transaction_data.qr_code_base64,
+            ticketUrl: json.point_of_interaction.transaction_data.ticket_url,
+          }
+        : null,
+    };
   });
