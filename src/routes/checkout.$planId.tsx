@@ -62,7 +62,7 @@ function Checkout() {
   const pay = useServerFn(processMpPayment);
   const [data, setData] = useState<InitData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "processing" | "approved" | "pending" | "rejected">("loading");
-  const [tab, setTab] = useState<"card" | "pix">("card");
+  const [tab, setTab] = useState<"card" | "pix">("pix");
   const [pix, setPix] = useState<PixData>(null);
   const [error, setError] = useState<string | null>(null);
   const brickRef = useRef<{ unmount: () => void } | null>(null);
@@ -277,6 +277,19 @@ function Checkout() {
         <>
           <div className="grid grid-cols-2 gap-2 mb-3">
             <button
+              onClick={() => setTab("pix")}
+              className={`relative flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition border ${
+                tab === "pix"
+                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/30"
+                  : "bg-primary/10 border-primary/40 hover:bg-primary/20 text-primary"
+              }`}
+            >
+              <QrCode className="size-4" /> PIX
+              <span className="absolute -top-2 -right-2 text-[9px] font-bold bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">
+                RECOMENDADO
+              </span>
+            </button>
+            <button
               onClick={() => setTab("card")}
               className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition border ${
                 tab === "card"
@@ -285,16 +298,6 @@ function Checkout() {
               }`}
             >
               <CreditCard className="size-4" /> CARTÃO
-            </button>
-            <button
-              onClick={() => setTab("pix")}
-              className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition border ${
-                tab === "pix"
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-white/5 border-white/10 hover:bg-white/10"
-              }`}
-            >
-              <QrCode className="size-4" /> PIX
             </button>
           </div>
 
