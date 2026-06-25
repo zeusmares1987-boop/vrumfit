@@ -87,20 +87,17 @@ function Hero({
   heroImageUrl: string;
 }) {
   return (
-    <section className="relative -mx-4 overflow-hidden px-4 pb-6 pt-5">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: `url(${heroImageUrl})`, filter: "blur(28px) saturate(120%)", transform: "scale(1.15)" }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "linear-gradient(180deg, color-mix(in oklab, var(--background) 55%, transparent) 0%, color-mix(in oklab, var(--background) 75%, transparent) 55%, var(--background) 100%)",
-        }}
-      />
+    <section className="relative -mx-1 overflow-hidden rounded-3xl border border-white/10 px-4 pb-6 pt-5">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <img
+          src={heroImageUrl}
+          alt=""
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/55 to-black/85" />
+        <div className="absolute -top-16 -right-16 size-56 rounded-full bg-primary/30 blur-3xl" />
+      </div>
       <header className="flex items-center justify-between">
         <Brand />
         <Link
@@ -114,7 +111,7 @@ function Hero({
       </header>
 
       <div className="mt-7">
-        <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-muted-foreground">
+        <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-primary">
           {greeting()}
         </p>
         <h1 className="mt-1 text-[30px] font-black leading-[1.02] tracking-tight text-foreground">
@@ -125,6 +122,7 @@ function Hero({
     </section>
   );
 }
+
 
 
 function Brand() {
