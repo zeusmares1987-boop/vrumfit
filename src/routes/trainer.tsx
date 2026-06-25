@@ -29,6 +29,7 @@ const trainerModules: DashboardModule[] = [
   { icon: CalendarDays, title: "Agenda", description: "Aulas e compromissos", to: "/agenda" },
   { icon: CheckCircle2, title: "Presença", description: "Check-in e frequência", to: "/historico" },
   { icon: TrendingUp, title: "Progresso", description: "Evolução dos alunos", to: "/evolucao", image: tileProgressoAsset.url },
+  { icon: Sparkles, title: "Planos", description: "Sua assinatura", to: "/planos" },
 ];
 
 function TrainerPage() {
