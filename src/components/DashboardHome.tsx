@@ -80,7 +80,6 @@ function Hero({
   name,
   subtitle,
   notifCount,
-  heroImageUrl,
 }: {
   name: string;
   subtitle: string;
@@ -88,27 +87,27 @@ function Hero({
   heroImageUrl: string;
 }) {
   return (
-    <section className="vrum-hero relative overflow-hidden pb-2 pt-5">
-      <div className="vrum-hero-photo-wrap" aria-hidden="true">
-        <img src={heroImageUrl} alt="" className="vrum-hero-photo" />
-        <div className="vrum-hero-fade" />
-      </div>
-
-      <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+    <section className="relative pb-3 pt-5">
+      <header className="flex items-center justify-between">
         <Brand />
-        <div className="flex shrink-0 items-center gap-2">
-          <Link to="/config" aria-label="Perfil" className="vrum-top-icon relative grid size-10 place-items-center rounded-full">
-            <UserRound className="size-5 text-foreground" strokeWidth={1.9} />
-            {notifCount > 0 && <span className="vrum-notif-badge">{Math.min(notifCount, 9)}</span>}
-          </Link>
-        </div>
+        <Link
+          to="/config"
+          aria-label="Perfil"
+          className="vrum-top-icon relative grid size-10 place-items-center rounded-full"
+        >
+          <UserRound className="size-5 text-foreground" strokeWidth={1.9} />
+          {notifCount > 0 && <span className="vrum-notif-badge">{Math.min(notifCount, 9)}</span>}
+        </Link>
       </header>
 
-      <div className="relative mt-12 max-w-[68%]">
-        <h1 className="vrum-greeting text-[28px] font-black leading-[1.05] text-foreground">
-          {greeting()}, <span className="text-primary">{name}!</span>
+      <div className="mt-7">
+        <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-muted-foreground">
+          {greeting()}
+        </p>
+        <h1 className="mt-1 text-[30px] font-black leading-[1.02] tracking-tight text-foreground">
+          {name}<span className="text-primary">.</span>
         </h1>
-        <p className="mt-1.5 max-w-[250px] text-[13px] leading-snug text-muted-foreground">{subtitle}</p>
+        <p className="mt-2 max-w-[280px] text-[13px] leading-snug text-muted-foreground">{subtitle}</p>
       </div>
     </section>
   );
