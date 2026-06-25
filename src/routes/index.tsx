@@ -3,6 +3,9 @@ import { useAuth, roleHomePath } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   component: IndexRedirect,
+  head: () => ({
+    links: [{ rel: "canonical", href: "https://vrumvrum.art.br" }],
+  }),
 });
 
 function IndexRedirect() {
