@@ -86,7 +86,7 @@ export function AppShell({
         </header>
       )}
 
-      <main className={`w-full max-w-md md:max-w-[941px] mx-auto px-4 md:px-10 pb-24 ${hideHeader ? "pt-0" : "pt-4"} flex flex-col gap-4`}>{children}</main>
+      <main className={`w-full max-w-md md:max-w-[941px] mx-auto px-4 md:px-10 pb-24 ${hideHeader ? "pt-0" : "pt-4"} flex flex-col gap-4 page-enter`}>{children}</main>
 
       {!hideBottomNav && <BottomNav role={role} />}
     </div>
