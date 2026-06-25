@@ -108,6 +108,10 @@ function TreinosPage() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (age < 12 || age > 90) return toast.error("Idade deve estar entre 12 e 90 anos.");
+    if (weight < 30 || weight > 250) return toast.error("Peso deve estar entre 30 e 250 kg.");
+    if (height < 120 || height > 230) return toast.error("Altura deve estar entre 120 e 230 cm.");
+    if (oneRM !== "" && (Number(oneRM) < 10 || Number(oneRM) > 500)) return toast.error("1RM deve estar entre 10 e 500 kg.");
     const input: WorkoutPlanInput = {
       sex, age, weightKg: weight, heightCm: height,
       goal, level, frequency, sessionMinutes,
@@ -361,12 +365,39 @@ function TreinosPage() {
                                   <span>RIR <span className="text-foreground font-mono">{ex.rir}</span></span>
                                   {ex.loadHint && <span>carga <span className="text-primary font-mono">{ex.loadHint}</span></span>}
                                 </div>
-                                {hit ? (
+                                {hit && (
                                   <p className="mt-1 text-[10px] text-primary font-semibold">Toque para ver execução{!hasUniquePhoto ? " · foto pendente" : ""} →</p>
-                                ) : ex.substitutes.length > 0 && (
-                                  <p className="mt-1 text-[10px] text-muted-foreground">
-                                    <span className="text-primary font-semibold">Subst.:</span> {ex.substitutes.slice(0, 2).join(" · ")}
-                                  </p>
+                                )}
+                                {ex.substitutes.length > 0 && (
+                                  <details className="mt-1.5 group" onClick={(e) => e.stopPropagation()}>
+                                    <summary className="cursor-pointer list-none text-[10px] text-primary font-semibold inline-flex items-center gap-1">
+                                      🔁 Trocar ({ex.substitutes.length})
+                                    </summary>
+                                    <div className="mt-1.5 flex flex-wrap gap-1.5">
+                                      {ex.substitutes.map((s, k) => (
+                                        <button
+                                          key={k}
+                                          type="button"
+                                          onClick={(evt) => {
+                                            evt.preventDefault();
+                                            evt.stopPropagation();
+                                            if (!plan) return;
+                                            const next = structuredClone(plan);
+                                            const w = next.find((x) => x.week === week!.week);
+                                            if (!w) return;
+                                            const target = w.days[i].exercises[j];
+                                            const oldName = target.name;
+                                            target.name = s;
+                                            target.substitutes = [oldName, ...ex.substitutes.filter((x) => x !== s)];
+                                            setPlan(next);
+                                          }}
+                                          className="px-2 py-1 rounded-full text-[10px] glass hover:bg-primary/15 hover:text-primary transition"
+                                        >
+                                          {s}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </details>
                                 )}
                               </div>
                             </>
