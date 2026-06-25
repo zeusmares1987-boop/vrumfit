@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
 import { AnamneseNudge } from "@/components/AnamneseNudge";
+import { LastSavedBadge } from "@/components/LastSavedBadge";
 import { RequireAuth } from "@/components/RequireAuth";
 import { StoredImage } from "@/components/StoredImage";
 import { useAuth } from "@/lib/auth";
