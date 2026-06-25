@@ -160,10 +160,9 @@ function Planos() {
                 {!canEdit && p.status === "ativo" && p.price_cents > 0 && (
                   <button
                     onClick={() => subscribe(p.id)}
-                    disabled={paying === p.id}
-                    className={`${btnPrimary} mt-4 disabled:opacity-60`}
+                    className={`${btnPrimary} mt-4`}
                   >
-                    {paying === p.id ? "ABRINDO PAGAMENTO…" : "ASSINAR COM PIX OU CARTÃO"}
+                    ASSINAR COM PIX OU CARTÃO
                   </button>
                 )}
               </Card>
