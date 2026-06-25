@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell, Card, Field, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero } from "@/components/PageHero";
+import { AnamneseNudge } from "@/components/AnamneseNudge";
 import { RequireAuth } from "@/components/RequireAuth";
 import { StoredImage } from "@/components/StoredImage";
 import { useAuth } from "@/lib/auth";
@@ -189,6 +190,8 @@ function TreinosPage() {
           { label: "Objetivo", value: goal },
         ]}
       />
+
+      <AnamneseNudge />
 
       <Link to="/biblioteca" className="flex items-center gap-2 h-11 px-4 rounded-2xl border border-primary/40 bg-primary/10 text-primary text-[13px] font-semibold hover:bg-primary/15 transition">
         <BookOpen className="size-4" /> Abrir biblioteca VrumFit
