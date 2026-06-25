@@ -239,7 +239,13 @@ function DietaPage() {
                   ✓ {doneToday.length}/{plan.meals.length} feitas hoje
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => { if (confirm("Limpar plano gerado?")) setPlan(null); }}
+                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] text-muted-foreground hover:text-foreground transition"
+                >
+                  Limpar
+                </button>
                 <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
                   <Download className="size-3" /> TXT
                 </button>
