@@ -36,6 +36,7 @@ const studentModules: DashboardModule[] = [
   { icon: Target, title: "Execução", description: "Como fazer certo", to: "/biblioteca", image: tileExecucaoAsset.url },
   { icon: TrendingUp, title: "Progresso", description: "Sua evolução", to: "/evolucao", image: tileProgressoAsset.url },
   { icon: CheckCircle2, title: "Check-in", description: "Registrar presença", to: "/historico" },
+  { icon: Sparkles, title: "Planos", description: "Liberar tudo", to: "/planos" },
 ];
 
 function StudentPage() {
