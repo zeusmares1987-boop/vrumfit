@@ -321,10 +321,11 @@ function TreinosPage() {
               ))}
             </div>
 
-            <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-4 gap-2">
               <Mini icon={Zap} label="RIR alvo" value={String(week.rirTarget)} />
               <Mini icon={Clock} label="Sessão" value={`${sessionMinutes}m`} />
               <Mini icon={Flame} label="Status" value={week.isDeload ? "Deload" : "Carga"} />
+              <Mini icon={Dumbbell} label="Feitos/7d" value={String(completedCount)} />
             </div>
           </Card>
 
