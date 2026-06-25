@@ -70,12 +70,12 @@ export const processMpPayment = createServerFn({ method: "POST" })
 
     const { data: sub, error: subErr } = await supabaseAdmin
       .from("subscriptions")
-      .select("id, user_id, plan:plan_id(name, price_cents)")
+      .select("id, user_id, plan:plan_id(name, price_cents, period)")
       .eq("id", data.subscriptionId)
       .maybeSingle();
     if (subErr || !sub) throw new Error("Assinatura não encontrada");
     if (sub.user_id !== userId) throw new Error("FORBIDDEN");
-    const plan = sub.plan as unknown as { name: string; price_cents: number } | null;
+    const plan = sub.plan as unknown as { name: string; price_cents: number; period?: string | null } | null;
     if (!plan) throw new Error("Plano não encontrado");
 
     const body: Record<string, unknown> = {
@@ -121,7 +121,7 @@ export const processMpPayment = createServerFn({ method: "POST" })
       throw new Error("Pagamento recusado");
     }
     if (json.status === "approved") {
-      const days = 30;
+      const days = plan.period === "anual" ? 365 : plan.period === "trimestral" ? 90 : 30;
       const expires = new Date(Date.now() + days * 86400 * 1000).toISOString();
       await supabaseAdmin
         .from("subscriptions")
