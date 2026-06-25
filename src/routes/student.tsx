@@ -1,22 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
-  Dumbbell, Apple, Target, CalendarDays, TrendingUp, CheckCircle2,
-  ChevronRight, Crown, ClipboardList, Flame, Clock, BadgeCheck, ShoppingBag, Sparkles,
+  Dumbbell, Apple, Target, TrendingUp, History,
+  ChevronRight, ClipboardList, Flame, Clock, BadgeCheck, ShoppingBag, Sparkles,
 } from "lucide-react";
-import { toast } from "sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { DashboardHome, type DashboardModule } from "@/components/DashboardHome";
 import { WeekFrequency } from "@/components/WeekFrequency";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import avatarOwnerAsset from "@/assets/avatar-owner.jpg.asset.json";
 import heroStudentAsset from "@/assets/hero/hero-student.jpg.asset.json";
 import tileDietaAsset from "@/assets/tile-dieta.jpg.asset.json";
 import tileExecucaoAsset from "@/assets/tile-execucao.jpg.asset.json";
 import tileProgressoAsset from "@/assets/tile-progresso.jpg.asset.json";
 import tileTreinosAsset from "@/assets/tile-treinos.jpg.asset.json";
+import tileLojaAsset from "@/assets/tile-loja.jpg.asset.json";
 
 export const Route = createFileRoute("/student")({
   head: () => ({ meta: [{ title: "Meu treino — VRUMFIT PERSONAL" }] }),
