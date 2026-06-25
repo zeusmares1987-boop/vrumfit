@@ -69,7 +69,16 @@ function Planos() {
   };
 
   const canEdit = role === "dono";
-  const cheapest = list.length ? Math.min(...list.map((p) => p.price_cents)) : 0;
+  const visible = canEdit
+    ? list
+    : list.filter((p) => {
+        const t = p.role_target;
+        if (!t || t === "todos") return true;
+        if (role === "personal") return t === "professor" || t === "personal";
+        if (role === "aluno") return t === "aluno";
+        return false;
+      });
+  const cheapest = visible.length ? Math.min(...visible.map((p) => p.price_cents)) : 0;
 
   return (
     <AppShell title="Planos">
