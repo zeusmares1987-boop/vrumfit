@@ -5,7 +5,7 @@ import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Megaphone, Plus, Trash2, X, Users } from "lucide-react";
+import { Megaphone, Plus, Trash2, X, Users, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
 type N = { id: string; title: string; message: string; audience: string; created_at: string; created_by: string };
@@ -24,6 +24,7 @@ function Avisos() {
   const [list, setList] = useState<N[]>([]);
   const [form, setForm] = useState({ title: "", message: "", audience: role === "personal" ? "alunos" : "todos" });
   const [show, setShow] = useState(false);
+  const [trainer, setTrainer] = useState<{ name: string; phone: string | null } | null>(null);
 
   const load = async () => {
     if (!user) return;
@@ -33,7 +34,14 @@ function Avisos() {
     if (error) toast.error(error.message);
     else setList((data ?? []) as N[]);
   };
-  useEffect(() => { load(); }, [user?.id, role]);
+  const loadTrainer = async () => {
+    if (!user || role !== "aluno") return;
+    const { data: link } = await supabase.from("students").select("personal_id").eq("user_id", user.id).eq("status", "ativo").maybeSingle();
+    if (!link?.personal_id) return setTrainer(null);
+    const { data: prof } = await supabase.from("profiles").select("full_name, phone").eq("id", link.personal_id).maybeSingle();
+    if (prof) setTrainer({ name: prof.full_name ?? "Seu professor", phone: prof.phone ?? null });
+  };
+  useEffect(() => { load(); loadTrainer(); }, [user?.id, role]);
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +89,28 @@ function Avisos() {
           </button>
         ) : undefined}
       />
+
+      {role === "aluno" && (
+        trainer ? (
+          <a
+            href={trainer.phone ? `https://wa.me/${trainer.phone.replace(/\D/g, "")}?text=${encodeURIComponent("Olá " + trainer.name + ", tudo bem?")}` : "#"}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => { if (!trainer.phone) { e.preventDefault(); toast.error("Seu professor ainda não cadastrou WhatsApp."); } }}
+            className="flex items-center gap-3 p-4 rounded-2xl bg-[#25D366]/15 border border-[#25D366]/40 hover:bg-[#25D366]/25 transition"
+          >
+            <span className="grid size-11 place-items-center rounded-xl bg-[#25D366] text-white shadow-lg shadow-[#25D366]/40">
+              <MessageCircle className="size-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold">Falar com {trainer.name}</p>
+              <p className="text-xs text-muted-foreground">Abrir conversa direto no WhatsApp</p>
+            </div>
+          </a>
+        ) : (
+          <Card className="p-4 text-xs text-muted-foreground">Você ainda não está vinculado a um professor.</Card>
+        )
+      )}
 
       {show && (
         <Card className="p-4">
