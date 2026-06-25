@@ -297,7 +297,16 @@ function TreinosPage() {
                 <h3 className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Plano de {plan.length} semanas</h3>
                 <p className="text-sm font-bold mt-0.5">{goal} · {level} · {frequency}x/sem</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
+                <Link to="/historico" className="glass rounded-lg px-2.5 py-1.5 text-[10px] text-primary font-semibold hover:bg-primary/15 transition">
+                  Histórico →
+                </Link>
+                <button
+                  onClick={() => { if (confirm("Limpar plano gerado?")) setPlan(null); }}
+                  className="glass rounded-lg px-2.5 py-1.5 text-[10px] text-muted-foreground hover:text-foreground transition"
+                >
+                  Limpar
+                </button>
                 <button onClick={() => exportTxt(plan)} className="glass rounded-lg px-2.5 py-1.5 text-[10px] flex items-center gap-1">
                   <Download className="size-3" /> TXT
                 </button>
