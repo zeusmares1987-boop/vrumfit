@@ -1,12 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, inputCls, btnPrimary } from "@/components/AppShell";
 import { PageHero, EmptyState } from "@/components/PageHero";
 import { RequireAuth } from "@/components/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { createMpCheckout } from "@/lib/mp.functions";
 import { Check, Plus, Trash2, X, CreditCard, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
@@ -24,19 +22,10 @@ export const Route = createFileRoute("/planos")({
 
 function Planos() {
   const { role } = useAuth();
-  const checkout = useServerFn(createMpCheckout);
-  const [paying, setPaying] = useState<string | null>(null);
+  const nav = useNavigate();
   const [audience, setAudience] = useState<PlanAudience | null>(null);
-  const subscribe = async (planId: string) => {
-    setPaying(planId);
-    try {
-      const r = await checkout({ data: { planId, origin: window.location.origin } });
-      window.location.href = r.url;
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Falha no pagamento";
-      toast.error(msg === "PAYMENT_UNAVAILABLE" ? "Pagamento indisponível no momento" : msg);
-      setPaying(null);
-    }
+  const subscribe = (planId: string) => {
+    nav({ to: "/checkout/$planId", params: { planId } });
   };
   const [list, setList] = useState<Plan[]>([]);
   const [show, setShow] = useState(false);
