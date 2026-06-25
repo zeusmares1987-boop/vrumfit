@@ -13,6 +13,7 @@ export const createMpCheckout = createServerFn({ method: "POST" })
     const publicKey = process.env.MERCADO_PAGO_PUBLIC_KEY;
     if (!publicKey) throw new Error("PAYMENT_UNAVAILABLE");
     const { supabase, userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: plan, error: planErr } = await supabase
       .from("plans")
@@ -21,9 +22,9 @@ export const createMpCheckout = createServerFn({ method: "POST" })
       .maybeSingle();
     if (planErr || !plan) throw new Error("Plano não encontrado");
 
-    const { data: sub, error: subErr } = await supabase
+    const { data: sub, error: subErr } = await supabaseAdmin
       .from("subscriptions")
-      .insert({ user_id: userId, plan_id: plan.id, status: "pendente" as never })
+      .insert({ user_id: userId, plan_id: plan.id, status: "pendente" })
       .select("id")
       .single();
     if (subErr || !sub) throw new Error(subErr?.message || "Falha ao criar assinatura");
@@ -64,9 +65,10 @@ export const processMpPayment = createServerFn({ method: "POST" })
     const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
     const appUrl = process.env.APP_URL || "https://vrumvrum.art.br";
     if (!accessToken) throw new Error("PAYMENT_UNAVAILABLE");
-    const { supabase, userId } = context;
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: sub, error: subErr } = await supabase
+    const { data: sub, error: subErr } = await supabaseAdmin
       .from("subscriptions")
       .select("id, user_id, plan:plan_id(name, price_cents)")
       .eq("id", data.subscriptionId)
@@ -88,16 +90,7 @@ export const processMpPayment = createServerFn({ method: "POST" })
     if (data.issuer_id) body.issuer_id = data.issuer_id;
     if (data.installments) body.installments = data.installments;
 
-    const res = await fetch("https://api.mercadopago.com/v1/payments", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-        "X-Idempotency-Key": `${sub.id}-${Date.now()}`,
-      },
-      body: JSON.stringify(body),
-    });
-    const json = (await res.json()) as {
+    let json: {
       id?: number;
       status?: string;
       status_detail?: string;
@@ -106,12 +99,39 @@ export const processMpPayment = createServerFn({ method: "POST" })
       };
       message?: string;
     };
-    if (!res.ok) {
-      console.error("MP payment error", json);
-      throw new Error(json.message || "Pagamento recusado");
+    try {
+      const res = await fetch("https://api.mercadopago.com/v1/payments", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+          "X-Idempotency-Key": `${sub.id}-${Date.now()}`,
+        },
+        body: JSON.stringify(body),
+      });
+      json = (await res.json()) as typeof json;
+      if (!res.ok) {
+        console.error("MP payment error", json);
+        await supabaseAdmin.from("subscriptions").update({ status: "cancelado" }).eq("id", sub.id);
+        throw new Error(json.message || "Pagamento recusado");
+      }
+    } catch (error) {
+      await supabaseAdmin.from("subscriptions").update({ status: "cancelado" }).eq("id", sub.id);
+      if (error instanceof Error) throw error;
+      throw new Error("Pagamento recusado");
     }
     if (json.status === "approved") {
-      await supabase.from("subscriptions").update({ status: "ativo" as never }).eq("id", sub.id);
+      const days = 30;
+      const expires = new Date(Date.now() + days * 86400 * 1000).toISOString();
+      await supabaseAdmin
+        .from("subscriptions")
+        .update({
+          status: "ativo",
+          mp_payment_id: json.id ? String(json.id) : null,
+          started_at: new Date().toISOString(),
+          expires_at: expires,
+        })
+        .eq("id", sub.id);
     }
     return {
       id: json.id,
