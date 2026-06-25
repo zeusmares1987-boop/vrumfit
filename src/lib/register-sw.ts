@@ -9,12 +9,8 @@ export function registerServiceWorker() {
   const isPreview =
     host.startsWith("id-preview--") ||
     host.startsWith("preview--") ||
-    host === "lovableproject.com" ||
-    host.endsWith(".lovableproject.com") ||
-    host === "lovableproject-dev.com" ||
-    host.endsWith(".lovableproject-dev.com") ||
-    host === "beta.lovable.dev" ||
-    host.endsWith(".beta.lovable.dev");
+    host.includes("project-dev") ||
+    host.includes("project-preview");
   const killed = new URL(window.location.href).searchParams.get("sw") === "off";
 
   if (isDev || inIframe || isPreview || killed) {

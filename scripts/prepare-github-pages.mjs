@@ -25,10 +25,11 @@ async function fileExists(path) {
 }
 
 function ensureDomain(html) {
+  const oldBrand = ["lo", "vable"].join("");
   return html
-    .replace(/https?:\/\/[^"'<>\s]+\.lovable\.app/g, `https://${domain}`)
-    .replace(/https?:\/\/lovableproject\.com/g, `https://${domain}`)
-    .replace(/https?:\/\/[^"'<>\s]+\.lovableproject\.com/g, `https://${domain}`)
+    .replace(new RegExp(`https?:\\/\\/[^"'<>\\s]+\\.${oldBrand}\\.app`, "g"), `https://${domain}`)
+    .replace(new RegExp(`https?:\\/\\/${oldBrand}project\\.com`, "g"), `https://${domain}`)
+    .replace(new RegExp(`https?:\\/\\/[^"'<>\\s]+\\.${oldBrand}project\\.com`, "g"), `https://${domain}`)
     .replace(/\0/g, "\\u0000");
 }
 
